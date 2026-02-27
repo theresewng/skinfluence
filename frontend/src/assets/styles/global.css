@@ -1,0 +1,68 @@
+/* This css file is to store global typography variables */
+:root {
+  /* Fonts */
+  --font-heading: "ivypresto-display", serif; /* Typekit Ivy Presto */
+  --font-body: "Neue Montreal", sans-serif;  /* Self-hosted */
+
+  /* Heading Sizes */
+  --h1-size: 64px;       /* Logo / Display */
+  --h2-size: 45px;       /* Sub-header / Italic */
+  --h3-ivy-size: 20px;   /* Product Name / Ivy Presto Light Italic */
+  --h3-neue-size: 22px;  /* Product Name / Neue Montreal Regular */
+
+  /* Body Copy Sizes */
+  --copy1-size: 18px;    /* Product descriptions, main body copy */
+  --copy2-size: 14px;    /* Tags, labels, buttons */
+
+  /* Colors */
+  --heading-color: #1F1F1F;
+  --body-color: #1F1F1F;
+}
+
+/* Body text */
+html, body {
+  font-family: var(--font-body);
+  font-size: var(--copy1-size);
+  color: var(--body-color);
+  margin: 0;
+  padding: 0;
+  background-color: #e8f5e9;
+  line-height: 1.6;
+}
+
+/* Ivy Presto headings */
+h1 {
+  font-family: var(--font-heading);
+  font-size: var(--h1-size);
+  font-weight: 400; 
+  font-style: normal;
+  margin: 0 0 0.5em 0;
+}
+
+h2 {
+  font-family: var(--font-heading);
+  font-size: var(--h2-size);
+  font-weight: 400; 
+  font-style: italic;
+  margin: 0 0 0.5em 0;
+}
+
+/* H3 Ivy Presto Light Italic */
+.h3-ivy {
+  font-family: var(--font-heading);
+  font-size: var(--h3-ivy-size);
+  font-weight: 300;
+  font-style: italic;
+  margin: 0 0 0.5em 0;
+  line-height: 1.2;
+}
+
+/* H3 Neue Montreal */
+.h3-neue {
+  font-family: var(--font-body);
+  font-size: var(--h3-neue-size);
+  font-weight: 400; 
+  font-style: normal;
+  margin: 0 0 0.5em 0;
+  line-height: 1.3;
+}

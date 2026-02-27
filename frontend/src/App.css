@@ -1,17 +1,6 @@
-body,
-html {
-  margin: 0;
-  padding: 0;
-  background-color: #e8f5e9;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  height: 100%;
-}
-
 .page-container {
   max-width: none;
-
   margin: 0;
-
   padding: 20px;
 }
 
@@ -166,4 +155,110 @@ html {
 
 .delete-btn:hover {
   background-color: #ffcdd2;
+}
+
+/* LOGIN CSS */
+.login-container {
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-title {
+  font-family: var(--font-heading);
+  font-size: var(--h2-size);
+  font-style: italic;
+  color: #1b5e20;
+  margin-bottom: 20px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 320px;
+  gap: 15px;
+}
+
+.login-input {
+  padding: 12px;
+  font-family: var(--font-body);
+  font-size: var(--copy1-size);
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.login-button {
+  padding: 12px;
+  font-family: var(--font-body);
+  font-size: var(--copy1-size);
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.login-button:hover {
+  background-color: #1b5e20;
+}
+
+.login-footer {
+  margin-top: 20px;
+  font-family: var(--font-body);
+  font-size: var(--copy2-size);
+}
+
+.login-footer a {
+  color: #2e7d32;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
+
+.login-page {
+  display: flex;
+  min-height: 10vh;
+}
+
+/* Left image */
+.login-image {
+  flex: 0 0 40%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 0;
+}
+
+.login-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+/* Right login container */
+.login-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
+
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+  }
+
+  .login-image,
+  .login-container {
+    flex: unset;
+    width: 100%;
+  }
 }

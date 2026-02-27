@@ -1,0 +1,17 @@
+/* This css file is created to load the Neue Montreal font face */
+
+/* Neue Montreal – Light */
+@font-face {
+  font-family: "Neue Montreal";
+  src: url("../fonts/NeueMontreal-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* Neue Montreal – Regular */
+@font-face {
+  font-family: "Neue Montreal";
+  src: url("../fonts/NeueMontreal-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
