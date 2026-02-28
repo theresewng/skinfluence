@@ -1,5 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext"; // global state provider
+import NavBar from "./NavBar";
 import Dashboard from "./Dashboard";
 import Login from "./Login";
 import ProtectedRoute from "./ProtectedRoute"; // the "bounce" component
@@ -11,6 +12,7 @@ function App() {
     // can access the user's login status and token.
 
     <AuthProvider>
+      
       <Router>
         <Routes>
           {/* public routes: anyone can access these */}
@@ -30,6 +32,7 @@ function App() {
             }
           />
         </Routes>
+        <NavBar />
       </Router>
     </AuthProvider>
   );
