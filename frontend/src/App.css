@@ -262,3 +262,24 @@
     width: 100%;
   }
 }
+
+/* NAVIGATION BAR STYLING */
+.navbar {
+  background-color: #fefefe;
+  border-bottom: 1px solid #28282b;
+  padding: 1.75rem 2.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-container {
+  display: flex;
+  flex: 1;
+}
+
+#logo img {
+  width: 200px;
+  height: auto;
+}

@@ -14,6 +14,7 @@ function App() {
     <AuthProvider>
       
       <Router>
+        <NavBar />
         <Routes>
           {/* public routes: anyone can access these */}
           <Route path="/login" element={<Login />} />
@@ -32,7 +33,6 @@ function App() {
             }
           />
         </Routes>
-        <NavBar />
       </Router>
     </AuthProvider>
   );

@@ -1,17 +1,22 @@
 import { Link } from "react-router-dom";
+import logotype from "./assets/logo/logotype.png";
 
 function NavBar() {
   return (
-    <nav style={{ background: "#333", padding: "1rem" }}>
-      <Link to="/" style={{ color: "white", margin: "0 1rem" }}>
-        Dashboard
-      </Link>
-      <Link to="/login" style={{ color: "white", margin: "0 1rem" }}>
-        Login
-      </Link>
-      <Link to="/register" style={{ color: "white", margin: "0 1rem" }}>
-        Register
-      </Link>
+    <nav className="navbar">
+      <div className="logo-container">
+        <Link to="/" title="Go to the home page" id="logo">
+          <img
+            src={logotype}
+            title="logo"
+            alt="Skinfluence: Here because your skin matters."
+            className="logotype"
+          />
+        </Link>
+      </div>
+
+      <Link to="/login">Login</Link>
+      <Link to="/register">Register</Link>
     </nav>
   );
 }
