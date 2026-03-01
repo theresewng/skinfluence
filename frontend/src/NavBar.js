@@ -14,9 +14,17 @@ function NavBar() {
           />
         </Link>
       </div>
-
-      <Link to="/login">Login</Link>
-      <Link to="/register">Register</Link>
+      <div className="nav-links">
+        <Link className="nav-button" to="/">
+          Products
+        </Link>
+        <Link className="nav-button" to="/">
+          Ingredients
+        </Link>
+        <Link className="nav-button" to="/login">
+          Login
+        </Link>
+      </div>
     </nav>
   );
 }

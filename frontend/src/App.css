@@ -265,13 +265,16 @@
 
 /* NAVIGATION BAR STYLING */
 .navbar {
+  position: sticky;
+  top: 0;
+
   background-color: #fefefe;
   border-bottom: 1px solid #28282b;
-  padding: 1.75rem 2.5rem 1rem;
+  padding: 1.5rem 2.5rem 1rem;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
+  align-items: end;
+  gap: 0.75rem;
 }
 
 .logo-container {
@@ -279,7 +282,32 @@
   flex: 1;
 }
 
-#logo img {
+.logo-container img {
   width: 200px;
   height: auto;
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.nav-button {
+  background-color: #fefefe;
+  border: 1px solid #28282b;
+  border-radius: 2rem;
+  padding: 0.5rem 2rem;
+  margin-bottom: 0.125rem;
+
+  font-size: 0.875rem;
+  font-weight: normal;
+  text-decoration: none;
+  color: #28282b;
+  cursor: pointer;
+}
+
+.nav-button:hover {
+  background-color: #e5e5e5;
+  transition: background-color 0.2s ease;
 }
