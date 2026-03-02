@@ -2,11 +2,16 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const plantRoutes = require("./routes/plants");
+const plantRoutes = require("./routes/products");
 const authRoutes = require("./routes/auth");
 
 const app = express();
 const PORT = 5000;
+
+app.use((req, res, next) => {
+  console.log(req.method, req.url);
+  next();
+});
 
 app.use(cors({ origin: "http://localhost:3000" })); // allow requests from localhost:3000
 // app.use(cors()); // allow everyone
@@ -37,7 +42,7 @@ async function connectDB() {
 connectDB();
 
 // routes
-app.use("/api/plants", plantRoutes);
+app.use("/api/products", plantRoutes);
 app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {

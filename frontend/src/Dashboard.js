@@ -4,15 +4,15 @@ import { AuthContext } from "./context/AuthContext"; // import the global "cloud
 
 function Dashboard() {
   // local State: managing the data strictly on this specific page
-  const [plants, setPlants] = useState([]); // holds the array of plants from the database
+  const [products, setProducts] = useState([]); // holds the array of products from the database
   const [formData, setFormData] = useState({
     // holds the current text typed into the form
-    commonName: "",
-    family: "",
+    productName: "",
+    brand: "",
+    usageType: "",
     category: "",
-    origin: "",
-    climate: "",
-    imgUrl: "",
+    ingredients: "",
+    imageURL: "",
   });
 
   // tap into our AuthContext
@@ -24,9 +24,9 @@ function Dashboard() {
   useEffect(() => {
     // GET is a public route on our backend, so we DO NOT need to attach the token here
     // anyone can view the plants.
-    fetch("http://localhost:5000/api/plants")
+    fetch("http://localhost:5000/api/products")
       .then((res) => res.json())
-      .then((data) => setPlants(data))
+      .then((data) => setProducts(data))
       .catch((err) => console.error("Error fetching plants:", err));
   }, []); // empty array ensures this only happens once on mount
 
@@ -44,7 +44,7 @@ function Dashboard() {
     e.preventDefault(); // stop the page from refreshing
 
     try {
-      const response = await fetch("http://localhost:5000/api/plants", {
+      const response = await fetch("http://localhost:5000/api/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -63,16 +63,17 @@ function Dashboard() {
       const newPlant = await response.json();
 
       // update our local React state to include the new plant instantly without refreshing the page
-      setPlants([...plants, newPlant]);
+      setProducts([...products, newPlant]);
 
       // clear the form fields
       setFormData({
         commonName: "",
         family: "",
         category: "",
-        origin: "",
-        climate: "",
-        imgUrl: "",
+        brand: "",
+        usageType: "",
+        ingredients: "",
+        imageURL: "",
       });
     } catch (err) {
       console.error(err);
@@ -83,7 +84,7 @@ function Dashboard() {
   // deleting data: protected DELETE request
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/plants/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
         method: "DELETE",
         headers: {
           // attach the token to prove user is authorized - again
@@ -96,8 +97,8 @@ function Dashboard() {
       }
 
       // if the backend successfully deleted it, remove it from our local React state
-      // this filters out the deleted plant so it disappears from the screen instantly
-      setPlants(plants.filter((plant) => plant._id !== id));
+      // this filters out the deleted product so it disappears from the screen instantly
+      setProducts(products.filter((product) => product._id !== id));
     } catch (err) {
       console.error(err);
       alert(err.message);
@@ -115,7 +116,7 @@ function Dashboard() {
         }}
       >
         <div>
-          <h1 style={{ margin: 0 }}>Plant Collection Dashboard</h1>
+          <h1 style={{ margin: 0 }}>Skinfluence</h1>
           {/* conditional rendering: only show the welcome message if the user object successfully loaded */}
           {user && (
             <h3 style={{ color: "#2e7d32", marginTop: "5px", marginBottom: 0 }}>
@@ -190,44 +191,44 @@ function Dashboard() {
                 onChange={handleChange}
               />
 
-              <button type="submit">Add Plant</button>
+              <button type="submit">Add Product</button>
             </form>
           </div>
         </div>
 
-        {/* right panel: the grid of plants */}
+        {/* right panel: the grid of products */}
         <div className="right-panel">
           <div className="plant-grid">
             {/* array map: loop over every plant in our state array and create a card for it */}
-            {plants.map((plant) => (
+            {products.map((product) => (
               // keys are required by React to keep track of list items efficiently
-              <div key={plant._id} className="plant-card">
+              <div key={product._id} className="plant-card">
                 <div className="image-container">
                   {/* conditional rendering for the image */}
-                  {plant.imgUrl ? (
-                    <img src={plant.imgUrl} alt={plant.commonName} />
+                  {product.imageUrl ? (
+                    <img src={product.imageUrl} alt={product.productName} />
                   ) : (
                     <div className="placeholder">No Image</div>
                   )}
                 </div>
                 <div className="card-details">
-                  <h3>{plant.commonName}</h3>
+                  <h3>{product.productName}</h3>
                   <p>
-                    <strong>Family:</strong> {plant.family}
+                    <strong>Brand:</strong> {product.brand}
                   </p>
                   <p>
-                    <strong>Origin:</strong> {plant.origin}
+                    <strong>Usage Type:</strong> {product.usageType}
                   </p>
                   <p>
-                    <strong>Climate:</strong> {plant.climate}
+                    <strong>Category:</strong> {product.category}
                   </p>
-                  {/* connect the delete button to our handleDelete function, passing the specific plant's ID */}
-                  <button
+                  {/* connect the delete button to our handleDelete function, passing the specific product's ID */}
+                  {/* <button
                     className="delete-btn"
-                    onClick={() => handleDelete(plant._id)}
+                    onClick={() => handleDelete(product._id)}
                   >
                     Delete
-                  </button>
+                  </button> */}
                 </div>
               </div>
             ))}
