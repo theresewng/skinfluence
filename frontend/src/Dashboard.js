@@ -25,10 +25,10 @@ function Dashboard() {
   useEffect(() => {
     // GET is a public route on our backend, so we DO NOT need to attach the token here
     // anyone can view the plants.
-    fetch("http://localhost:5000/api/products")
+    fetch(`http://localhost:5000/api/products?limit=30&skip=0`)
       .then((res) => res.json())
       .then((data) => setProducts(data))
-      .catch((err) => console.error("Error fetching plants:", err));
+      .catch((err) => console.error("Error fetching products:", err));
   }, []); // empty array ensures this only happens once on mount
 
   // helper function for the Controlled Form
@@ -45,15 +45,18 @@ function Dashboard() {
     e.preventDefault(); // stop the page from refreshing
 
     try {
-      const response = await fetch("http://localhost:5000/api/products", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // attach the token to prove user is authorized
-          Authorization: token,
+      const response = await fetch(
+        "http://localhost:5000/api/products?limit=30&skip=0",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // attach the token to prove user is authorized
+            Authorization: token,
+          },
+          body: JSON.stringify(formData), // send the form data to the server
         },
-        body: JSON.stringify(formData), // send the form data to the server
-      });
+      );
 
       // basic error handling if the token is invalid/missing or the server rejects
       if (!response.ok) {
