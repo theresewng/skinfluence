@@ -34,6 +34,15 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  const limit = parseInt(req.query.limit) || 30;
+  const skip = parseInt(req.query.skip) || 0;
+
+  const products = await Product.find().skip(skip).limit(limit);
+
+  res.json(products);
+});
+
 // DELETE ROUTE (protected - only logged in users)
 router.delete("/:id", verifyToken, async (req, res) => {
   try {

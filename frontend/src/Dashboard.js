@@ -5,6 +5,7 @@ import { AuthContext } from "./context/AuthContext"; // import the global "cloud
 function Dashboard() {
   // local State: managing the data strictly on this specific page
   const [products, setProducts] = useState([]); // holds the array of products from the database
+  const [visibleCount, setVisibleCount] = useState(30);
   const [formData, setFormData] = useState({
     // holds the current text typed into the form
     productName: "",
@@ -198,40 +199,56 @@ function Dashboard() {
 
         {/* right panel: the grid of products */}
         <div className="right-panel">
-          <div className="plant-grid">
+          <div className="product-grid">
             {/* array map: loop over every plant in our state array and create a card for it */}
-            {products.map((product) => (
-              // keys are required by React to keep track of list items efficiently
-              <div key={product._id} className="plant-card">
-                <div className="image-container">
-                  {/* conditional rendering for the image */}
-                  {product.imageUrl ? (
-                    <img src={product.imageUrl} alt={product.productName} />
-                  ) : (
-                    <div className="placeholder">No Image</div>
-                  )}
-                </div>
-                <div className="card-details">
-                  <h3>{product.productName}</h3>
-                  <p>
-                    <strong>Brand:</strong> {product.brand}
-                  </p>
-                  <p>
-                    <strong>Usage Type:</strong> {product.usageType}
-                  </p>
-                  <p>
-                    <strong>Category:</strong> {product.category}
-                  </p>
-                  {/* connect the delete button to our handleDelete function, passing the specific product's ID */}
-                  {/* <button
+            {products.slice(0, visibleCount).map(
+              (
+                product, // keys are required by React to keep track of list items efficiently
+              ) => (
+                <div key={product._id} className="plant-card">
+                  <div className="image-container">
+                    {/* conditional rendering for the image */}
+                    {product.imageUrl ? (
+                      <img src={product.imageUrl} alt={product.productName} />
+                    ) : (
+                      <div className="placeholder">No Image</div>
+                    )}
+                  </div>
+                  <div className="card-details">
+                    <h3>{product.productName}</h3>
+                    <p>
+                      <strong>Brand:</strong> {product.brand}
+                    </p>
+                    <p>
+                      <strong>Usage Type:</strong> {product.usageType}
+                    </p>
+                    <p>
+                      <strong>Category:</strong> {product.category}
+                    </p>
+                    {/* connect the delete button to our handleDelete function, passing the specific product's ID */}
+                    {/* <button
                     className="delete-btn"
                     onClick={() => handleDelete(product._id)}
                   >
                     Delete
                   </button> */}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ),
+            )}
+
+            {visibleCount < products.length && (
+              <button
+                onClick={() => setVisibleCount((prev) => prev + 30)}
+                // style={{
+                //   marginTop: "20px",
+                //   padding: "10px 20px",
+                //   cursor: "pointer",
+                // }}
+              >
+                See More
+              </button>
+            )}
           </div>
         </div>
       </div>
