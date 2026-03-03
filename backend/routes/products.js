@@ -15,33 +15,43 @@ router.get("/", async (req, res) => {
 });
 
 // POST ROUTE (protected - only logged in users)
-router.get("/", verifyToken, async (req, res) => {
-  const products = new Product({
-    productName: req.body.productName,
-    brand: req.body.brand,
-    usageType: req.body.usageType,
-    category: req.body.category,
-    ingredients: req.body.ingredients,
-    imageURL: req.body.imageURL,
-  });
+// router.get("/", verifyToken, async (req, res) => {
+//   const products = new Product({
+//     productName: req.body.productName,
+//     brand: req.body.brand,
+//     usageType: req.body.usageType,
+//     category: req.body.category,
+//     ingredients: req.body.ingredients,
+//     imageURL: req.body.imageURL,
+//   });
 
+//   try {
+//     const newProduct = await products.save();
+//     res.status(201).json(newProduct);
+//     console.log(newProduct);
+//   } catch (err) {
+//     res.status(400).json({ message: err.message });
+//   }
+// });
+
+router.post("/", verifyToken, async (req, res) => {
   try {
-    const newProduct = await products.save();
+    const newProduct = new Product(req.body);
+    await newProduct.save();
     res.status(201).json(newProduct);
-    console.log(newProduct);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
-router.get("/", async (req, res) => {
-  const limit = parseInt(req.query.limit) || 30;
-  const skip = parseInt(req.query.skip) || 0;
+// router.get("/", async (req, res) => {
+//   const limit = parseInt(req.query.limit) || 30;
+//   const skip = parseInt(req.query.skip) || 0;
 
-  const products = await Product.find().skip(skip).limit(limit);
+//   const products = await Product.find().skip(skip).limit(limit);
 
-  res.json(products);
-});
+//   res.json(products);
+// });
 
 // DELETE ROUTE (protected - only logged in users)
 router.delete("/:id", verifyToken, async (req, res) => {
