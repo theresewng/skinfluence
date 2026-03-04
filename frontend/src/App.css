@@ -34,7 +34,7 @@
 
 .card h3 {
   margin-top: 0;
-  color: #2e7d32;
+  color: black;
   border-bottom: 2px solid #a5d6a7;
   padding-bottom: 10px;
   margin-bottom: 15px;
@@ -95,16 +95,17 @@
   gap: 20px;
 }
 
-.plant-card {
+.product-card {
+  position: relative; /* For positioning the heart */
   background: white;
-  border-radius: 8px;
+  border-radius: 12px; /* slightly more rounded */
   overflow: hidden;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  border: 1px solid black; /* black outline */
   transition: transform 0.2s;
-  border: 1px solid #fff;
 }
 
-.plant-card:hover {
+.product-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
@@ -130,13 +131,13 @@
 
 .card-details h3 {
   margin: 0 0 5px 0;
-  color: #2e7d32;
+  /* color: black; */
   font-size: 1.1rem;
 }
 
 .card-details p {
   margin: 3px 0;
-  color: #555;
+  /* color: #555; */
   font-size: 0.85rem;
 }
 
