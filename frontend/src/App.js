@@ -22,7 +22,7 @@ function App() {
               Dashboard component to render
           */}
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
