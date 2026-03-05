@@ -290,6 +290,7 @@
 .nav-links {
   display: flex;
   flex-wrap: wrap;
+  justify-content: end;
   gap: 1rem;
 }
 
