@@ -320,9 +320,9 @@ function Dashboard() {
     return matchesSearch && matchesBrand;
   });
 
-  function handleChange(e) {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
+  // function handleChange(e) {
+  //   setFormData({ ...formData, [e.target.name]: e.target.value });
+  // }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -358,19 +358,19 @@ function Dashboard() {
     }
   }
 
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: token },
-      });
-      if (!response.ok) throw new Error("Failed to delete product");
-      setProducts(products.filter((product) => product._id !== id));
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-  };
+  // const handleDelete = async (id) => {
+  //   try {
+  //     const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+  //       method: "DELETE",
+  //       headers: { Authorization: token },
+  //     });
+  //     if (!response.ok) throw new Error("Failed to delete product");
+  //     setProducts(products.filter((product) => product._id !== id));
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert(err.message);
+  //   }
+  // };
 
   return (
     <div className="page-container">
