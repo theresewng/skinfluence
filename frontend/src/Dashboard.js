@@ -292,7 +292,7 @@ function Dashboard() {
     usageType: "",
     category: "",
     ingredients: "",
-    imageURL: "",
+    imageUrl: "",
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
@@ -313,10 +313,15 @@ function Dashboard() {
   // Filter products based on search term and selected brand
   const filteredProducts = products.filter((product) => {
     const term = searchTerm.toLowerCase();
+    const name = product.productName?.toLowerCase() || "";
+    const brand = product.brand?.toLowerCase() || "";
+    const category = product.category?.toLowerCase() || "";
     const matchesSearch =
-      product.productName.toLowerCase().includes(term) ||
-      product.brand.toLowerCase().includes(term) ||
-      product.category.toLowerCase().includes(term);
+      name.includes(term) || brand.includes(term) || category.includes(term);
+    // const matchesSearch =
+    //   product.productName.toLowerCase().includes(term) ||
+    //   product.brand.toLowerCase().includes(term) ||
+    //   product.category.toLowerCase().includes(term);
     const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
     return matchesSearch && matchesBrand;
   });
@@ -351,7 +356,7 @@ function Dashboard() {
         usageType: "",
         category: "",
         ingredients: "",
-        imageURL: "",
+        imageUrl: "",
       });
     } catch (err) {
       console.error(err);

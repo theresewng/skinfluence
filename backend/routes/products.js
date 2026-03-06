@@ -6,11 +6,29 @@ const verifyToken = require("../middleware/authMiddleware");
 // GET ROUTE (Public - Anyone can see plants)
 router.get("/", async (req, res) => {
   try {
-    //const plants = await Plant.find().limit(3);
-    const products = await Product.find();
+    const limit = parseInt(req.query.limit) || 30;
+    const skip = parseInt(req.query.skip) || 0;
+
+    const products = await Product.find().skip(skip).limit(limit);
+
     res.json(products);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET SINGLE PRODUCT BY ID
+router.get("/:id", async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
