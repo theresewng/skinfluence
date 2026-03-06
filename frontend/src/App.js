@@ -13,7 +13,6 @@
 
 //     <AuthProvider>
 //       <Router>
-//         <NavBar />
 //         <Routes>
 //           {/* public routes: anyone can access these */}
 //           <Route path="/login" element={<Login />} />
@@ -39,6 +38,7 @@
 
 // export default App;
 
+import "bootstrap/dist/css/bootstrap.min.css";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import NavBar from "./NavBar";
@@ -53,7 +53,6 @@ function App() {
     <AuthProvider>
       <Router>
         <NavBar />
-
         <Routes>
           {/* Public routes */}
           <Route path="/login" element={<Login />} />
