@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import "./App.css";
-import DashboardPreview from "./DashBoardPreview";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -66,8 +65,6 @@ function Login() {
         <p className="login-footer">
           Don't have an account? <Link to="/register">Register here</Link>
         </p>
-
-        <DashboardPreview />
       </div>
     </div>
   );
