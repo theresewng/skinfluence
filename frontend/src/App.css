@@ -252,6 +252,11 @@
   padding: 50px;
 }
 
+.productBackground {
+  background-color: #beebe4;
+  padding-bottom: 1rem;
+}
+
 @media (max-width: 768px) {
   .login-page {
     flex-direction: column;

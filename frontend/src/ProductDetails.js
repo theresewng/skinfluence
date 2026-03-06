@@ -18,7 +18,7 @@ function ProductDetails() {
   if (!product) return <p>Loading...</p>;
 
   return (
-    <div>
+    <div className="productBackground">
       <h1>{product.brand}</h1>
       <h2>{product.productName}</h2>
 
