@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
+import "./App.css";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -32,7 +33,10 @@ function Login() {
     <div className="login-page">
       {/* Left image */}
       <div className="login-image">
-        <img src="https://plus.unsplash.com/premium_photo-1661630984481-e29093921ff7?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Welcome" />
+        <img
+          src="https://plus.unsplash.com/premium_photo-1661630984481-e29093921ff7?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Welcome"
+        />
       </div>
 
       {/* Right login form */}
@@ -59,8 +63,7 @@ function Login() {
         </form>
 
         <p className="login-footer">
-          Don't have an account?{" "}
-          <Link to="/register">Register here</Link>
+          Don't have an account? <Link to="/register">Register here</Link>
         </p>
       </div>
     </div>
