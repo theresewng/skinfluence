@@ -251,10 +251,26 @@
   align-items: center;
   padding: 50px;
 }
+/*End of Login CSS */
 
 .productBackground {
   background-color: #beebe4;
-  padding-bottom: 1rem;
+  /* padding-bottom: 1rem; */
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.info-content-wrapper {
+  display: flex;
+  height: 80vh;
+  gap: 50px;
+  justify-content: center; /* Centers horizontally */
+  align-items: center;
+  width: 100%;
+}
+
+.accordion {
+  margin-top: 3rem;
 }
 
 @media (max-width: 768px) {
