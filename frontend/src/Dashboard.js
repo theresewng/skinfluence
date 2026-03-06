@@ -388,14 +388,7 @@ function Dashboard() {
           alignItems: "center",
         }}
       >
-        <div>
-          <h1 style={{ margin: 0 }}>Skinfluence</h1>
-          {user && (
-            <h3 style={{ color: "#2e7d32", marginTop: 5, marginBottom: 0 }}>
-              Welcome back, {user.username}!
-            </h3>
-          )}
-        </div>
+        <div>{user && <h2>Welcome back, {user.username}!</h2>}</div>
         <button
           onClick={logout}
           style={{
@@ -416,7 +409,7 @@ function Dashboard() {
         <div className="left-panel">
           <div className="card form-card">
             <h3 className="h3-ivy">Filter</h3>
-            <form onSubmit={handleSubmit} className="plant-form">
+            {/* <form onSubmit={handleSubmit} className="plant-form">
               <label>Search Products</label>
               <input
                 type="text"
@@ -439,6 +432,73 @@ function Dashboard() {
               </select>
 
               <button type="submit">Add Product</button>
+            </form> */}
+
+            <form onSubmit={handleSubmit} className="plant-form">
+              <h4>Add New Product</h4>
+
+              <label>Product Name</label>
+              <input
+                name="productName"
+                value={formData.productName}
+                onChange={handleChange}
+                required
+              />
+
+              <label>Brand</label>
+              <input
+                name="brand"
+                value={formData.brand}
+                onChange={handleChange}
+              />
+
+              <label>Usage Type</label>
+              <input
+                name="usageType"
+                value={formData.usageType}
+                onChange={handleChange}
+              />
+
+              <label>Category</label>
+              <input
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+              />
+
+              <label>Ingredients</label>
+              <input
+                name="ingredients"
+                value={formData.ingredients}
+                onChange={handleChange}
+              />
+
+              <button type="submit">Add Product</button>
+
+              <hr />
+
+              <h4>Filter Products</h4>
+
+              <label>Search</label>
+              <input
+                type="text"
+                placeholder="Search by name, brand, category..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+
+              <label>Filter by Brand</label>
+              <select
+                value={selectedBrand}
+                onChange={(e) => setSelectedBrand(e.target.value)}
+              >
+                <option value="">All Brands</option>
+                {uniqueBrands.map((brand) => (
+                  <option key={brand} value={brand}>
+                    {brand}
+                  </option>
+                ))}
+              </select>
             </form>
           </div>
         </div>

@@ -32,12 +32,15 @@ function Login() {
     <div className="login-page">
       {/* Left image */}
       <div className="login-image">
-        <img src="https://plus.unsplash.com/premium_photo-1661630984481-e29093921ff7?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Welcome" />
+        <img
+          src="https://plus.unsplash.com/premium_photo-1661630984481-e29093921ff7?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Welcome"
+        />
       </div>
 
       {/* Right login form */}
       <div className="login-container">
-        <h2 className="login-title">Welcome Back</h2>
+        <h2>Welcome Back</h2>
 
         <form onSubmit={handleLogin} className="login-form">
           <input
@@ -59,8 +62,7 @@ function Login() {
         </form>
 
         <p className="login-footer">
-          Don't have an account?{" "}
-          <Link to="/register">Register here</Link>
+          Don't have an account? <Link to="/register">Register here</Link>
         </p>
       </div>
     </div>
