@@ -14,42 +14,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/products/:id", async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
-
-    if (!product) {
-      return res.status(404).json({ error: "Product not found" });
-    }
-
-    res.json(product);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.post("/", verifyToken, async (req, res) => {
-  try {
-    const newProduct = new Product(req.body);
-    await newProduct.save();
-    res.status(201).json(newProduct);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// DELETE ROUTE (protected - only logged in users)
-router.delete("/:id", verifyToken, async (req, res) => {
-  try {
-    await Product.findByIdAndDelete(req.params.id);
-    res.json({ message: "Plant deleted" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-module.exports = router;
-
 // POST ROUTE (protected - only logged in users)
 // router.get("/", verifyToken, async (req, res) => {
 //   const products = new Product({
@@ -70,6 +34,16 @@ module.exports = router;
 //   }
 // });
 
+router.post("/", verifyToken, async (req, res) => {
+  try {
+    const newProduct = new Product(req.body);
+    await newProduct.save();
+    res.status(201).json(newProduct);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // router.get("/", async (req, res) => {
 //   const limit = parseInt(req.query.limit) || 30;
 //   const skip = parseInt(req.query.skip) || 0;
@@ -78,3 +52,15 @@ module.exports = router;
 
 //   res.json(products);
 // });
+
+// DELETE ROUTE (protected - only logged in users)
+router.delete("/:id", verifyToken, async (req, res) => {
+  try {
+    await Product.findByIdAndDelete(req.params.id);
+    res.json({ message: "Plant deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+module.exports = router;

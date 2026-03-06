@@ -48,7 +48,3 @@ app.use("/api/auth", authRoutes);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-const productRoutes = require("./routes/products");
-
-app.use("/api", productRoutes);
