@@ -4,6 +4,7 @@ import Dashboard from "./Dashboard";
 import Login from "./Login";
 import ProtectedRoute from "./ProtectedRoute"; // the "bounce" component
 import Register from "./Register";
+import Details from "./DetailsPage";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/products/:id" element={<Details />} />
         </Routes>
       </Router>
     </AuthProvider>

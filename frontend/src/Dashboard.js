@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext"; // import the global "cloud" to access our token and user
+import { Link } from "react-router-dom";
 
 function Dashboard() {
   // local State: managing the data strictly on this specific page
@@ -84,30 +85,6 @@ function Dashboard() {
       alert(err.message); // show the error to the user
     }
   }
-
-  // deleting data: protected DELETE request
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
-        method: "DELETE",
-        headers: {
-          // attach the token to prove user is authorized - again
-          Authorization: token,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete. Are you authorized?");
-      }
-
-      // if the backend successfully deleted it, remove it from our local React state
-      // this filters out the deleted product so it disappears from the screen instantly
-      setProducts(products.filter((product) => product._id !== id));
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-  };
 
   return (
     <div className="page-container">
@@ -235,20 +212,16 @@ function Dashboard() {
                   >
                     Delete
                   </button> */}
+                    <Link to={`/products/${product._id}`}>
+                      <button>See Details</button>
+                    </Link>
                   </div>
                 </div>
               ),
             )}
 
             {visibleCount < products.length && (
-              <button
-                onClick={() => setVisibleCount((prev) => prev + 30)}
-                // style={{
-                //   marginTop: "20px",
-                //   padding: "10px 20px",
-                //   cursor: "pointer",
-                // }}
-              >
+              <button onClick={() => setVisibleCount((prev) => prev + 30)}>
                 See More
               </button>
             )}
@@ -260,3 +233,27 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
+// deleting data: protected DELETE request
+// const handleDelete = async (id) => {
+//   try {
+//     const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+//       method: "DELETE",
+//       headers: {
+//         // attach the token to prove user is authorized - again
+//         Authorization: token,
+//       },
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to delete. Are you authorized?");
+//     }
+
+//     // if the backend successfully deleted it, remove it from our local React state
+//     // this filters out the deleted product so it disappears from the screen instantly
+//     setProducts(products.filter((product) => product._id !== id));
+//   } catch (err) {
+//     console.error(err);
+//     alert(err.message);
+//   }
+// };
