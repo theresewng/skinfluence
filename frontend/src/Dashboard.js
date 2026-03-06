@@ -279,10 +279,7 @@
 // export default Dashboard;
 
 import { useContext, useEffect, useState } from "react";
-<<<<<<< HEAD
 import { Link } from "react-router-dom";
-=======
->>>>>>> parent of 2e75ffd (Merge branch 'linking')
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
 
@@ -309,7 +306,6 @@ function Dashboard() {
       .then((data) => setProducts(data))
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
-<<<<<<< HEAD
 
   // Extract unique brands for the dropdown
   const uniqueBrands = [...new Set(products.map((product) => product.brand))];
@@ -328,26 +324,6 @@ function Dashboard() {
   function handleChange(e) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
-=======
-
-  // Extract unique brands for the dropdown
-  const uniqueBrands = [...new Set(products.map((product) => product.brand))];
-
-  // Filter products based on search term and selected brand
-  const filteredProducts = products.filter((product) => {
-    const term = searchTerm.toLowerCase();
-    const matchesSearch =
-      product.productName.toLowerCase().includes(term) ||
-      product.brand.toLowerCase().includes(term) ||
-      product.category.toLowerCase().includes(term);
-    const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
-    return matchesSearch && matchesBrand;
-  });
-
-  // function handleChange(e) {
-  //   setFormData({ ...formData, [e.target.name]: e.target.value });
-  // }
->>>>>>> parent of 2e75ffd (Merge branch 'linking')
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -383,21 +359,6 @@ function Dashboard() {
     }
   }
 
-<<<<<<< HEAD
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: token },
-      });
-      if (!response.ok) throw new Error("Failed to delete product");
-      setProducts(products.filter((product) => product._id !== id));
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-  };
-=======
   // const handleDelete = async (id) => {
   //   try {
   //     const response = await fetch(`http://localhost:5000/api/products/${id}`, {
@@ -411,7 +372,6 @@ function Dashboard() {
   //     alert(err.message);
   //   }
   // };
->>>>>>> parent of 2e75ffd (Merge branch 'linking')
 
   return (
     <div className="page-container">
@@ -504,12 +464,9 @@ function Dashboard() {
                     <p className="h3-ivy">
                       <strong>Category:</strong> {product.category}
                     </p>
-<<<<<<< HEAD
                     <Link to={`/products/${product._id}`}>
                       <button>See Details</button>
                     </Link>
-=======
->>>>>>> parent of 2e75ffd (Merge branch 'linking')
                   </div>
                 </div>
               );
