@@ -6,16 +6,6 @@ import { AuthContext } from "./context/AuthContext";
 function SavedItems() {
   const [products, setProducts] = useState([]);
   const [visibleCount, setVisibleCount] = useState(8);
-  const [formData, setFormData] = useState({
-    productName: "",
-    brand: "",
-    usageType: "",
-    category: "",
-    ingredients: "",
-    imageUrl: "",
-  });
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState("");
 
   const { token, user, logout } = useContext(AuthContext);
 
@@ -27,76 +17,29 @@ function SavedItems() {
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
 
-  // Extract unique brands for the dropdown
-  const uniqueBrands = [...new Set(products.map((product) => product.brand))];
-
-  // Filter products based on search term and selected brand
-  const filteredProducts = products.filter((product) => {
-    const term = searchTerm.toLowerCase();
-    const name = product.productName?.toLowerCase() || "";
-    const brand = product.brand?.toLowerCase() || "";
-    const category = product.category?.toLowerCase() || "";
-    const matchesSearch =
-      name.includes(term) || brand.includes(term) || category.includes(term);
-    // const matchesSearch =
-    //   product.productName.toLowerCase().includes(term) ||
-    //   product.brand.toLowerCase().includes(term) ||
-    //   product.category.toLowerCase().includes(term);
-    const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
-    return matchesSearch && matchesBrand;
+  // Load user data to get saved product IDs
+  const savedProducts = products.filter((product) => {
+    return (
+      user &&
+      user.savedProductIDs &&
+      user.savedProductIDs.length > 0 &&
+      user.savedProductIDs.includes(product._id)
+    );
   });
 
-  function handleChange(e) {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/products?limit=30&skip=0",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-          body: JSON.stringify(formData),
-        },
-      );
-
-      if (!response.ok) throw new Error("Failed to add product");
-
-      const newProduct = await response.json();
-      setProducts([...products, newProduct]);
-
-      setFormData({
-        productName: "",
-        brand: "",
-        usageType: "",
-        category: "",
-        ingredients: "",
-        imageUrl: "",
-      });
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-  }
-
-  // const handleDelete = async (id) => {
-  //   try {
-  //     const response = await fetch(`http://localhost:5000/api/products/${id}`, {
-  //       method: "DELETE",
-  //       headers: { Authorization: token },
-  //     });
-  //     if (!response.ok) throw new Error("Failed to delete product");
-  //     setProducts(products.filter((product) => product._id !== id));
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert(err.message);
-  //   }
-  // };
+  const handleRemove = async (id) => {
+    // try {
+    //   const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+    //     method: "DELETE",
+    //     headers: { Authorization: token },
+    //   });
+    //   if (!response.ok) throw new Error("Failed to delete product");
+    //   setProducts(products.filter((product) => product._id !== id));
+    // } catch (err) {
+    //   console.error(err);
+    //   alert(err.message);
+    // }
+  };
 
   return (
     <div className="page-container bkgd-yellow">
@@ -144,47 +87,57 @@ function SavedItems() {
 
         <div className="right-panel">
           <section className="section white-70">
-            <h2 className="h2-ivy">My Saved Products</h2>
-            <div className="product-grid">
-              {filteredProducts.slice(0, visibleCount).map((product) => {
-                const nameParts = product.productName.split(",");
-                const amount =
-                  nameParts.length > 1 ? nameParts.pop().trim() : "";
-                const cleanName = nameParts.join(",").trim();
+            <h2 className="h2-ivy">Saved Products</h2>
+            {savedProducts.length > 0 ? (
+              <div className="product-grid">
+                {savedProducts.slice(0, visibleCount).map((product) => {
+                  const nameParts = product.productName.split(",");
+                  const amount =
+                    nameParts.length > 1 ? nameParts.pop().trim() : "";
+                  const cleanName = nameParts.join(",").trim();
 
-                return (
-                  <div key={product._id} className="product-card">
-                    <div className="image-container">
-                      {product.imageUrl ? (
-                        <img src={product.imageUrl} alt={product.productName} />
-                      ) : (
-                        <div className="placeholder">No Image</div>
-                      )}
+                  return (
+                    <div key={product._id} className="product-card">
+                      <div className="image-container">
+                        {product.imageUrl ? (
+                          <img
+                            src={product.imageUrl}
+                            alt={product.productName}
+                          />
+                        ) : (
+                          <div className="placeholder">No Image</div>
+                        )}
+                      </div>
+                      <div className="card-details">
+                        <h3 className="h3-ivy">{product.brand}</h3>
+                        <h3 className="h3-neue">{cleanName}</h3>
+                        {amount && <p className="h3-neue-light">{amount}</p>}
+                        <p className="h3-ivy">
+                          <strong>Usage Type:</strong> {product.usageType}
+                        </p>
+                        <p className="h3-ivy">
+                          <strong>Category:</strong> {product.category}
+                        </p>
+                        <Link to={`/products/${product._id}`}>
+                          <button>See Details</button>
+                        </Link>
+                        <button onClick={() => handleRemove(product._id)}>
+                          Remove from Favourites
+                        </button>
+                      </div>
                     </div>
-                    <div className="card-details">
-                      <h3 className="h3-ivy">{product.brand}</h3>
-                      <h3 className="h3-neue">{cleanName}</h3>
-                      {amount && <p className="h3-neue-light">{amount}</p>}
-                      <p className="h3-ivy">
-                        <strong>Usage Type:</strong> {product.usageType}
-                      </p>
-                      <p className="h3-ivy">
-                        <strong>Category:</strong> {product.category}
-                      </p>
-                      <Link to={`/products/${product._id}`}>
-                        <button>See Details</button>
-                      </Link>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+            ) : (
+              <p>You haven't saved any products yet.</p>
+            )}
 
-              {visibleCount < filteredProducts.length && (
-                <button onClick={() => setVisibleCount((prev) => prev + 30)}>
-                  See More
-                </button>
-              )}
-            </div>
+            {visibleCount < savedProducts.length && (
+              <button onClick={() => setVisibleCount((prev) => prev + 30)}>
+                See More
+              </button>
+            )}
           </section>
           <section className="section white-70">
             <h2 className="h2-ivy">Saved Ingredients</h2>
