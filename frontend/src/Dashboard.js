@@ -378,6 +378,31 @@ function Dashboard() {
   //   }
   // };
 
+  const saveProduct = async (id) => {
+    try {
+      // Send POST request to backend to save product to user's favourites
+      const response = await fetch(
+        "http://localhost:5000/api/auth/save-product",
+        {
+          method: "POST",
+          headers: {
+            // Attach content type and token
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+          body: JSON.stringify({ productId: id }), // send the product ID in the body
+        },
+      );
+
+      if (!response.ok) throw new Error("Failed to save product");
+
+      alert("Product saved to favourites!");
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
   return (
     <div className="page-container">
       <header
@@ -532,6 +557,9 @@ function Dashboard() {
                     <Link to={`/products/${product._id}`}>
                       <button>See Details</button>
                     </Link>
+                    <button onClick={() => saveProduct(product._id)}>
+                      Save to Favourites
+                    </button>
                   </div>
                 </div>
               );

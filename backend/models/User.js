@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  savedProductIDs: [String], // array of ObjectIds referencing Product documents
+  savedProductIDs: [String], // array of Product IDs as strings
 });
 
 module.exports = mongoose.model("User", UserSchema);

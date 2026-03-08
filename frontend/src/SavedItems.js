@@ -5,6 +5,7 @@ import { AuthContext } from "./context/AuthContext";
 
 function SavedItems() {
   const [products, setProducts] = useState([]);
+  const [savedProductIDs, setSavedProductIDs] = useState([]);
   const [visibleCount, setVisibleCount] = useState(8);
 
   const { token, user, logout } = useContext(AuthContext);
@@ -17,29 +18,36 @@ function SavedItems() {
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
 
+  // Fetch user's saved product IDs
+  useEffect(() => {
+    if (token) {
+      fetch("http://localhost:5000/api/auth/user", {
+        headers: { Authorization: token },
+      })
+        .then((res) => res.json())
+        .then((data) => setSavedProductIDs(data.savedProductIDs || []))
+        .catch((err) => console.error("Error fetching user data:", err));
+    }
+  }, [token]);
+
   // Load user data to get saved product IDs
   const savedProducts = products.filter((product) => {
-    return (
-      user &&
-      user.savedProductIDs &&
-      user.savedProductIDs.length > 0 &&
-      user.savedProductIDs.includes(product._id)
-    );
+    return savedProductIDs.includes(product._id);
   });
 
-  const handleRemove = async (id) => {
-    // try {
-    //   const response = await fetch(`http://localhost:5000/api/products/${id}`, {
-    //     method: "DELETE",
-    //     headers: { Authorization: token },
-    //   });
-    //   if (!response.ok) throw new Error("Failed to delete product");
-    //   setProducts(products.filter((product) => product._id !== id));
-    // } catch (err) {
-    //   console.error(err);
-    //   alert(err.message);
-    // }
-  };
+  // const handleRemove = async (id) => {
+  // try {
+  //   const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+  //     method: "DELETE",
+  //     headers: { Authorization: token },
+  //   });
+  //   if (!response.ok) throw new Error("Failed to delete product");
+  //   setProducts(products.filter((product) => product._id !== id));
+  // } catch (err) {
+  //   console.error(err);
+  //   alert(err.message);
+  // }
+  // };
 
   return (
     <div className="page-container bkgd-yellow">
@@ -121,9 +129,9 @@ function SavedItems() {
                         <Link to={`/products/${product._id}`}>
                           <button>See Details</button>
                         </Link>
-                        <button onClick={() => handleRemove(product._id)}>
+                        {/* <button onClick={() => handleRemove(product._id)}>
                           Remove from Favourites
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   );
