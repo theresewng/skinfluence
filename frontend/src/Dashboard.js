@@ -520,7 +520,7 @@ function Dashboard() {
                       )}
                     </div>
                     <div className="card-details">
-                      <h3>{product.brand}</h3>
+                      <h3 className="h3-ivy">{product.brand}</h3>
                       <h3>{cleanName}</h3>
                       {amount && <p>{amount}</p>}
                       <p>
