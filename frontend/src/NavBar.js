@@ -1,7 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "./context/AuthContext";
 import logotype from "./assets/logo/logotype.png";
 
 function NavBar() {
+  const { token, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout(); // clears token & user
+    navigate("/login"); // redirect to login page
+  };
+
   return (
     <nav className="navbar">
       <div className="logo-container">
@@ -14,6 +24,7 @@ function NavBar() {
           />
         </Link>
       </div>
+
       <div className="nav-links">
         <Link className="nav-button" to="/">
           Products
@@ -21,9 +32,20 @@ function NavBar() {
         <Link className="nav-button" to="/">
           Ingredients
         </Link>
-        <Link className="nav-button" to="/login">
-          Login
+        <Link className="nav-button" to="/saved">
+          My Profile
         </Link>
+
+        {/* Conditional Login / Logout */}
+        {token ? (
+          <button className="nav-button" onClick={handleLogout}>
+            Logout
+          </button>
+        ) : (
+          <Link className="nav-button" to="/login">
+            Login
+          </Link>
+        )}
       </div>
     </nav>
   );
