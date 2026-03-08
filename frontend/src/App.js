@@ -47,6 +47,7 @@ import Login from "./Login";
 import ProtectedRoute from "./ProtectedRoute";
 import Register from "./Register";
 import ProductDetails from "./ProductDetails";
+import SavedItems from "./SavedItems";
 
 function App() {
   return (
@@ -75,6 +76,16 @@ function App() {
             element={
               <ProtectedRoute>
                 <ProductDetails />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Saved Items page */}
+          <Route
+            path="/saved"
+            element={
+              <ProtectedRoute>
+                <SavedItems />
               </ProtectedRoute>
             }
           />

@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const verifyToken = require("../middleware/authMiddleware");
 
 // Register
 router.post("/register", async (req, res) => {
@@ -51,7 +52,61 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1h" },
     );
 
-    res.json({ token, user: { id: user._id, username: user.username } });
+    // 4. send token and user data (including savedProductIDs) back to frontend
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        savedProductIDs: user.savedProductIDs,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET user data (protected - includes savedProductIDs)
+router.get("/user", verifyToken, async (req, res) => {
+  try {
+    // 1. Find user based on userId from token (from middleware)
+    const userId = req.userId;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // 2. Send user data (including savedProductIDs) back to frontend
+    res.json({
+      id: user._id,
+      username: user.username,
+      savedProductIDs: user.savedProductIDs,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST product ID string to user's favorites
+router.post("/save-product", verifyToken, async (req, res) => {
+  try {
+    // 1. Extract product ID string from request body
+    const { productId } = req.body;
+
+    // 2. Find user based on userId from token (from middleware)
+    const userId = req.userId;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // 3. Add product ID to savedProductIDs if not already there
+    if (!user.savedProductIDs.includes(productId)) {
+      user.savedProductIDs.push(productId); // add to array
+      await user.save(); // save to DB
+    }
+
+    // 4. Send updated list of savedProductIDs back to frontend
+    res.json({
+      message: "Product saved successfully",
+      savedProductIDs: user.savedProductIDs,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
