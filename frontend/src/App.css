@@ -1,5 +1,6 @@
 .page-container {
   max-width: none;
+  height: 100vh;
   margin: 0;
   padding: 20px;
 }

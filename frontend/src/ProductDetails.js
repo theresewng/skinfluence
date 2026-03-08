@@ -29,7 +29,7 @@ function ProductDetails() {
   }
 
   return (
-    <div className="productBackground">
+    <div className="page-container bkgd-blue">
       <div className="info-content-wrapper">
         <div className="left-panel">
           <div className="image-container">

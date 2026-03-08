@@ -300,12 +300,28 @@ function Dashboard() {
   const { token, user, logout } = useContext(AuthContext);
 
   // Load products from backend
+  // Initial fetch
   useEffect(() => {
-    fetch(`http://localhost:5000/api/products?limit=30&skip=0`)
-      .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .catch((err) => console.error("Error fetching products:", err));
+    fetchProducts(0, 30);
   }, []);
+
+  const fetchProducts = async (skip, limit) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/products?skip=${skip}&limit=${limit}`,
+      );
+      const data = await res.json();
+      setProducts((prev) => [...prev, ...data]); // append to existing products
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // See More handler
+  const handleSeeMore = () => {
+    fetchProducts(products.length, 30); // fetch next 30 items
+    setVisibleCount((prev) => prev + 30);
+  };
 
   // Extract unique brands for the dropdown
   const uniqueBrands = [...new Set(products.map((product) => product.brand))];
@@ -318,10 +334,6 @@ function Dashboard() {
     const category = product.category?.toLowerCase() || "";
     const matchesSearch =
       name.includes(term) || brand.includes(term) || category.includes(term);
-    // const matchesSearch =
-    //   product.productName.toLowerCase().includes(term) ||
-    //   product.brand.toLowerCase().includes(term) ||
-    //   product.category.toLowerCase().includes(term);
     const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
     return matchesSearch && matchesBrand;
   });
@@ -363,20 +375,6 @@ function Dashboard() {
       alert(err.message);
     }
   }
-
-  // const handleDelete = async (id) => {
-  //   try {
-  //     const response = await fetch(`http://localhost:5000/api/products/${id}`, {
-  //       method: "DELETE",
-  //       headers: { Authorization: token },
-  //     });
-  //     if (!response.ok) throw new Error("Failed to delete product");
-  //     setProducts(products.filter((product) => product._id !== id));
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert(err.message);
-  //   }
-  // };
 
   const saveProduct = async (id) => {
     try {
@@ -434,31 +432,6 @@ function Dashboard() {
         <div className="left-panel">
           <div className="card form-card">
             <h3 className="h3-ivy">Filter</h3>
-            {/* <form onSubmit={handleSubmit} className="plant-form">
-              <label>Search Products</label>
-              <input
-                type="text"
-                placeholder="Search by name, brand, or category..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-
-              <label>Filter by Brand</label>
-              <select
-                value={selectedBrand}
-                onChange={(e) => setSelectedBrand(e.target.value)}
-              >
-                <option value="">All Brands</option>
-                {uniqueBrands.map((brand) => (
-                  <option key={brand} value={brand}>
-                    {brand}
-                  </option>
-                ))}
-              </select>
-
-              <button type="submit">Add Product</button>
-            </form> */}
-
             <form onSubmit={handleSubmit} className="plant-form">
               <h4>Add New Product</h4>
 
@@ -529,46 +502,55 @@ function Dashboard() {
         </div>
 
         <div className="right-panel">
-          <div className="product-grid">
-            {filteredProducts.slice(0, visibleCount).map((product) => {
-              const nameParts = product.productName.split(",");
-              const amount = nameParts.length > 1 ? nameParts.pop().trim() : "";
-              const cleanName = nameParts.join(",").trim();
+          <div className="products-wrapper">
+            <div className="product-grid">
+              {filteredProducts.slice(0, visibleCount).map((product) => {
+                const nameParts = product.productName.split(",");
+                const amount =
+                  nameParts.length > 1 ? nameParts.pop().trim() : "";
+                const cleanName = nameParts.join(",").trim();
 
-              return (
-                <div key={product._id} className="product-card">
-                  <div className="image-container">
-                    {product.imageUrl ? (
-                      <img src={product.imageUrl} alt={product.productName} />
-                    ) : (
-                      <div className="placeholder">No Image</div>
-                    )}
+                return (
+                  <div key={product._id} className="product-card">
+                    <div className="image-container">
+                      {product.imageUrl ? (
+                        <img src={product.imageUrl} alt={product.productName} />
+                      ) : (
+                        <div className="placeholder">No Image</div>
+                      )}
+                    </div>
+                    <div className="card-details">
+                      <h3>{product.brand}</h3>
+                      <h3>{cleanName}</h3>
+                      {amount && <p>{amount}</p>}
+                      <p>
+                        <strong>Usage Type:</strong> {product.usageType}
+                      </p>
+                      <p>
+                        <strong>Category:</strong> {product.category}
+                      </p>
+                      <Link to={`/products/${product._id}`}>
+                        <button>See Details</button>
+                      </Link>
+                      <button onClick={() => saveProduct(product._id)}>
+                        Save to Favourites
+                      </button>
+                    </div>
                   </div>
-                  <div className="card-details">
-                    <h3 className="h3-ivy">{product.brand}</h3>
-                    <h3 className="h3-neue">{cleanName}</h3>
-                    {amount && <p className="h3-neue-light">{amount}</p>}
-                    <p className="h3-ivy">
-                      <strong>Usage Type:</strong> {product.usageType}
-                    </p>
-                    <p className="h3-ivy">
-                      <strong>Category:</strong> {product.category}
-                    </p>
-                    <Link to={`/products/${product._id}`}>
-                      <button>See Details</button>
-                    </Link>
-                    <button onClick={() => saveProduct(product._id)}>
-                      Save to Favourites
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
 
-            {visibleCount < filteredProducts.length && (
-              <button onClick={() => setVisibleCount((prev) => prev + 30)}>
-                See More
-              </button>
+            {/* BUTTON OUTSIDE GRID */}
+            {products.length >= visibleCount && (
+              <div style={{ textAlign: "center", margin: "20px 0" }}>
+                <button
+                  onClick={handleSeeMore}
+                  style={{ padding: "10px 20px", cursor: "pointer" }}
+                >
+                  See More
+                </button>
+              </div>
             )}
           </div>
         </div>
