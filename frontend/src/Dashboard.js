@@ -297,7 +297,7 @@ function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
 
-  const { token, user, logout } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
 
   // Load products from backend
   // Initial fetch
@@ -412,7 +412,7 @@ function Dashboard() {
         }}
       >
         <div>{user && <h2>Welcome back, {user.username}!</h2>}</div>
-        <button
+        {/* <button
           onClick={logout}
           style={{
             padding: "10px 20px",
@@ -425,7 +425,7 @@ function Dashboard() {
           }}
         >
           Logout
-        </button>
+        </button> */}
       </header>
 
       <div className="content-wrapper">
