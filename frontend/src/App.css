@@ -4,6 +4,16 @@
   padding: 20px;
 }
 
+.bkgd-blue {
+  background-color: #beebe4;
+}
+.bkgd-green {
+  background-color: #c4f2d5;
+}
+.bkgd-yellow {
+  background-color: #ffeabf;
+}
+
 /* header */
 .main-header {
   margin-bottom: 20px;
@@ -361,4 +371,16 @@
 .nav-button:hover {
   background-color: #e5e5e5;
   transition: background-color 0.2s ease;
+}
+
+/* Transparency */
+.white-70 {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.section {
+  border: 1px solid #5b5b5b;
+  border-radius: 0.8rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
 }

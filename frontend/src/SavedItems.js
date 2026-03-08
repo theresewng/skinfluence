@@ -5,7 +5,7 @@ import { AuthContext } from "./context/AuthContext";
 
 function SavedItems() {
   const [products, setProducts] = useState([]);
-  const [visibleCount, setVisibleCount] = useState(30);
+  const [visibleCount, setVisibleCount] = useState(8);
   const [formData, setFormData] = useState({
     productName: "",
     brand: "",
@@ -99,7 +99,7 @@ function SavedItems() {
   // };
 
   return (
-    <div className="page-container">
+    <div className="page-container bkgd-yellow">
       <header
         className="main-header"
         style={{
@@ -127,142 +127,69 @@ function SavedItems() {
 
       <div className="content-wrapper">
         <div className="left-panel">
-          <div className="card form-card">
-            <h3 className="h3-ivy">Filter</h3>
-            {/* <form onSubmit={handleSubmit} className="plant-form">
-              <label>Search Products</label>
-              <input
-                type="text"
-                placeholder="Search by name, brand, or category..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-
-              <label>Filter by Brand</label>
-              <select
-                value={selectedBrand}
-                onChange={(e) => setSelectedBrand(e.target.value)}
-              >
-                <option value="">All Brands</option>
-                {uniqueBrands.map((brand) => (
-                  <option key={brand} value={brand}>
-                    {brand}
-                  </option>
-                ))}
-              </select>
-
-              <button type="submit">Add Product</button>
-            </form> */}
-
-            <form onSubmit={handleSubmit} className="plant-form">
-              <h4>Add New Product</h4>
-
-              <label>Product Name</label>
-              <input
-                name="productName"
-                value={formData.productName}
-                onChange={handleChange}
-                required
-              />
-
-              <label>Brand</label>
-              <input
-                name="brand"
-                value={formData.brand}
-                onChange={handleChange}
-              />
-
-              <label>Usage Type</label>
-              <input
-                name="usageType"
-                value={formData.usageType}
-                onChange={handleChange}
-              />
-
-              <label>Category</label>
-              <input
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-              />
-
-              <label>Ingredients</label>
-              <input
-                name="ingredients"
-                value={formData.ingredients}
-                onChange={handleChange}
-              />
-
-              <button type="submit">Add Product</button>
-
-              <hr />
-
-              <h4>Filter Products</h4>
-
-              <label>Search</label>
-              <input
-                type="text"
-                placeholder="Search by name, brand, category..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-
-              <label>Filter by Brand</label>
-              <select
-                value={selectedBrand}
-                onChange={(e) => setSelectedBrand(e.target.value)}
-              >
-                <option value="">All Brands</option>
-                {uniqueBrands.map((brand) => (
-                  <option key={brand} value={brand}>
-                    {brand}
-                  </option>
-                ))}
-              </select>
-            </form>
+          <div className="card white-70">
+            <h3 className="h3-ivy">My Skin</h3>
+            <button>Edit Skin Profile</button>
+            <h4 className="h4-neue">Skin Type</h4>
+            <ul>
+              <li>Oily skin</li>
+            </ul>
+            <h4 className="h4-neue">Skin Concerns</h4>
+            <ul>
+              <li>Acne</li>
+              <li>Hyperpigmentation</li>
+            </ul>
           </div>
         </div>
 
         <div className="right-panel">
-          <div className="product-grid">
-            {filteredProducts.slice(0, visibleCount).map((product) => {
-              const nameParts = product.productName.split(",");
-              const amount = nameParts.length > 1 ? nameParts.pop().trim() : "";
-              const cleanName = nameParts.join(",").trim();
+          <section className="section white-70">
+            <h2 className="h2-ivy">My Saved Products</h2>
+            <div className="product-grid">
+              {filteredProducts.slice(0, visibleCount).map((product) => {
+                const nameParts = product.productName.split(",");
+                const amount =
+                  nameParts.length > 1 ? nameParts.pop().trim() : "";
+                const cleanName = nameParts.join(",").trim();
 
-              return (
-                <div key={product._id} className="product-card">
-                  <div className="image-container">
-                    {product.imageUrl ? (
-                      <img src={product.imageUrl} alt={product.productName} />
-                    ) : (
-                      <div className="placeholder">No Image</div>
-                    )}
+                return (
+                  <div key={product._id} className="product-card">
+                    <div className="image-container">
+                      {product.imageUrl ? (
+                        <img src={product.imageUrl} alt={product.productName} />
+                      ) : (
+                        <div className="placeholder">No Image</div>
+                      )}
+                    </div>
+                    <div className="card-details">
+                      <h3 className="h3-ivy">{product.brand}</h3>
+                      <h3 className="h3-neue">{cleanName}</h3>
+                      {amount && <p className="h3-neue-light">{amount}</p>}
+                      <p className="h3-ivy">
+                        <strong>Usage Type:</strong> {product.usageType}
+                      </p>
+                      <p className="h3-ivy">
+                        <strong>Category:</strong> {product.category}
+                      </p>
+                      <Link to={`/products/${product._id}`}>
+                        <button>See Details</button>
+                      </Link>
+                    </div>
                   </div>
-                  <div className="card-details">
-                    <h3 className="h3-ivy">{product.brand}</h3>
-                    <h3 className="h3-neue">{cleanName}</h3>
-                    {amount && <p className="h3-neue-light">{amount}</p>}
-                    <p className="h3-ivy">
-                      <strong>Usage Type:</strong> {product.usageType}
-                    </p>
-                    <p className="h3-ivy">
-                      <strong>Category:</strong> {product.category}
-                    </p>
-                    <Link to={`/products/${product._id}`}>
-                      <button>See Details</button>
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
 
-            {visibleCount < filteredProducts.length && (
-              <button onClick={() => setVisibleCount((prev) => prev + 30)}>
-                See More
-              </button>
-            )}
-          </div>
+              {visibleCount < filteredProducts.length && (
+                <button onClick={() => setVisibleCount((prev) => prev + 30)}>
+                  See More
+                </button>
+              )}
+            </div>
+          </section>
+          <section className="section white-70">
+            <h2 className="h2-ivy">Saved Ingredients</h2>
+            <p>Feature coming soon!</p>
+          </section>
         </div>
       </div>
     </div>
