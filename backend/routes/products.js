@@ -3,13 +3,19 @@ const router = express.Router();
 const Product = require("../models/Product");
 const verifyToken = require("../middleware/authMiddleware");
 
-// GET ROUTE (Public - Anyone can see plants)
+// GET ROUTE (Public - Anyone can see plants)s
 router.get("/", async (req, res) => {
   try {
-    const limit = parseInt(req.query.limit) || 30;
+    const limit = req.query.limit ? parseInt(req.query.limit) : null;
     const skip = parseInt(req.query.skip) || 0;
 
-    const products = await Product.find().skip(skip).limit(limit);
+    let query = Product.find().skip(skip);
+
+    if (limit) {
+      query = query.limit(limit);
+    }
+
+    const products = await query;
 
     res.json(products);
   } catch (err) {
