@@ -5,7 +5,6 @@ function PreviewProducts() {
   const [allProducts, setAllProducts] = useState([]); // store everything for filtering
   const [searchTerm, setSearchTerm] = useState("");
   const [product, setProduct] = useState(null);
-  const [openSection, setOpenSection] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/products")
@@ -18,23 +17,10 @@ function PreviewProducts() {
       .catch((err) => console.error("Error fetching public products:", err));
   }, []);
 
-  const filteredProducts = allProducts
-    .filter((products) => {
-      return (products.productName || "")
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-    })
-    .slice(0, 10)
-    .sort(() => Math.random() - 0.5); // Show only top 10 (5 per row)
-
   // split name and amount just like in Dashboard
   const nameParts = product.productName.split(",");
   const amount = nameParts.length > 1 ? nameParts.pop().trim() : "";
   const cleanName = nameParts.join(",").trim();
-
-  function toggleSection(section) {
-    setOpenSection(openSection === section ? null : section);
-  }
 
   return (
     <div className="page-container bkgd-blue">
