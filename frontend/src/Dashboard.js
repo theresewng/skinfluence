@@ -412,20 +412,6 @@ function Dashboard() {
         }}
       >
         <div>{user && <h2>Welcome back, {user.username}!</h2>}</div>
-        {/* <button
-          onClick={logout}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#c62828",
-            color: "white",
-            border: "none",
-            borderRadius: 4,
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
-        >
-          Logout
-        </button> */}
       </header>
 
       <div className="content-wrapper">

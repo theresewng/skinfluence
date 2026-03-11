@@ -8,7 +8,7 @@ function SavedItems() {
   const [savedProductIDs, setSavedProductIDs] = useState([]);
   const [visibleCount, setVisibleCount] = useState(8);
 
-  const { token, user, logout } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
 
   // Load products from backend
   useEffect(() => {
@@ -35,19 +35,19 @@ function SavedItems() {
     return savedProductIDs.includes(product._id);
   });
 
-  // const handleRemove = async (id) => {
-  // try {
-  //   const response = await fetch(`http://localhost:5000/api/products/${id}`, {
-  //     method: "DELETE",
-  //     headers: { Authorization: token },
-  //   });
-  //   if (!response.ok) throw new Error("Failed to delete product");
-  //   setProducts(products.filter((product) => product._id !== id));
-  // } catch (err) {
-  //   console.error(err);
-  //   alert(err.message);
-  // }
-  // };
+  const handleRemove = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: token },
+      });
+      if (!response.ok) throw new Error("Failed to delete product");
+      setProducts(products.filter((product) => product._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
 
   return (
     <div className="page-container bkgd-yellow">
@@ -60,20 +60,6 @@ function SavedItems() {
         }}
       >
         <div>{user && <h2>Welcome back, {user.username}!</h2>}</div>
-        <button
-          onClick={logout}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#c62828",
-            color: "white",
-            border: "none",
-            borderRadius: 4,
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
-        >
-          Logout
-        </button>
       </header>
 
       <div className="content-wrapper">
@@ -129,9 +115,9 @@ function SavedItems() {
                         <Link to={`/products/${product._id}`}>
                           <button>See Details</button>
                         </Link>
-                        {/* <button onClick={() => handleRemove(product._id)}>
+                        <button onClick={() => handleRemove(product._id)}>
                           Remove from Favourites
-                        </button> */}
+                        </button>
                       </div>
                     </div>
                   );
