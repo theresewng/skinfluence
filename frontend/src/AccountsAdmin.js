@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
 
-function Admin() {
+function Accounts() {
   const [products, setProducts] = useState([]);
   const [visibleCount, setVisibleCount] = useState(30);
   const [formData, setFormData] = useState({
@@ -265,4 +265,4 @@ function Admin() {
   );
 }
 
-export default Admin;
+export default Accounts;
