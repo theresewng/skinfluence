@@ -13,6 +13,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Register from "./Register";
 import ProductDetails from "./ProductDetails";
 import SavedItems from "./SavedItems";
+import Admin from "./Admin";
 
 function AppRoutes() {
   const { token } = useContext(AuthContext);
@@ -60,6 +61,16 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <SavedItems />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Saved Items page */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Admin />
             </ProtectedRoute>
           }
         />
