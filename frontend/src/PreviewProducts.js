@@ -10,8 +10,7 @@ function PreviewProducts() {
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          const shuffled = [...data].sort(() => Math.random() - 0.5);
-          setAllProducts(shuffled);
+          setAllProducts(data);
         }
       })
       .catch((err) => console.error("Error fetching public products:", err));
