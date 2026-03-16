@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
+import profile from "./assets/img/profile-placeholder.png";
 
 function Accounts() {
   const [products, setProducts] = useState([]);
@@ -136,8 +137,8 @@ function Accounts() {
 
       <div className="content-wrapper">
         <div className="left-panel">
-          <div className="card form-card">
-            <h3 className="h3-ivy">Search Accounts</h3>
+          <div className="search-form">
+            <h3 className="h3-ivy">Search Members</h3>
             <form onSubmit={handleSubmit}>
               <label>Username</label>
               <br />
@@ -152,9 +153,7 @@ function Accounts() {
         </div>
 
         <div className="right-panel">
-          <div className="products-wrapper">
-            <div className="product-grid">
-              {filteredProducts.slice(0, visibleCount).map((product) => {
+          {/* {filteredProducts.slice(0, visibleCount).map((product) => {
                 const nameParts = product.productName.split(",");
                 const amount =
                   nameParts.length > 1 ? nameParts.pop().trim() : "";
@@ -188,20 +187,54 @@ function Accounts() {
                     </div>
                   </div>
                 );
-              })}
+              })} */}
+          <div className="account-card">
+            <img
+              src={profile}
+              width="55px"
+              height="55px"
+              alt="" // mark as decorative
+            />
+            <div className="account-summary">
+              <p>Username</p>
+              <h3>CrabbyBrussels</h3>
             </div>
-
-            {/* BUTTON OUTSIDE GRID */}
-            {products.length >= visibleCount && (
-              <div style={{ textAlign: "center", margin: "20px 0" }}>
-                <button
-                  onClick={handleSeeMore}
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
-                >
-                  See More
-                </button>
-              </div>
-            )}
+            <div className="account-actions">
+              <button className="details-button">View Details</button>
+              <button className="delete-button">Delete Account</button>
+            </div>
+          </div>
+          <div className="account-card">
+            <img
+              src={profile}
+              width="55px"
+              height="55px"
+              alt="" // mark as decorative
+            />
+            <div className="account-summary">
+              <p>Username</p>
+              <h3>CrabbyBrussels</h3>
+            </div>
+            <div className="account-actions">
+              <button className="details-button">View Details</button>
+              <button className="delete-button">Delete Account</button>
+            </div>
+          </div>
+          <div className="account-card">
+            <img
+              src={profile}
+              width="55px"
+              height="55px"
+              alt="" // mark as decorative
+            />
+            <div className="account-summary">
+              <p>Username</p>
+              <h3>CrabbyBrussels</h3>
+            </div>
+            <div className="account-actions">
+              <button className="details-button">View Details</button>
+              <button className="delete-button">Delete Account</button>
+            </div>
           </div>
         </div>
       </div>
