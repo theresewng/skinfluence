@@ -403,22 +403,15 @@ function Dashboard() {
 
   return (
     <div className="page-container">
-      <header
-        className="main-header"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <header className="main-header">
         <div>{user && <h2>Welcome back, {user.username}!</h2>}</div>
       </header>
 
       <div className="content-wrapper">
         <div className="left-panel">
-          <div className="card form-card">
+          <div className="filters">
             <h3 className="h3-ivy">Filter</h3>
-            <form onSubmit={handleSubmit} className="plant-form">
+            <form onSubmit={handleSubmit}>
               <h4>Add New Product</h4>
 
               <label>Product Name</label>
@@ -505,7 +498,7 @@ function Dashboard() {
                         <div className="placeholder">No Image</div>
                       )}
                     </div>
-                    <div className="card-details">
+                    <div className="product-details">
                       <h3 className="h3-ivy">{product.brand}</h3>
                       <h3>{cleanName}</h3>
                       {amount && <p>{amount}</p>}
