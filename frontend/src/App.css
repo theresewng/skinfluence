@@ -14,6 +14,9 @@
 .bkgd-yellow {
   background-color: #ffeabf;
 }
+.bkgd-purple {
+  background-color: #e4dbf8;
+}
 
 /* header */
 .main-header {
@@ -413,6 +416,7 @@
   padding: 0.5rem 2rem;
   margin-bottom: 0.125rem;
 
+  font-family: "Neue Montreal", sans-serif;
   font-size: 0.875rem;
   font-weight: normal;
   text-decoration: none;
@@ -435,4 +439,80 @@
   border-radius: 0.8rem;
   padding: 2rem;
   margin-bottom: 2rem;
+}
+
+/* Account Admin Page */
+.search-form {
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  overflow: hidden;
+  padding: 1.5rem;
+
+  background-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #5b5b5b;
+  border-radius: 8px;
+}
+
+.search-form input {
+  max-width: 200px; /* hard coded width - fix later */
+  padding: 0.5rem 0.75rem;
+  font-family: "Neue Montreal", sans-serif;
+  font-size: 1rem;
+  border: 1px solid #28282b;
+  border-radius: 2rem;
+}
+
+.account-card {
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+
+  background: #fefefe;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #28282b;
+  border-radius: 8px;
+}
+
+.account-summary {
+  flex: 1;
+}
+.account-summary * {
+  margin: 0;
+}
+.account-summary p {
+  font-size: 0.875rem;
+}
+.account-summary h3 {
+  font-size: 1rem;
+  color: #28282b;
+}
+
+.account-actions button {
+  background-color: #fefefe;
+  border: 1px solid #28282b;
+  border-radius: 2rem;
+  padding: 0.5rem 1.75rem;
+  margin-left: 0.5rem;
+
+  font-family: "Neue Montreal", sans-serif;
+  font-size: 0.875rem;
+  font-weight: normal;
+  text-decoration: none;
+  color: #28282b;
+  cursor: pointer;
+}
+.details-button:hover,
+.details-button:focus {
+  background-color: #e5e5e5;
+  transition: background-color 0.2s ease;
+}
+.delete-button:hover,
+.delete-button:focus {
+  background-color: #f7c0cf;
+  transition: background-color 0.2s ease;
 }
