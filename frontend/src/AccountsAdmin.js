@@ -122,7 +122,7 @@ function Accounts() {
   };
 
   return (
-    <div className="page-container">
+    <div className="page-container bkgd-purple">
       <header
         className="main-header"
         style={{
@@ -131,78 +131,22 @@ function Accounts() {
           alignItems: "center",
         }}
       >
-        <div>{user && <h2>Welcome back, {user.username}!</h2>}</div>
+        <h2>Accounts</h2>
       </header>
 
       <div className="content-wrapper">
         <div className="left-panel">
           <div className="card form-card">
-            <h3 className="h3-ivy">Filter</h3>
-            <form onSubmit={handleSubmit} className="plant-form">
-              <h4>Add New Product</h4>
-
-              <label>Product Name</label>
+            <h3 className="h3-ivy">Search Accounts</h3>
+            <form onSubmit={handleSubmit}>
+              <label>Username</label>
+              <br />
               <input
-                name="productName"
-                value={formData.productName}
+                name="username"
+                value={formData.username}
                 onChange={handleChange}
                 required
               />
-
-              <label>Brand</label>
-              <input
-                name="brand"
-                value={formData.brand}
-                onChange={handleChange}
-              />
-
-              <label>Usage Type</label>
-              <input
-                name="usageType"
-                value={formData.usageType}
-                onChange={handleChange}
-              />
-
-              <label>Category</label>
-              <input
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-              />
-
-              <label>Ingredients</label>
-              <input
-                name="ingredients"
-                value={formData.ingredients}
-                onChange={handleChange}
-              />
-
-              <button type="submit">Add Product</button>
-
-              <hr />
-
-              <h4>Filter Products</h4>
-
-              <label>Search</label>
-              <input
-                type="text"
-                placeholder="Search by name, brand, category..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-
-              <label>Filter by Brand</label>
-              <select
-                value={selectedBrand}
-                onChange={(e) => setSelectedBrand(e.target.value)}
-              >
-                <option value="">All Brands</option>
-                {uniqueBrands.map((brand) => (
-                  <option key={brand} value={brand}>
-                    {brand}
-                  </option>
-                ))}
-              </select>
             </form>
           </div>
         </div>
