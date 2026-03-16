@@ -16,6 +16,24 @@
   /* Colors */
   --heading-color: #28282b; /* applies to all headings */
   --body-color: #28282b; /* applies to body text */
+
+   /* Colour Variables */
+  --blue: #beebe4;
+  --green: #c4f2d5;
+  --yellow: #ffeabf;
+  --purple: #e4dbf8;
+  --pink: #f7c0cf;
+  --white: #fefefe;
+  --pale-grey: #e5e5e5;
+  --light-grey: #aaaaaa;
+  --dark-grey: #5b5b5b;
+  --black: #28282b;
+
+  --white-translucent: rgba(255, 255, 255, 0.6);
+  --black-shadow: rgba(0, 0, 0, 0.05);
+
+  /* Radius Variable */
+  --radius: 1rem;
 }
 
 /* Body text */

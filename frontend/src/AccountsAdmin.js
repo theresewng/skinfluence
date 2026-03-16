@@ -83,11 +83,10 @@ function Accounts() {
 
       <div className="content-wrapper">
         <div className="left-panel">
-          <div className="search-form">
+          <div className="filters">
             <h3 className="h3-ivy">Search Members</h3>
             <form>
               <label>Username</label>
-              <br />
               <input
                 name="username"
                 value={searchTerm}
