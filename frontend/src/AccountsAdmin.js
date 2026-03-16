@@ -5,120 +5,66 @@ import { AuthContext } from "./context/AuthContext";
 import profile from "./assets/img/profile-placeholder.png";
 
 function Accounts() {
-  const [products, setProducts] = useState([]);
-  const [visibleCount, setVisibleCount] = useState(30);
-  const [formData, setFormData] = useState({
-    productName: "",
-    brand: "",
-    usageType: "",
-    category: "",
-    ingredients: "",
-    imageUrl: "",
-  });
+  const [members, setMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState("");
 
-  const { token, user } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
 
-  // Load products from backend
   // Initial fetch
   useEffect(() => {
-    fetchProducts(0, 30);
-  }, []);
+    fetchUsers();
+  }, []); // Re-fetch when search term changes
 
-  const fetchProducts = async (skip, limit) => {
+  // Fetch users from backend
+  const fetchUsers = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/products?skip=${skip}&limit=${limit}`,
-      );
+      const res = await fetch(`http://localhost:5000/api/auth/users`);
       const data = await res.json();
-      setProducts((prev) => [...prev, ...data]); // append to existing products
+      if (!res.ok) {
+        console.error("Failed to fetch users:", data);
+        return;
+      }
+      console.log("Fetched users");
+      setMembers(data);
     } catch (err) {
       console.error(err);
     }
   };
 
-  // See More handler
-  const handleSeeMore = () => {
-    fetchProducts(products.length, 30); // fetch next 30 items
-    setVisibleCount((prev) => prev + 30);
-  };
-
-  // Extract unique brands for the dropdown
-  const uniqueBrands = [...new Set(products.map((product) => product.brand))];
-
-  // Filter products based on search term and selected brand
-  const filteredProducts = products.filter((product) => {
+  // Filter users based on search term
+  const filteredMembers = members.filter((user) => {
     const term = searchTerm.toLowerCase();
-    const name = product.productName?.toLowerCase() || "";
-    const brand = product.brand?.toLowerCase() || "";
-    const category = product.category?.toLowerCase() || "";
-    const matchesSearch =
-      name.includes(term) || brand.includes(term) || category.includes(term);
-    const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
-    return matchesSearch && matchesBrand;
+    const username = user.username?.toLowerCase() || "";
+    return username.includes(term);
   });
 
-  function handleChange(e) {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/products?limit=30&skip=0",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-          body: JSON.stringify(formData),
-        },
-      );
-
-      if (!response.ok) throw new Error("Failed to add product");
-
-      const newProduct = await response.json();
-      setProducts([...products, newProduct]);
-
-      setFormData({
-        productName: "",
-        brand: "",
-        usageType: "",
-        category: "",
-        ingredients: "",
-        imageUrl: "",
-      });
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
+  // Handle delete user
+  const handleDelete = async (userId) => {
+    // Confirm before deleting
+    if (!window.confirm("Are you sure you want to delete this account?")) {
+      return;
     }
-  }
 
-  const saveProduct = async (id) => {
     try {
-      // Send POST request to backend to save product to user's favourites
-      const response = await fetch(
-        "http://localhost:5000/api/auth/save-product",
+      const res = await fetch(
+        `http://localhost:5000/api/auth/users/${userId}`,
         {
-          method: "POST",
-          headers: {
-            // Attach content type and token
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-          body: JSON.stringify({ productId: id }), // send the product ID in the body
+          method: "DELETE",
+          // Add headers/token here for authentication
         },
       );
+      if (!res.ok) {
+        const data = await res.json();
+        console.error("Failed to delete user:", data);
+        alert("Failed to delete user: " + (data.message || "Unknown error"));
+        return;
+      }
+      alert("User deleted successfully");
 
-      if (!response.ok) throw new Error("Failed to save product");
-
-      alert("Product saved to favourites!");
+      fetchUsers(); // Refresh the user list
     } catch (err) {
       console.error(err);
-      alert(err.message);
+      alert("An error occurred while deleting the user.");
     }
   };
 
@@ -139,13 +85,13 @@ function Accounts() {
         <div className="left-panel">
           <div className="search-form">
             <h3 className="h3-ivy">Search Members</h3>
-            <form onSubmit={handleSubmit}>
+            <form>
               <label>Username</label>
               <br />
               <input
                 name="username"
-                value={formData.username}
-                onChange={handleChange}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 required
               />
             </form>
@@ -153,89 +99,33 @@ function Accounts() {
         </div>
 
         <div className="right-panel">
-          {/* {filteredProducts.slice(0, visibleCount).map((product) => {
-                const nameParts = product.productName.split(",");
-                const amount =
-                  nameParts.length > 1 ? nameParts.pop().trim() : "";
-                const cleanName = nameParts.join(",").trim();
-
-                return (
-                  <div key={product._id} className="product-card">
-                    <div className="image-container">
-                      {product.imageUrl ? (
-                        <img src={product.imageUrl} alt={product.productName} />
-                      ) : (
-                        <div className="placeholder">No Image</div>
-                      )}
-                    </div>
-                    <div className="card-details">
-                      <h3 className="h3-ivy">{product.brand}</h3>
-                      <h3>{cleanName}</h3>
-                      {amount && <p>{amount}</p>}
-                      <p>
-                        <strong>Usage Type:</strong> {product.usageType}
-                      </p>
-                      <p>
-                        <strong>Category:</strong> {product.category}
-                      </p>
-                      <Link to={`/products/${product._id}`}>
-                        <button>See Details</button>
-                      </Link>
-                      <button onClick={() => saveProduct(product._id)}>
-                        Save to Favourites
-                      </button>
-                    </div>
-                  </div>
-                );
-              })} */}
-          <div className="account-card">
-            <img
-              src={profile}
-              width="55px"
-              height="55px"
-              alt="" // mark as decorative
-            />
-            <div className="account-summary">
-              <p>Username</p>
-              <h3>CrabbyBrussels</h3>
-            </div>
-            <div className="account-actions">
-              <button className="details-button">View Details</button>
-              <button className="delete-button">Delete Account</button>
-            </div>
-          </div>
-          <div className="account-card">
-            <img
-              src={profile}
-              width="55px"
-              height="55px"
-              alt="" // mark as decorative
-            />
-            <div className="account-summary">
-              <p>Username</p>
-              <h3>CrabbyBrussels</h3>
-            </div>
-            <div className="account-actions">
-              <button className="details-button">View Details</button>
-              <button className="delete-button">Delete Account</button>
-            </div>
-          </div>
-          <div className="account-card">
-            <img
-              src={profile}
-              width="55px"
-              height="55px"
-              alt="" // mark as decorative
-            />
-            <div className="account-summary">
-              <p>Username</p>
-              <h3>CrabbyBrussels</h3>
-            </div>
-            <div className="account-actions">
-              <button className="details-button">View Details</button>
-              <button className="delete-button">Delete Account</button>
-            </div>
-          </div>
+          {members.length === 0 ? (
+            <p>No members found.</p>
+          ) : (
+            filteredMembers.map((user) => (
+              <div key={user.id} className="account-card">
+                <img
+                  src={profile}
+                  width="55px"
+                  height="55px"
+                  alt="" // mark as decorative
+                />
+                <div className="account-summary">
+                  <p>Username</p>
+                  <h3>{user.username}</h3>
+                </div>
+                <div className="account-actions">
+                  <button className="details-button">View Details</button>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDelete(user.id)}
+                  >
+                    Delete Account
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

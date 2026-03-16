@@ -66,6 +66,36 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// GET all users (for admin page) - TEMPORARILY REMOVED verifyToken FOR TESTING
+// router.get("/users", verifyToken, async (req, res) => {
+router.get("/users", async (req, res) => {
+  try {
+    const users = await User.find({}, "_id username"); // Select _id and username
+    const userData = users.map((user) => ({
+      id: user._id,
+      username: user.username,
+    }));
+    res.json(userData);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE user by ID (for admin page)
+router.delete("/users/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    // https://www.geeksforgeeks.org/mongodb/mongoose-findbyidanddelete-function/
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET user data (protected - includes savedProductIDs)
 router.get("/user", verifyToken, async (req, res) => {
   try {
