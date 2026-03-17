@@ -282,6 +282,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
+import { FaHeart } from "react-icons/fa";
 
 function Dashboard() {
   const [products, setProducts] = useState([]);
@@ -502,18 +503,40 @@ function Dashboard() {
                       <h3 className="h3-ivy">{product.brand}</h3>
                       <h3>{cleanName}</h3>
                       {amount && <p>{amount}</p>}
-                      <p>
+                      <div className="tag-container">
+                        {product.usageType && (
+                          <span className="tag tag-usage">
+                            {product.usageType}
+                          </span>
+                        )}
+                        {product.category && (
+                          <span className="tag tag-category">
+                            {product.category}
+                          </span>
+                        )}
+                      </div>
+                      {/* <p>
                         <strong>Usage Type:</strong> {product.usageType}
                       </p>
                       <p>
                         <strong>Category:</strong> {product.category}
-                      </p>
-                      <Link to={`/products/${product._id}`}>
-                        <button>See Details</button>
-                      </Link>
-                      <button onClick={() => saveProduct(product._id)}>
-                        Save to Favourites
-                      </button>
+                      </p> */}
+                      <div className="button-group">
+                        <Link to={`/products/${product._id}`}>
+                          <button>See Details</button>
+                        </Link>
+
+                        {/* <button onClick={() => saveProduct(product._id)}>
+                          Save to Favourites
+                        </button> */}
+
+                        <button
+                          className="heart-button"
+                          onClick={() => saveProduct(product._id)}
+                        >
+                          <FaHeart />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
