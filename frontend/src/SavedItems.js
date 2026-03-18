@@ -6,6 +6,8 @@ import { AuthContext } from "./context/AuthContext";
 function SavedItems() {
   const [products, setProducts] = useState([]);
   const [savedProductIDs, setSavedProductIDs] = useState([]);
+  const [ingredient, setIngredient] = useState([]);
+  const [savedIngredientIDs, setSavedIngredientIDs] = useState([]);
   const [visibleCount, setVisibleCount] = useState(8);
 
   const { token, user } = useContext(AuthContext);
@@ -18,6 +20,14 @@ function SavedItems() {
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
 
+  // Load products from backend
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/ingredients`)
+      .then((res) => res.json())
+      .then((data) => setIngredient(data))
+      .catch((err) => console.error("Error fetching ingredients:", err));
+  }, []);
+
   // Fetch user's saved product IDs
   useEffect(() => {
     if (token) {
@@ -25,7 +35,10 @@ function SavedItems() {
         headers: { Authorization: token },
       })
         .then((res) => res.json())
-        .then((data) => setSavedProductIDs(data.savedProductIDs || []))
+        .then((data) => {
+          setSavedProductIDs(data.savedProductIDs || []);
+          setSavedIngredientIDs(data.savedIngredientIDs || []);
+        })
         .catch((err) => console.error("Error fetching user data:", err));
     }
   }, [token]);
@@ -35,7 +48,11 @@ function SavedItems() {
     return savedProductIDs.includes(product._id);
   });
 
-  const handleRemove = async (id) => {
+  const savedIngredient = ingredient.filter((ingredient) =>
+    savedIngredientIDs.includes(ingredient._id),
+  );
+
+  const handleRemoveProducts = async (id) => {
     try {
       const response = await fetch(`http://localhost:5000/api/products/${id}`, {
         method: "DELETE",
@@ -43,6 +60,23 @@ function SavedItems() {
       });
       if (!response.ok) throw new Error("Failed to delete product");
       setProducts(products.filter((product) => product._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
+  const handleRemoveIngredient = async (id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/ingredients/${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: token },
+        },
+      );
+      if (!response.ok) throw new Error("Failed to delete ingredient");
+      setIngredient(ingredient.filter((ingredient) => ingredient._id !== id));
     } catch (err) {
       console.error(err);
       alert(err.message);
@@ -115,7 +149,9 @@ function SavedItems() {
                         <Link to={`/products/${product._id}`}>
                           <button>See Details</button>
                         </Link>
-                        <button onClick={() => handleRemove(product._id)}>
+                        <button
+                          onClick={() => handleRemoveProducts(product._id)}
+                        >
                           Remove from Favourites
                         </button>
                       </div>
@@ -133,9 +169,33 @@ function SavedItems() {
               </button>
             )}
           </section>
+
           <section className="section white-70">
             <h2 className="h2-ivy">Saved Ingredients</h2>
-            <p>Feature coming soon!</p>
+
+            {savedIngredient.length > 0 ? (
+              <div className="product-grid">
+                {savedIngredient.map((ingredient) => (
+                  <div key={ingredient._id} className="product-card">
+                    <div className="product-details">
+                      <h3 className="h3-ivy">{ingredient.name}</h3>
+
+                      <Link to={`/ingredients/${ingredient._id}`}>
+                        <button>See Details</button>
+                      </Link>
+
+                      <button
+                        onClick={() => handleRemoveIngredient(ingredient._id)}
+                      >
+                        Remove from Favourites
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>You haven't saved any ingredients yet.</p>
+            )}
           </section>
         </div>
       </div>

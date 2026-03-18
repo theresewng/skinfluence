@@ -11,6 +11,8 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   savedProductIDs: [String], // array of Product IDs as strings
+
+  savedIngredientIDs: [String],
 });
 
 module.exports = mongoose.model("User", UserSchema);

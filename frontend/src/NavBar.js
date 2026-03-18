@@ -29,7 +29,7 @@ function NavBar() {
         <Link className="nav-button" to="/">
           Products
         </Link>
-        <Link className="nav-button" to="/">
+        <Link className="nav-button" to="/ingredients">
           Ingredients
         </Link>
         <Link className="nav-button" to="/saved">

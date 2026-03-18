@@ -14,6 +14,8 @@ import Register from "./Register";
 import ProductDetails from "./ProductDetails";
 import SavedItems from "./SavedItems";
 import Accounts from "./AccountsAdmin";
+import IngredientDashboard from "./IngredientDashboard";
+import IngredientDetails from "./IngredientDetails";
 
 function AppRoutes() {
   const { token } = useContext(AuthContext);
@@ -51,6 +53,24 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <ProductDetails />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/ingredients"
+          element={
+            <ProtectedRoute>
+              <IngredientDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/ingredients/:id"
+          element={
+            <ProtectedRoute>
+              <IngredientDetails />
             </ProtectedRoute>
           }
         />
