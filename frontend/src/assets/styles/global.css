@@ -7,17 +7,18 @@
   --h1-size: 64px;
   --h2-size: 45px;
   --h3-ivy-size: 20px;
-  --h3-neue-size: 22px;
+  --h3-neue-size: 20px;
+  --h3-neue-light-size: 16px;
 
   /* Body Copy Sizes */
   --copy1-size: 18px;
   --copy2-size: 14px;
 
   /* Colors */
-  --heading-color: #28282b; 
-  --body-color: #28282b; 
+  --heading-color: #28282b;
+  --body-color: #28282b;
 
-   /* Colour Variables */
+  /* Colour Variables */
   --blue: #beebe4;
   --green: #c4f2d5;
   --yellow: #ffeabf;
@@ -91,7 +92,7 @@ h2 {
 
 .h3-neue-light {
   font-family: var(--font-body);
-  font-size: var(--h3-neue-size);
+  font-size: var(--h3-neue-light-size);
   font-weight: 200;
   font-style: normal;
   margin: 0 0 0.5em 0;

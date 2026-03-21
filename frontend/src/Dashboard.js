@@ -502,7 +502,7 @@ function Dashboard() {
                     <div className="product-details">
                       <h3 className="h3-ivy">{product.brand}</h3>
                       <h3>{cleanName}</h3>
-                      {amount && <p>{amount}</p>}
+                      <h3 className="h3-neue-light">{amount}</h3>
                       <div className="tag-container">
                         {product.usageType && (
                           <span className="tag tag-usage">
@@ -515,27 +515,24 @@ function Dashboard() {
                           </span>
                         )}
                       </div>
-                      {/* <p>
-                        <strong>Usage Type:</strong> {product.usageType}
-                      </p>
-                      <p>
-                        <strong>Category:</strong> {product.category}
-                      </p> */}
+              
                       <div className="button-group">
                         <Link to={`/products/${product._id}`}>
                           <button>See Details</button>
                         </Link>
 
-                        {/* <button onClick={() => saveProduct(product._id)}>
-                          Save to Favourites
-                        </button> */}
+                        {
+                          <button onClick={() => saveProduct(product._id)}>
+                            Save to Favourites
+                          </button>
+                        }
 
-                        <button
+                        {/* <button
                           className="heart-button"
                           onClick={() => saveProduct(product._id)}
                         >
                           <FaHeart />
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>

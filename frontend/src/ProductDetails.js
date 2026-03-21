@@ -30,62 +30,49 @@ function ProductDetails() {
 
   return (
     <div className="page-container bkgd-blue">
-      <div className="info-content-wrapper">
-        <div className="left-panel">
-          <div className="image-container">
-            {product.imageUrl ? (
-              <img src={product.imageUrl} alt={product.productName} />
-            ) : (
-              <div className="placeholder">No Image</div>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <h3 className="h3-ivy">{product.brand}</h3>
-          <h3 className="h3-neue">{cleanName}</h3>
-          {amount && <p className="h3-neue-light">{amount}</p>}
-          <p className="h3-ivy">
-            <strong>Usage Type:</strong> {product.usageType}
-          </p>
-          <p className="h3-ivy">
-            <strong>Category:</strong> {product.category}
-          </p>
-
-          <div className="accordion">
-            <div className="accordion-item">
-              <button
-                className="accordion-header"
-                onClick={() => toggleSection("ingredients")}
-              >
-                Ingredients
-              </button>
-
-              {openSection === "ingredients" && (
-                <div className="accordion-body">
-                  {product.ingredients || "No ingredients listed."}
-                </div>
+      <div className="product-section">
+        <div className="info-content-wrapper">
+          <div className="left-panel">
+            <div className="image-container-2">
+              {product.imageUrl ? (
+                <img src={product.imageUrl} alt={product.productName} />
+              ) : (
+                <div className="placeholder">No Image</div>
               )}
             </div>
+            {/* </div> */}
+          </div>
 
-            <div className="accordion-item">
-              <button
-                className="accordion-header"
-                onClick={() => toggleSection("details")}
-              >
-                Product Details
-              </button>
-
-              {openSection === "details" && (
-                <div className="accordion-body">
-                  <p>
-                    <strong>Usage Type:</strong> {product.usageType}
-                  </p>
-                  <p>
-                    <strong>Category:</strong> {product.category}
-                  </p>
-                </div>
+          <div>
+            <h3 className="h3-ivy">{product.brand}</h3>
+            <h3 className="h3-neue">{cleanName}</h3>
+            <h3 className="h3-neue-light">{amount}</h3>
+            <div className="tag-container">
+              {product.usageType && (
+                <span className="tag tag-usage">{product.usageType}</span>
               )}
+              {product.category && (
+                <span className="tag tag-category">{product.category}</span>
+              )}
+            </div>
+            <div className="accordion">
+              <div className="accordion-item">
+                <button
+                  className="accordion-header"
+                  onClick={() => toggleSection("ingredients")}
+                >
+                  <span>Ingredients</span>
+                  <span className="accordion-icon">
+                    {openSection === "ingredients" ? "−" : "+"}
+                  </span>
+                </button>
+
+                {openSection === "ingredients" && (
+                  <div className="accordion-body">
+                    {product.ingredients || "No ingredients listed."}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -132,13 +132,31 @@ button:focus {
   flex-grow: 1; /* Takes up all remaining space */
 }
 
+.product-section {
+  background-color: #ffffff; /* white background */
+  padding: 2rem 1rem; /* flexible padding top/bottom and sides */
+  margin: 1rem auto; /* spacing around section */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 95%; /* responsive width */
+  max-width: 1400px; /* optional max width for large screens */
+  box-sizing: border-box; /* includes padding in width */
+
+  display: flex; /* flex container */
+  justify-content: center; /* center horizontally */
+  align-items: center; /* center vertically */
+  flex-direction: column; /* stack content if needed */
+  box-sizing: border-box;
+}
+
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 1.25rem;
 }
 
 .product-card {
+  padding: 10px;
   position: relative;
   background: var(--white);
   border-radius: var(--radius);
@@ -208,15 +226,30 @@ button:focus {
 }
 
 .image-container {
-  height: 160px;
+  height: 180px;
   overflow: hidden;
   background-color: #f1f8e9;
   display: flex;
   align-items: center;
   justify-content: center;
+  /* border: 1px solid var(--black); */
 }
 
 .image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-container-2 {
+  padding: 5px;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 5px var(--black-shadow);
+  border: 1px solid var(--black);
+}
+
+.image-container-2 img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -232,12 +265,21 @@ button:focus {
 
 .product-details h3 {
   margin: 0 0 5px 0;
-  font-size: 1.1rem;
+  /* font-size: 1.1rem; */
 }
 
 .product-details p {
   margin: 3px 0;
-  font-size: 0.85rem;
+  /* font-size: 0.85rem; */
+}
+
+.white-card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 20px auto;
 }
 
 /* LOGIN CSS */
@@ -341,20 +383,32 @@ button:focus {
 
 .info-content-wrapper {
   display: flex;
-  gap: 50px;
+  flex-direction: row;
+  gap: 2rem;
   justify-content: center;
-  align-items: center;
-  height: 70vh;
+  align-items: flex-start;
   width: 100%;
+  height: auto;
+  flex-wrap: wrap;
+}
+
+.left-panel {
+  flex: 0 0 300px;
+  display: flex;
+  justify-content: center;
 }
 
 .right-panel {
-  flex-grow: 1; /* Takes up all remaining space */
+  flex: 1;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .accordion {
   margin-top: 20px;
-  /* width: 100%; */
+  width: 100%;
 }
 
 .accordion-item {
@@ -362,24 +416,24 @@ button:focus {
 }
 
 .accordion-header {
-  /* width: 100%; */
+  width: 80vh;
   text-align: left;
   background: none;
   border: none;
   padding: 14px 0;
   font-size: 16px;
   font-weight: 600;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .accordion-header:hover {
-  opacity: 0.7;
+  opacity: 1;
 }
 
 .accordion-body {
   padding: 10px 0 20px 0;
   line-height: 1.6;
-  width: 50vh;
+  width: 80vh;
   color: #444;
 }
 
