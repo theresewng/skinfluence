@@ -19,7 +19,11 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // 3. save the user
-    const newUser = new User({ username, password: hashedPassword });
+    const newUser = new User({
+      username,
+      password: hashedPassword,
+      role: "user",
+    });
     await newUser.save();
 
     res.status(201).json({ message: "User registered successfully" });
@@ -73,7 +77,7 @@ router.post("/login", async (req, res) => {
 // router.get("/users", verifyToken, async (req, res) => {
 router.get("/users", async (req, res) => {
   try {
-    const users = await User.find({}, "_id username"); // Select _id and username
+    const users = await User.find({}, "_id username role"); // Select _id, username, and role
     const userData = users.map((user) => ({
       id: user._id,
       username: user.username,

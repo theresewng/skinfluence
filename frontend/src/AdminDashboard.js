@@ -20,7 +20,7 @@ function AdminDashboard() {
   // Initial fetch
   useEffect(() => {
     fetchUsers();
-  }, []); // Re-fetch when search term changes
+  }, [searchTerm]); // Re-fetch when search term changes
 
   // Fetch users from backend
   const fetchUsers = async () => {
@@ -116,9 +116,13 @@ function AdminDashboard() {
                   height="55px"
                   alt="" // mark as decorative
                 />
-                <div className="account-summary">
-                  <p>Username</p>
-                  <h3>{user.username}</h3>
+                <div className="account-info">
+                  <label>Username</label>
+                  <p>{user.username}</p>
+                </div>
+                <div className="account-info">
+                  <label>Role</label>
+                  <p>{user.role || "No role assigned"}</p>
                 </div>
                 <div className="account-actions">
                   <button className="details-button">View Details</button>
