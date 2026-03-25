@@ -4,7 +4,7 @@ import { AuthContext } from "./context/AuthContext";
 import logotype from "./assets/logo/logotype.png";
 
 function NavBar() {
-  const { token, logout } = useContext(AuthContext);
+  const { token, user, role, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -46,6 +46,9 @@ function NavBar() {
             Login
           </Link>
         )}
+
+        {/* Conditional Admin Dashboard */}
+        {user && user.role === "admin" && <Link to="/admin">Admin</Link>}
       </div>
     </nav>
   );

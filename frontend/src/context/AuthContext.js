@@ -11,6 +11,9 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [user, setUser] = useState(null);
 
+  // load current role from local storage, or assign basic "user"
+  const [role, setRole] = useState(localStorage.getItem("role") || "user");
+
   // useEffect runs whenever the token changes (login, logout, or initial load)
   useEffect(() => {
     if (token) {
@@ -18,33 +21,63 @@ export function AuthProvider({ children }) {
         // decode the JWT to get user details (like username or id)
         const decoded = jwtDecode(token);
         setUser(decoded);
+
+        // get the user role from the decoded token, or assign basic "user"
+        const userRole = decoded.role || "user";
+        setRole(userRole);
+
+        // save role to local storage
+        localStorage.setItem("role", userRole);
       } catch (err) {
         console.error("Token is invalid or corrupted:", err);
         logout(); // wipe storage if the token is bad
       }
     } else {
       setUser(null);
+      setRole("user");
+      // clear role from local storage, so it defaults back to the login screen
+      localStorage.removeItem("role");
     }
   }, [token]);
 
   // function to handle login
   function login(newToken) {
-    localStorage.setItem("token", newToken); // save to browser memory
-    setToken(newToken); // update state to trigger re-renders
+    try {
+      // decode the JWT to get user details for the NEW token
+      const decoded = jwtDecode(newToken);
+      setUser(decoded);
+
+      // get the user role from the decoded token, or assign basic "user"
+      const userRole = decoded.role || "user";
+      setRole(userRole);
+
+      // save the token and role to local storage
+      localStorage.setItem("token", newToken);
+      localStorage.setItem("role", userRole);
+
+      setToken(newToken); // update state to trigger re-renders
+    } catch (err) {
+      console.error("Login unsuccessful:", err);
+    }
   }
 
   // function to handle logout
   function logout() {
-    localStorage.removeItem("token"); // remove from browser memory
-    setToken(null); // reset state
+    // clear token and role from browser memory
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+
+    // reset state
+    setToken(null);
     setUser(null);
+    setRole("user");
   }
 
   return (
-    // we provide 'token' and 'user' (data)
+    // we provide 'token', 'user', and 'role' (data)
     // and 'login' and 'logout' (functions) to the whole app
 
-    <AuthContext.Provider value={{ token, user, login, logout }}>
+    <AuthContext.Provider value={{ token, user, role, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
