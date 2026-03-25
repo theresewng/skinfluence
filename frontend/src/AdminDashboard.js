@@ -15,7 +15,7 @@ function AdminDashboard() {
     if (user?.role !== "admin") {
       navigate("/login");
     }
-  }, [user, navigate]);
+  }, [token, user, navigate]);
 
   // Initial fetch
   useEffect(() => {
