@@ -1,19 +1,26 @@
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import "./App.css";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import profile from "./assets/img/profile-placeholder.png";
 
-function Accounts() {
+function AdminDashboard() {
   const [members, setMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { token } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { token, user } = useContext(AuthContext);
+
+  // If they aren't an admin, redirect them out
+  useEffect(() => {
+    if (user?.role !== "admin") {
+      navigate("/login");
+    }
+  }, [token, user, navigate]);
 
   // Initial fetch
   useEffect(() => {
     fetchUsers();
-  }, []); // Re-fetch when search term changes
+  }, [searchTerm]); // Re-fetch when search term changes
 
   // Fetch users from backend
   const fetchUsers = async () => {
@@ -109,9 +116,13 @@ function Accounts() {
                   height="55px"
                   alt="" // mark as decorative
                 />
-                <div className="account-summary">
-                  <p>Username</p>
-                  <h3>{user.username}</h3>
+                <div className="account-info">
+                  <label>Username</label>
+                  <p>{user.username}</p>
+                </div>
+                <div className="account-info">
+                  <label>Role</label>
+                  <p>{user.role || "No role assigned"}</p>
                 </div>
                 <div className="account-actions">
                   <button className="details-button">View Details</button>
@@ -131,4 +142,4 @@ function Accounts() {
   );
 }
 
-export default Accounts;
+export default AdminDashboard;

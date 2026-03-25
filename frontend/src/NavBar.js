@@ -4,7 +4,7 @@ import { AuthContext } from "./context/AuthContext";
 import logotype from "./assets/logo/logotype.png";
 
 function NavBar() {
-  const { token, logout } = useContext(AuthContext);
+  const { token, user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -26,15 +26,29 @@ function NavBar() {
       </div>
 
       <div className="nav-links">
+        {/* Skincare Products */}
         <Link className="nav-button" to="/">
           Products
         </Link>
+
+        {/* Skincare Ingredients */}
         <Link className="nav-button" to="/ingredients">
           Ingredients
         </Link>
-        <Link className="nav-button" to="/saved">
-          My Profile
-        </Link>
+
+        {/* Conditional User Profile */}
+        {user && user.role === "user" && (
+          <Link className="nav-button" to="/saved">
+            My Profile
+          </Link>
+        )}
+
+        {/* Conditional Admin Dashboard */}
+        {user && user.role === "admin" && (
+          <Link className="nav-button" to="/admin">
+            Admin
+          </Link>
+        )}
 
         {/* Conditional Login / Logout */}
         {token ? (

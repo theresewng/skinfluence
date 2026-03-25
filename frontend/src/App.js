@@ -13,12 +13,12 @@ import ProtectedRoute from "./ProtectedRoute";
 import Register from "./Register";
 import ProductDetails from "./ProductDetails";
 import SavedItems from "./SavedItems";
-import Accounts from "./AccountsAdmin";
+import AdminDashboard from "./AdminDashboard";
 import IngredientDashboard from "./IngredientDashboard";
 import IngredientDetails from "./IngredientDetails";
 
 function AppRoutes() {
-  const { token } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
 
   return (
     <>
@@ -85,13 +85,18 @@ function AppRoutes() {
           }
         />
 
-        {/* Saved Items page */}
+        {/* Admin (Manage Accounts) page */}
         <Route
-          path="/accounts"
+          path="/admin"
           element={
-            // <ProtectedRoute>
-            <Accounts />
-            // </ProtectedRoute>
+            // Evaluate admin role before navigating to admin
+            user?.role === "admin" ? (
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            ) : (
+              <Navigate to={token ? "/dashboard" : "/login"} />
+            )
           }
         />
       </Routes>
