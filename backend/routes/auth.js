@@ -47,6 +47,7 @@ router.post("/login", async (req, res) => {
       {
         id: user._id,
         username: user.username,
+        role: user.role,
       },
       process.env.JWT_SECRET || "fallbackSecret",
       { expiresIn: "1h" },
@@ -58,6 +59,7 @@ router.post("/login", async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
+        role: user.role,
         savedProductIDs: user.savedProductIDs,
         savedIngredientIDs: user.savedIngredientIDs,
       },
@@ -75,6 +77,7 @@ router.get("/users", async (req, res) => {
     const userData = users.map((user) => ({
       id: user._id,
       username: user.username,
+      role: user.role,
     }));
     res.json(userData);
   } catch (err) {
