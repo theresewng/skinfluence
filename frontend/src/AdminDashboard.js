@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./App.css";
 import { AuthContext } from "./context/AuthContext";
 import profile from "./assets/img/profile-placeholder.png";
 
-function Accounts() {
+function AdminDashboard() {
   const [members, setMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -131,4 +130,4 @@ function Accounts() {
   );
 }
 
-export default Accounts;
+export default AdminDashboard;
