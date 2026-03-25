@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import profile from "./assets/img/profile-placeholder.png";
 
@@ -7,7 +7,15 @@ function AdminDashboard() {
   const [members, setMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { token } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { token, user } = useContext(AuthContext);
+
+  // If they aren't an admin, redirect them out
+  useEffect(() => {
+    if (user?.role !== "admin") {
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
   // Initial fetch
   useEffect(() => {
