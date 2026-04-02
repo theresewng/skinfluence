@@ -9,7 +9,7 @@ function Comments({ productId }) {
 
   const currentUserId = user?._id || user?.id;
 
-  // ✅ fetch comments
+  // fetch comments
   useEffect(() => {
     if (!token || !productId) return;
 
@@ -23,7 +23,7 @@ function Comments({ productId }) {
       .catch((err) => console.error("Error fetching comments:", err));
   }, [productId, token]);
 
-  // ✅ add comment
+  // add comment
   const handleAddComment = async () => {
     if (!productId) {
       console.error("productId is missing!");
@@ -60,7 +60,7 @@ function Comments({ productId }) {
     }
   };
 
-  // ✅ delete comment
+  // delete comment
   const handleDelete = async (commentId) => {
     if (!window.confirm("Delete this comment?")) return;
 
