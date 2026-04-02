@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const commentRoutes = require("./routes/comments");
 
 const productRoutes = require("./routes/products");
 const ingredientRoutes = require("./routes/ingredients");
@@ -20,10 +21,16 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  console.log("Incoming:", req.method, req.url);
+  next();
+});
+
 // routes
 app.use("/api/products", productRoutes);
 app.use("/api/ingredients", ingredientRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/comments", commentRoutes);
 
 // database connection
 mongoose

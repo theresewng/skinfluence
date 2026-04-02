@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./App.css";
+import Comments from "./CommentsComponent";
 
 function ProductDetails() {
   const { id } = useParams();
@@ -84,6 +85,25 @@ function ProductDetails() {
                   <p>
                     <strong>Category:</strong> {product.category}
                   </p>
+                </div>
+              )}
+            </div>
+
+            {/* Comments Section */}
+            <div className="accordion-item">
+              <button
+                className="accordion-header"
+                onClick={() => toggleSection("comments")}
+              >
+                Comments
+              </button>
+              {openSection === "comments" && (
+                <div className="accordion-body">
+                  {product._id ? (
+                    <Comments productId={product._id} />
+                  ) : (
+                    <p>No comments available.</p>
+                  )}
                 </div>
               )}
             </div>

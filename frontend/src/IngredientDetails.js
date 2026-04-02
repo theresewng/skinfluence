@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./App.css";
+import Comments from "./CommentsComponent";
 
 function ProductDetails() {
   const { id } = useParams();
@@ -28,6 +29,7 @@ function ProductDetails() {
   return (
     <div className="page-container bkgd-blue">
       <div className="info-content-wrapper">
+        {/* {ingredient?._id && <Comments productId={ingredient._id} />}{" "} */}
         <div>
           <h3 className="h3-ivy">{ingredient.name}</h3>
 
@@ -80,6 +82,25 @@ function ProductDetails() {
                     {ingredient.who_is_it_good_for ||
                       "No information available."}
                   </p>
+                </div>
+              )}
+            </div>
+
+            <div className="accordion-item">
+              <button
+                className="accordion-header"
+                onClick={() => toggleSection("comments")}
+              >
+                Comments
+              </button>
+
+              {openSection === "comments" && (
+                <div className="accordion-body">
+                  {ingredient?._id ? (
+                    <Comments productId={ingredient._id} />
+                  ) : (
+                    <p>No comments available.</p>
+                  )}
                 </div>
               )}
             </div>
