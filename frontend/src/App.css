@@ -576,16 +576,16 @@ button:focus {
   border-radius: 8px;
 }
 
-.account-info {
+.account-summary {
   flex: 1;
 }
-.account-info * {
+.account-summary * {
   margin: 0;
 }
-.account-info label {
+.account-summary p {
   font-size: 0.875rem;
 }
-.account-info p {
+.account-summary h3 {
   font-size: 1rem;
   color: #28282b;
 }
@@ -606,7 +606,7 @@ button:focus {
 }
 .details-button:hover,
 .details-button:focus {
-  /* padding: 6px 14px; */
+  padding: 6px 14px;
   background-color: #e5e5e5;
   transition: background-color 0.2s ease;
 }
