@@ -232,6 +232,7 @@ button:focus {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* border: 1px solid var(--black); */
 }
 
 .image-container img {
@@ -264,10 +265,12 @@ button:focus {
 
 .product-details h3 {
   margin: 0 0 5px 0;
+  /* font-size: 1.1rem; */
 }
 
 .product-details p {
   margin: 3px 0;
+  /* font-size: 0.85rem; */
 }
 
 .white-card {

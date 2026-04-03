@@ -74,9 +74,10 @@ router.post("/login", async (req, res) => {
 });
 
 // GET all users (for admin page) - TEMPORARILY REMOVED verifyToken FOR TESTING
+// router.get("/users", verifyToken, async (req, res) => {
 router.get("/users", async (req, res) => {
   try {
-    const users = await User.find({}, "_id username role"); 
+    const users = await User.find({}, "_id username role"); // Select _id, username, and role
     const userData = users.map((user) => ({
       id: user._id,
       username: user.username,
@@ -92,6 +93,7 @@ router.get("/users", async (req, res) => {
 router.delete("/users/:id", async (req, res) => {
   try {
     const userId = req.params.id;
+    // https://www.geeksforgeeks.org/mongodb/mongoose-findbyidanddelete-function/
     const user = await User.findByIdAndDelete(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -171,7 +173,7 @@ router.post("/save-ingredient", verifyToken, async (req, res) => {
       savedIngredientIDs: user.savedIngredientIDs,
     });
   } catch (err) {
-    console.error("SAVE INGREDIENT ERROR:", err);
+    console.error("SAVE INGREDIENT ERROR:", err); // 👈 add this
     res.status(500).json({ error: err.message });
   }
 });
