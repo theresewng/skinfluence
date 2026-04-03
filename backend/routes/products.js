@@ -38,26 +38,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST ROUTE (protected - only logged in users)
-// router.get("/", verifyToken, async (req, res) => {
-//   const products = new Product({
-//     productName: req.body.productName,
-//     brand: req.body.brand,
-//     usageType: req.body.usageType,
-//     category: req.body.category,
-//     ingredients: req.body.ingredients,
-//     imageURL: req.body.imageURL,
-//   });
-
-//   try {
-//     const newProduct = await products.save();
-//     res.status(201).json(newProduct);
-//     console.log(newProduct);
-//   } catch (err) {
-//     res.status(400).json({ message: err.message });
-//   }
-// });
-
 router.post("/", verifyToken, async (req, res) => {
   try {
     const newProduct = new Product(req.body);

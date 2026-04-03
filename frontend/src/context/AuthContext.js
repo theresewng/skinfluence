@@ -14,7 +14,8 @@ export function AuthProvider({ children }) {
   // load current role from local storage, or assign basic "user"
   const [role, setRole] = useState(localStorage.getItem("role") || "user");
 
-  // useEffect runs whenever the token changes (login, logout, or initial load)
+  // useEffect runs w
+  // never the token changes (login, logout, or initial load)
   useEffect(() => {
     if (token) {
       try {

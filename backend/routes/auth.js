@@ -125,27 +125,21 @@ router.get("/user", verifyToken, async (req, res) => {
 });
 
 // POST product ID string to user's favorites
+// routes/auth.js (or wherever you handle auth)
 router.post("/save-product", verifyToken, async (req, res) => {
   try {
-    // 1. Extract product ID string from request body
     const { productId } = req.body;
 
-    // 2. Find user based on userId from token (from middleware)
-    const userId = req.userId;
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const user = await User.findById(req.userId); // ✅ use req.userId
+    if (!user) return res.status(404).json({ error: "User not found" });
 
-    // 3. Add product ID to savedProductIDs if not already there
+    // add product ID if not already saved
     if (!user.savedProductIDs.includes(productId)) {
-      user.savedProductIDs.push(productId); // add to array
-      await user.save(); // save to DB
+      user.savedProductIDs.push(productId);
+      await user.save();
     }
 
-    // 4. Send updated list of savedProductIDs back to frontend
-    res.json({
-      message: "Product saved successfully",
-      savedProductIDs: user.savedProductIDs,
-    });
+    res.json({ message: "Product saved to favourites!" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -174,6 +168,25 @@ router.post("/save-ingredient", verifyToken, async (req, res) => {
     });
   } catch (err) {
     console.error("SAVE INGREDIENT ERROR:", err); // 👈 add this
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post("/remove-product", verifyToken, async (req, res) => {
+  try {
+    const { productId } = req.body;
+
+    const user = await User.findById(req.userId); // ✅ use req.userId
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // remove product ID from savedProductIDs array
+    user.savedProductIDs = user.savedProductIDs.filter(
+      (id) => id !== productId,
+    );
+    await user.save();
+
+    res.json({ message: "Removed from favourites!" });
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
