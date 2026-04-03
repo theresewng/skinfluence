@@ -3,7 +3,7 @@ const router = express.Router();
 const Product = require("../models/Product");
 const verifyToken = require("../middleware/authMiddleware");
 
-// GET ROUTE (Public - Anyone can see)
+// GET ROUTE (Public - Anyone can see plants)s
 router.get("/", async (req, res) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit) : null;
@@ -52,7 +52,7 @@ router.post("/", verifyToken, async (req, res) => {
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
-    res.json({ message: "Product deleted" });
+    res.json({ message: "Plant deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

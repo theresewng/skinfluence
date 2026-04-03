@@ -3,7 +3,7 @@ const router = express.Router();
 const Ingredient = require("../models/Ingredients");
 const verifyToken = require("../middleware/authMiddleware");
 
-// GET ROUTE (Public - Anyone can see)
+// GET ROUTE (Public - Anyone can see plants)s
 router.get("/", async (req, res) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit) : null;

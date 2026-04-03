@@ -86,7 +86,7 @@ function PreviewProducts() {
           })
         ) : (
           <div className="noResults">
-            <p>No products match your search.</p>
+            <p>No plants match your search.</p>
           </div>
         )}
       </div>

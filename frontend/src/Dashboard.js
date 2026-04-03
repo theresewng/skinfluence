@@ -17,14 +17,36 @@ function Dashboard() {
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
+  const [savedProducts, setSavedProducts] = useState([]);
 
   const { token, user } = useContext(AuthContext);
 
+  const [savedProductIDs, setSavedProductIDs] = useState([]);
+
+  useEffect(() => {
+    if (token) {
+      fetch("http://localhost:5000/api/auth/user", {
+        headers: { Authorization: `Bearer ${token.trim()}` },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setSavedProductIDs(data.savedProductIDs || []);
+        })
+        .catch((err) => console.error("Error fetching user data:", err));
+    }
+  }, [token]);
+
   // Load products from backend
-  // Initial fetch of 30 items
+  // Initial fetch
   useEffect(() => {
     fetchProducts(0, 30);
   }, []);
+
+  useEffect(() => {
+    if (user && user.savedProductIDs) {
+      setSavedProducts(user.savedProductIDs);
+    }
+  }, [user]);
 
   const fetchProducts = async (skip, limit) => {
     try {
@@ -33,11 +55,11 @@ function Dashboard() {
       );
       const data = await res.json();
       // setProducts((prev) => [...prev, ...data]); // add to existing products
-    setProducts((prev) => {
-  const newIds = new Set(prev.map(p => p._id));
-  const filteredNew = data.filter(p => !newIds.has(p._id));
-  return [...prev, ...filteredNew];
-});
+      setProducts((prev) => {
+        const newIds = new Set(prev.map((p) => p._id));
+        const filteredNew = data.filter((p) => !newIds.has(p._id));
+        return [...prev, ...filteredNew];
+      });
     } catch (err) {
       console.error(err);
     }
@@ -71,17 +93,14 @@ function Dashboard() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/products?limit=30&skip=0",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-          body: JSON.stringify(formData),
+      const response = await fetch("http://localhost:5000/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.trim()}`,
         },
-      );
+        body: JSON.stringify(formData), // send the product info, not 'id'
+      });
 
       if (!response.ok) throw new Error("Failed to add product");
 
@@ -103,24 +122,109 @@ function Dashboard() {
   }
 
   const saveProduct = async (id) => {
+    if (!token) return alert("You are not logged in!");
     try {
-      // Send POST request to backend to save product to user's favourites
       const response = await fetch(
         "http://localhost:5000/api/auth/save-product",
         {
           method: "POST",
           headers: {
-            // Attach content type and token
             "Content-Type": "application/json",
-            Authorization: token,
+            Authorization: `Bearer ${token.trim()}`,
           },
-          body: JSON.stringify({ productId: id }), // send the product ID in the body
+          body: JSON.stringify({ productId: id }),
         },
       );
 
-      if (!response.ok) throw new Error("Failed to save product");
+      if (!response.ok) throw new Error(await response.text());
 
-      alert("Product saved to favourites!");
+      // Update local state immediately
+      setSavedProducts((prev) => [...prev, id]);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
+  const removeFromFavourites = async (productId) => {
+    const authToken = token?.trim();
+    if (!authToken) {
+      alert("You are not logged in!");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/remove-product",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({ productId }), // just the product ID
+        },
+      );
+
+      if (!response.ok) {
+        const errMsg = await response.text();
+        throw new Error(errMsg);
+      }
+
+      // remove the product locally from state so UI updates immediately
+      setProducts((prevProducts) =>
+        prevProducts.filter((p) => p._id !== productId),
+      );
+
+      alert("Removed from favourites!");
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
+  const handleSaveProduct = async (id) => {
+    if (!token) return alert("You are not logged in!");
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/save-product",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token.trim()}`,
+          },
+          body: JSON.stringify({ productId: id }),
+        },
+      );
+      if (!response.ok) throw new Error(await response.text());
+
+      // update local state
+      setSavedProductIDs((prev) => [...prev, id]);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
+  const handleRemoveProduct = async (id) => {
+    if (!token) return alert("You are not logged in!");
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/remove-product",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token.trim()}`,
+          },
+          body: JSON.stringify({ productId: id }),
+        },
+      );
+      if (!response.ok) throw new Error(await response.text());
+
+      // update local state
+      setSavedProductIDs((prev) => prev.filter((pid) => pid !== id));
     } catch (err) {
       console.error(err);
       alert(err.message);
@@ -246,17 +350,28 @@ function Dashboard() {
                           <button>See Details</button>
                         </Link>
 
-                        {/* <button onClick={() => saveProduct(product._id)}>
-                          Save to Favourites
-                        </button> */}
+                        {savedProductIDs.includes(product._id) ? (
+                          <button
+                            onClick={() => handleRemoveProduct(product._id)}
+                          >
+                            Remove from Favourites
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleSaveProduct(product._id)}
+                          >
+                            Save to Favourites
+                          </button>
+                        )}
+                      </div>
 
-                        <button
+                      {/* <button
                           className="heart-button"
                           onClick={() => saveProduct(product._id)}
                         >
                           <FaHeart />
-                        </button>
-                      </div>
+                        </button> */}
+                      {/* </div> */}
                     </div>
                   </div>
                 );

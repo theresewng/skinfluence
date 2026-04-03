@@ -46,25 +46,44 @@ router.post("/product/:productId", verifyToken, async (req, res) => {
   }
 });
 
-// DELETE a comment (only by the user who posted it)
+// DELETE a comment (only by the user who posted it OR admin)
 router.delete("/:commentId", verifyToken, async (req, res) => {
   try {
+    console.log("=== DELETE REQUEST START ===");
+    console.log("JWT userId:", req.userId);
+    console.log("JWT role:", req.userRole);
+    console.log("Requested commentId:", req.params.commentId);
+
     const comment = await Comment.findById(req.params.commentId);
 
     if (!comment) {
+      console.log("Comment not found");
       return res.status(404).json({ message: "Comment not found" });
     }
 
-    // Only the user who posted it can delete
-    if (comment.userId.toString() !== req.userId) {
+    console.log("Comment ownerId:", comment.userId.toString());
+
+    // Check if user is owner or admin
+    if (comment.userId.toString() !== req.userId && req.userRole !== "admin") {
+      console.log(
+        "Unauthorized DELETE attempt:",
+        "UserId:",
+        req.userId,
+        "Role:",
+        req.userRole,
+        "CommentOwnerId:",
+        comment.userId.toString(),
+      );
       return res.status(403).json({ message: "Not authorized to delete" });
     }
 
     await comment.deleteOne();
+    console.log("Comment deleted successfully");
 
     res.json({ message: "Comment deleted successfully" });
+    console.log("=== DELETE REQUEST END ===");
   } catch (err) {
-    console.error(err);
+    console.error("DELETE ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 });

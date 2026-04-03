@@ -12,7 +12,18 @@ const app = express();
 const PORT = 5000;
 
 // middleware
-app.use(cors({ origin: "http://localhost:3000" }));
+// CORS middleware
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
+
+// Preflight handler for all routes
+app.options("/", (req, res) => res.sendStatus(200));
+
 app.use(express.json());
 
 // request logger (optional but helpful)

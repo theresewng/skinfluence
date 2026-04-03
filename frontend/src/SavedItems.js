@@ -32,7 +32,9 @@ function SavedItems() {
   useEffect(() => {
     if (token) {
       fetch("http://localhost:5000/api/auth/user", {
-        headers: { Authorization: token },
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ FIX
+        },
       })
         .then((res) => res.json())
         .then((data) => {
@@ -53,26 +55,48 @@ function SavedItems() {
   );
 
   const handleRemoveProducts = async (id) => {
+    const authToken = token?.trim();
+    if (!authToken) {
+      alert("You are not logged in!");
+      return;
+    }
+
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: token },
-      });
-      if (!response.ok) throw new Error("Failed to delete product");
-      setProducts(products.filter((product) => product._id !== id));
+      const response = await fetch(
+        "http://localhost:5000/api/auth/remove-product",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({ productId: id }),
+        },
+      );
+
+      if (!response.ok) {
+        const errMsg = await response.text();
+        throw new Error(errMsg);
+      }
+
+      // remove locally from UI
+      setSavedProductIDs((prev) => prev.filter((pid) => pid !== id));
+
+      alert("Removed from favourites!");
     } catch (err) {
       console.error(err);
       alert(err.message);
     }
   };
-
   const handleRemoveIngredient = async (id) => {
     try {
       const response = await fetch(
         `http://localhost:5000/api/ingredients/${id}`,
         {
           method: "DELETE",
-          headers: { Authorization: token },
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ FIX
+          },
         },
       );
       if (!response.ok) throw new Error("Failed to delete ingredient");

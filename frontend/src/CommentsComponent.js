@@ -12,10 +12,11 @@ function Comments({ productId }) {
   // fetch comments
   useEffect(() => {
     if (!token || !productId) return;
+    console.log("TOKEN:", token);
 
     fetch(`http://localhost:5000/api/comments/product/${productId}`, {
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => res.json())
@@ -42,7 +43,7 @@ function Comments({ productId }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ text: newComment }),
         },
@@ -70,7 +71,8 @@ function Comments({ productId }) {
         {
           method: "DELETE",
           headers: {
-            Authorization: token,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -120,7 +122,8 @@ function Comments({ productId }) {
                   : "Just now"}
               </small>
 
-              {currentUserId === comment.userId?.toString() && (
+              {(currentUserId === comment.userId?.toString() ||
+                user?.role === "admin") && (
                 <button
                   className="delete-btn"
                   onClick={() => handleDelete(comment._id)}

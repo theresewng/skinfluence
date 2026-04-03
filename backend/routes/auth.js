@@ -55,9 +55,13 @@ router.post("/login", async (req, res) => {
       },
       process.env.JWT_SECRET || "fallbackSecret",
       { expiresIn: "1h" },
+      // console.log("DECODED:", decoded),
     );
 
+    console.log("TOKEN GENERATED:", token);
+
     // 4. send token and user data (including savedProductIDs) back to frontend
+
     res.json({
       token,
       user: {
@@ -69,14 +73,16 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (err) {
+    console.error("LOGIN ERROR:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 // GET all users (for admin page) - TEMPORARILY REMOVED verifyToken FOR TESTING
+// router.get("/users", verifyToken, async (req, res) => {
 router.get("/users", async (req, res) => {
   try {
-    const users = await User.find({}, "_id username role"); 
+    const users = await User.find({}, "_id username role"); // Select _id, username, and role
     const userData = users.map((user) => ({
       id: user._id,
       username: user.username,
@@ -92,6 +98,7 @@ router.get("/users", async (req, res) => {
 router.delete("/users/:id", async (req, res) => {
   try {
     const userId = req.params.id;
+    // https://www.geeksforgeeks.org/mongodb/mongoose-findbyidanddelete-function/
     const user = await User.findByIdAndDelete(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -123,27 +130,21 @@ router.get("/user", verifyToken, async (req, res) => {
 });
 
 // POST product ID string to user's favorites
+// routes/auth.js (or wherever you handle auth)
 router.post("/save-product", verifyToken, async (req, res) => {
   try {
-    // 1. Extract product ID string from request body
     const { productId } = req.body;
 
-    // 2. Find user based on userId from token (from middleware)
-    const userId = req.userId;
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const user = await User.findById(req.userId); // ✅ use req.userId
+    if (!user) return res.status(404).json({ error: "User not found" });
 
-    // 3. Add product ID to savedProductIDs if not already there
+    // add product ID if not already saved
     if (!user.savedProductIDs.includes(productId)) {
-      user.savedProductIDs.push(productId); // add to array
-      await user.save(); // save to DB
+      user.savedProductIDs.push(productId);
+      await user.save();
     }
 
-    // 4. Send updated list of savedProductIDs back to frontend
-    res.json({
-      message: "Product saved successfully",
-      savedProductIDs: user.savedProductIDs,
-    });
+    res.json({ message: "Product saved to favourites!" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -171,7 +172,26 @@ router.post("/save-ingredient", verifyToken, async (req, res) => {
       savedIngredientIDs: user.savedIngredientIDs,
     });
   } catch (err) {
-    console.error("SAVE INGREDIENT ERROR:", err);
+    console.error("SAVE INGREDIENT ERROR:", err); // 👈 add this
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post("/remove-product", verifyToken, async (req, res) => {
+  try {
+    const { productId } = req.body;
+
+    const user = await User.findById(req.userId); // ✅ use req.userId
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // remove product ID from savedProductIDs array
+    user.savedProductIDs = user.savedProductIDs.filter(
+      (id) => id !== productId,
+    );
+    await user.save();
+
+    res.json({ message: "Removed from favourites!" });
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
