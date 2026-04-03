@@ -55,9 +55,13 @@ router.post("/login", async (req, res) => {
       },
       process.env.JWT_SECRET || "fallbackSecret",
       { expiresIn: "1h" },
+      // console.log("DECODED:", decoded),
     );
 
+    console.log("TOKEN GENERATED:", token);
+
     // 4. send token and user data (including savedProductIDs) back to frontend
+
     res.json({
       token,
       user: {
@@ -69,6 +73,7 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (err) {
+    console.error("LOGIN ERROR:", err);
     res.status(500).json({ error: err.message });
   }
 });
