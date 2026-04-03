@@ -312,7 +312,7 @@ function Dashboard() {
         `http://localhost:5000/api/products?skip=${skip}&limit=${limit}`,
       );
       const data = await res.json();
-      setProducts((prev) => [...prev, ...data]); // append to existing products
+      setProducts(data);
     } catch (err) {
       console.error(err);
     }
@@ -515,24 +515,22 @@ function Dashboard() {
                           </span>
                         )}
                       </div>
-              
+
                       <div className="button-group">
                         <Link to={`/products/${product._id}`}>
                           <button>See Details</button>
                         </Link>
 
-                        {
-                          <button onClick={() => saveProduct(product._id)}>
-                            Save to Favourites
-                          </button>
-                        }
+                        {/* <button onClick={() => saveProduct(product._id)}>
+                          Save to Favourites
+                        </button> */}
 
-                        {/* <button
+                        <button
                           className="heart-button"
                           onClick={() => saveProduct(product._id)}
                         >
                           <FaHeart />
-                        </button> */}
+                        </button>
                       </div>
                     </div>
                   </div>

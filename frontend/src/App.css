@@ -46,8 +46,7 @@ button {
   text-decoration: none;
   color: var(--black);
 }
-button:hover,
-button:focus {
+button:hover {
   background-color: var(--pale-grey);
   transition: background-color 0.2s ease;
 }
@@ -417,24 +416,26 @@ button:focus {
 
 .accordion-header {
   width: 80vh;
+  display: flex; /* 👈 important */
+  justify-content: space-between; /* pushes icon to the right */
+  align-items: center;
   text-align: left;
   background: none;
   border: none;
   padding: 14px 0;
   font-size: 16px;
   font-weight: 600;
-  /* cursor: pointer; */
 }
 
-.accordion-header:hover {
+/* .accordion-header:hover {
   opacity: 1;
-}
+} */
 
 .accordion-body {
   padding: 10px 0 20px 0;
   line-height: 1.6;
   width: 80vh;
-  color: #444;
+  /* color: #444; */
 }
 
 /* Login Preview Page */
