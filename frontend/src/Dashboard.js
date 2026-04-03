@@ -92,6 +92,13 @@ function Dashboard() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    const { productName, brand, usageType, category, ingredients } = formData;
+
+    if (!productName || !brand || !usageType || !category || !ingredients) {
+      alert("Please fill out all fields before submitting.");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:5000/api/products", {
         method: "POST",
@@ -257,6 +264,7 @@ function Dashboard() {
                 name="brand"
                 value={formData.brand}
                 onChange={handleChange}
+                required
               />
 
               <label>Usage Type</label>
@@ -264,6 +272,7 @@ function Dashboard() {
                 name="usageType"
                 value={formData.usageType}
                 onChange={handleChange}
+                required
               />
 
               <label>Category</label>
@@ -271,6 +280,7 @@ function Dashboard() {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
+                required
               />
 
               <label>Ingredients</label>
@@ -278,11 +288,12 @@ function Dashboard() {
                 name="ingredients"
                 value={formData.ingredients}
                 onChange={handleChange}
+                required
               />
 
               <button type="submit">Add Product</button>
 
-              <hr />
+              {/* <hr /> */}
 
               <h4>Filter Products</h4>
 
