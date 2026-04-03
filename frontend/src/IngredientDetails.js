@@ -29,7 +29,6 @@ function ProductDetails() {
   return (
     <div className="page-container bkgd-blue">
       <div className="info-content-wrapper">
-        {/* {ingredient?._id && <Comments productId={ingredient._id} />}{" "} */}
         <div>
           <h3 className="h3-ivy">{ingredient.name}</h3>
 

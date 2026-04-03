@@ -3,7 +3,7 @@ const router = express.Router();
 const Product = require("../models/Product");
 const verifyToken = require("../middleware/authMiddleware");
 
-// GET ROUTE (Public - Anyone can see plants)s
+// GET ROUTE (Public - Anyone can see)
 router.get("/", async (req, res) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit) : null;
@@ -38,26 +38,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST ROUTE (protected - only logged in users)
-// router.get("/", verifyToken, async (req, res) => {
-//   const products = new Product({
-//     productName: req.body.productName,
-//     brand: req.body.brand,
-//     usageType: req.body.usageType,
-//     category: req.body.category,
-//     ingredients: req.body.ingredients,
-//     imageURL: req.body.imageURL,
-//   });
-
-//   try {
-//     const newProduct = await products.save();
-//     res.status(201).json(newProduct);
-//     console.log(newProduct);
-//   } catch (err) {
-//     res.status(400).json({ message: err.message });
-//   }
-// });
-
 router.post("/", verifyToken, async (req, res) => {
   try {
     const newProduct = new Product(req.body);
@@ -72,7 +52,7 @@ router.post("/", verifyToken, async (req, res) => {
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
-    res.json({ message: "Plant deleted" });
+    res.json({ message: "Product deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

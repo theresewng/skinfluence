@@ -41,7 +41,6 @@ function ProductDetails() {
                 <div className="placeholder">No Image</div>
               )}
             </div>
-            {/* </div> */}
           </div>
 
           <div>

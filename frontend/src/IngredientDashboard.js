@@ -44,7 +44,7 @@ function IngredientDashboard() {
 
   // See More handler
   const handleSeeMore = () => {
-    fetchIngredients(ingredients.length, 30); // fetch next 30 items
+    fetchIngredients(ingredients.length, 30); // fetch 30 items
     setVisibleCount((prev) => prev + 30);
   };
 
