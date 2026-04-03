@@ -136,24 +136,34 @@ function SavedItems() {
                           <div className="placeholder">No Image</div>
                         )}
                       </div>
-                      <div className="card-details">
+                      <div className="product-details">
                         <h3 className="h3-ivy">{product.brand}</h3>
-                        <h3 className="h3-neue">{cleanName}</h3>
-                        {amount && <p className="h3-neue-light">{amount}</p>}
-                        <p className="h3-ivy">
-                          <strong>Usage Type:</strong> {product.usageType}
-                        </p>
-                        <p className="h3-ivy">
-                          <strong>Category:</strong> {product.category}
-                        </p>
-                        <Link to={`/products/${product._id}`}>
-                          <button>See Details</button>
-                        </Link>
+                        <h3>{cleanName}</h3>
+                        <h3 className="h3-neue-light">{amount}</h3>
+                        <div className="tag-container">
+                          {product.usageType && (
+                            <span className="tag tag-usage">
+                              {product.usageType}
+                            </span>
+                          )}
+                          {product.category && (
+                            <span className="tag tag-category">
+                              {product.category}
+                            </span>
+                          )}
+                        </div>
+                        <div className="button-group">
+                          <Link to={`/products/${product._id}`}>
+                            <button>See Details</button>
+                          </Link>
+                        </div>
                         <button
                           onClick={() => handleRemoveProducts(product._id)}
                         >
+                          
                           Remove from Favourites
                         </button>
+                        
                       </div>
                     </div>
                   );

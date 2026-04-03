@@ -64,19 +64,22 @@ function PreviewProducts() {
                   )}
                 </div>
 
-                <div className="card-details">
+                <div className="product-details">
                   <h3 className="h3-ivy">{product.brand}</h3>
                   <h3>{cleanName}</h3>
 
-                  {amount && <p>{amount}</p>}
+                  <h3 className="h3-neue-light">{amount}</h3>
 
-                  <p>
-                    <strong>Usage Type:</strong> {product.usageType}
-                  </p>
-
-                  <p>
-                    <strong>Category:</strong> {product.category}
-                  </p>
+                  <div className="tag-container">
+                    {product.usageType && (
+                      <span className="tag tag-usage">{product.usageType}</span>
+                    )}
+                    {product.category && (
+                      <span className="tag tag-category">
+                        {product.category}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             );
