@@ -32,7 +32,12 @@ function Dashboard() {
         `http://localhost:5000/api/products?skip=${skip}&limit=${limit}`,
       );
       const data = await res.json();
-      setProducts((prev) => [...prev, ...data]); // add to existing products
+      // setProducts((prev) => [...prev, ...data]); // add to existing products
+    setProducts((prev) => {
+  const newIds = new Set(prev.map(p => p._id));
+  const filteredNew = data.filter(p => !newIds.has(p._id));
+  return [...prev, ...filteredNew];
+});
     } catch (err) {
       console.error(err);
     }
