@@ -51,7 +51,13 @@ function AdminDashboard() {
   });
 
   // Handle delete user
-  const handleDelete = async (userId) => {
+  const handleDelete = async (userId, userRole) => {
+    // Prevent deleting other admins
+    if (userRole === "admin") {
+      alert("You cannot delete admin accounts.");
+      return;
+    }
+
     // Confirm before deleting
     if (!window.confirm("Are you sure you want to delete this account?")) {
       return;
@@ -123,7 +129,7 @@ function AdminDashboard() {
             <p>No members found. Please try a different search or filter.</p>
           ) : (
             filteredMembers.map((user) => (
-              <div key={user?.id} className="account-card">
+              <article key={user?.id} className="account-card">
                 <img
                   src={profile}
                   width="55px"
@@ -131,27 +137,37 @@ function AdminDashboard() {
                   alt="" // mark as decorative
                 />
                 <div className="account-info">
-                  <label>Username</label>
-                  <h3 className="username">{user?.username}</h3>
-                </div>
-                <div className="account-info">
-                  <label>Role</label>
-                  <div className="tag-container">
-                    <p className={`tag ${user?.role?.toLowerCase()}`}>
-                      {user?.role || "No role assigned"}
-                    </p>
+                  {/* Display username */}
+                  <div className="username-section">
+                    <label>Username</label>
+                    <h3 className="username">{user?.username}</h3>
+                  </div>
+
+                  {/* Display role */}
+                  <div className="role-section">
+                    <label>Role</label>
+                    <div className="tag-container">
+                      <p className={`tag ${user?.role?.toLowerCase()}`}>
+                        {user?.role || "No role assigned"}
+                      </p>
+                    </div>
                   </div>
                 </div>
+                {/* Display buttons, if not admin */}
                 <div className="account-actions">
-                  <button className="activity-button">View Activity</button>
-                  <button
-                    className="delete-button"
-                    onClick={() => handleDelete(user.id)}
-                  >
-                    Delete Account
-                  </button>
+                  {user.role !== "admin" && (
+                    <>
+                      <button className="activity-button">View Activity</button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDelete(user.id, user.role)}
+                      >
+                        Delete Account
+                      </button>
+                    </>
+                  )}
                 </div>
-              </div>
+              </article>
             ))
           )}
         </div>

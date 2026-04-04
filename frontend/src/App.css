@@ -571,22 +571,22 @@ button:hover {
   align-items: center;
   gap: 1rem;
 
-  background: #fefefe;
+  background: var(--white);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border: 1px solid #28282b;
+  border: 1px solid var(--black);
   border-radius: 8px;
 }
-
 .account-info {
-  min-width: 4rem;
-  padding: 0 1rem 0 0;
+  display: flex;
+  gap: 0.5rem;
   flex: 1;
 }
 .account-info * {
   margin: 0;
 }
-.account-info label {
-  font-size: 0.875rem;
+.account-info .username-section {
+  flex: 1;
+  max-width: 16rem;
 }
 .account-info .username {
   font-size: 1rem;
@@ -614,7 +614,7 @@ button:hover {
   font-size: 0.875rem;
   font-weight: normal;
   text-decoration: none;
-  color: #28282b;
+  color: var(--black);
   cursor: pointer;
 }
 .activity-button:hover,
