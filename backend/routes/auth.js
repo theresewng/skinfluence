@@ -150,33 +150,6 @@ router.post("/save-product", verifyToken, async (req, res) => {
   }
 });
 
-router.post("/save-ingredient", verifyToken, async (req, res) => {
-  try {
-    const { ingredientId } = req.body;
-    const userId = req.userId;
-
-    if (!ingredientId) {
-      return res.status(400).json({ message: "Ingredient ID is required" });
-    }
-
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    if (!user.savedIngredientIDs.includes(ingredientId)) {
-      user.savedIngredientIDs.push(ingredientId);
-      await user.save();
-    }
-
-    res.json({
-      message: "Ingredient saved successfully",
-      savedIngredientIDs: user.savedIngredientIDs,
-    });
-  } catch (err) {
-    console.error("SAVE INGREDIENT ERROR:", err); // 👈 add this
-    res.status(500).json({ error: err.message });
-  }
-});
-
 router.post("/remove-product", verifyToken, async (req, res) => {
   try {
     const { productId } = req.body;
@@ -196,4 +169,47 @@ router.post("/remove-product", verifyToken, async (req, res) => {
   }
 });
 
+// Save ingredient to favourites
+// Save ingredient to user's favourites
+router.post("/save-ingredient", verifyToken, async (req, res) => {
+  try {
+    const { ingredientId } = req.body;
+    if (!ingredientId)
+      return res.status(400).json({ message: "Ingredient ID required" });
+
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!user.savedIngredientIDs.includes(ingredientId)) {
+      user.savedIngredientIDs.push(ingredientId);
+      await user.save();
+    }
+
+    res.json({
+      message: "Ingredient saved",
+      savedIngredientIDs: user.savedIngredientIDs,
+    });
+  } catch (err) {
+    console.error("SAVE INGREDIENT ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Remove ingredient from user's favourites
+router.post("/remove-ingredient", verifyToken, async (req, res) => {
+  try {
+    const { ingredientId } = req.body;
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.savedIngredientIDs = user.savedIngredientIDs.filter(
+      (id) => id.toString() !== ingredientId.toString(),
+    );
+    await user.save();
+
+    res.json({ message: "Ingredient removed from favourites" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 module.exports = router;

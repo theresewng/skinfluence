@@ -1,22 +1,26 @@
 /* Global Styles */
 .page-container {
   max-width: none;
-  height: 100vh;
+  /* height: 100vh; */
   margin: 0;
   padding: 20px;
 }
 
 .bkgd-blue {
   background-color: var(--blue);
+  min-height: 100vh;
 }
 .bkgd-green {
   background-color: var(--green);
+  min-height: 100vh;
 }
 .bkgd-yellow {
   background-color: var(--yellow);
+  min-height: 100vh;
 }
 .bkgd-purple {
   background-color: var(--purple);
+  min-height: 100vh;
 }
 
 /* Default Header */

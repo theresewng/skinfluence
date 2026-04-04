@@ -15,9 +15,9 @@ router.get("/", async (req, res) => {
       query = query.limit(limit);
     }
 
-    const ingredients = await query;
+    const products = await query;
 
-    res.json(ingredients);
+    res.json(products);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -26,13 +26,13 @@ router.get("/", async (req, res) => {
 // GET SINGLE PRODUCT BY ID
 router.get("/:id", async (req, res) => {
   try {
-    const ingredient = await Ingredient.findById(req.params.id);
+    const product = await Ingredient.findById(req.params.id);
 
-    if (!ingredient) {
-      return res.status(404).json({ message: "Product not found" });
+    if (!product) {
+      return res.status(404).json({ message: "Ingredient not found" });
     }
 
-    res.json(ingredient);
+    res.json(product);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -40,9 +40,9 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", verifyToken, async (req, res) => {
   try {
-    const newIngredient = new Ingredient(req.body);
-    await newIngredient.save();
-    res.status(201).json(newIngredient);
+    const newProduct = new Ingredient(req.body);
+    await newProduct.save();
+    res.status(201).json(newProduct);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -30,7 +30,7 @@ function ProductDetails() {
   }
 
   return (
-    <div className="page-container bkgd-blue">
+    <div className="page-container bkgd-green">
       <div className="product-section">
         <div className="info-content-wrapper">
           <div className="left-panel">

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
 import { FaHeart } from "react-icons/fa";
+import heartSVG from "../src/assets/img/heart.svg";
 
 function Dashboard() {
   const [products, setProducts] = useState([]);
@@ -239,9 +240,54 @@ function Dashboard() {
   };
 
   return (
-    <div className="page-container">
-      <header className="main-header">
-        <div>{user && <h2>Welcome back, {user.username}!</h2>}</div>
+    <div className="page-container bkgd-green">
+      <header
+        className="main-header"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "1rem",
+        }}
+      >
+        {/* {user ? (
+          <h2>Welcome back, {user.username}!</h2>
+        ) : (
+          <>
+            <span>Please log in to leave a comment.</span>
+            <button
+              className="login-btn"
+              onClick={() => Link("/login")}
+              style={{
+                marginLeft: "1rem",
+                padding: "0.5rem 1rem",
+                cursor: "pointer",
+              }}
+            >
+              Login
+            </button>
+          </>
+        )} */}
+
+        {user ? (
+          <h2>Welcome back, {user.username}!</h2>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <h2>Please log in to leave a comment.</h2>
+            <Link to="/login">
+              <button
+                className="login-btn"
+                style={{
+                  marginLeft: "1rem",
+                  padding: "0.5rem 1rem",
+                  cursor: "pointer",
+                }}
+              >
+                Login
+              </button>
+            </Link>
+          </div>
+        )}
       </header>
 
       <div className="content-wrapper">
@@ -406,7 +452,11 @@ function Dashboard() {
         <div className="right-panel">
           <div className="products-wrapper">
             <div className="product-grid">
-              {filteredProducts.slice(0, visibleCount).map((product) => {
+              {(searchTerm
+                ? filteredProducts
+                : filteredProducts.slice(0, visibleCount)
+              ).map((product) => {
+                // {filteredProducts.slice(0, visibleCount).map((product) => {
                 const nameParts = product.productName.split(",");
                 const amount =
                   nameParts.length > 1 ? nameParts.pop().trim() : "";
@@ -443,18 +493,26 @@ function Dashboard() {
                           <button>See Details</button>
                         </Link>
 
-                        {savedProductIDs.includes(product._id) ? (
-                          <button
-                            onClick={() => handleRemoveProduct(product._id)}
-                          >
-                            Remove from Favourites
-                          </button>
+                        {/* Only show save/remove buttons if user is logged in */}
+                        {user ? (
+                          savedProductIDs.includes(product._id) ? (
+                            <button
+                              onClick={() => handleRemoveProduct(product._id)}
+                            >
+                              Remove from Favourites
+                            </button>
+                          ) : (
+                            <button
+                              className="heart-button"
+                              onClick={() => handleSaveProduct(product._id)}
+                            >
+                              <img src={heartSVG} alt="Save Ingredient" />
+                            </button>
+                          )
                         ) : (
-                          <button
-                            onClick={() => handleSaveProduct(product._id)}
-                          >
-                            Save to Favourites
-                          </button>
+                          <p style={{ fontStyle: "italic", color: "#888" }}>
+                            Login to save products
+                          </p>
                         )}
                       </div>
 
@@ -472,7 +530,7 @@ function Dashboard() {
             </div>
 
             {/* BUTTON OUTSIDE GRID */}
-            {products.length >= visibleCount && (
+            {!searchTerm && products.length >= visibleCount && (
               <div style={{ textAlign: "center", margin: "20px 0" }}>
                 <button
                   onClick={handleSeeMore}
