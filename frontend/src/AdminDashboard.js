@@ -6,6 +6,7 @@ import profile from "./assets/img/profile-placeholder.png";
 function AdminDashboard() {
   const [members, setMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedUserType, setSelectedUserType] = useState("");
 
   const navigate = useNavigate();
   const { token, user } = useContext(AuthContext);
@@ -38,11 +39,13 @@ function AdminDashboard() {
     }
   };
 
-  // Filter users based on search term
+  // Filter users based on search term and selected user type
   const filteredMembers = members.filter((user) => {
     const term = searchTerm.toLowerCase();
     const username = user.username?.toLowerCase() || "";
-    return username.includes(term);
+    const matchesSearch = username.includes(term);
+    const matchesUserType = selectedUserType ? user.role === selectedUserType : true;
+    return matchesSearch && matchesUserType;
   });
 
   // Handle delete user
@@ -100,6 +103,15 @@ function AdminDashboard() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 required
               />
+              <label>Filter by Brand</label>
+              <select
+                value={selectedUserType}
+                onChange={(e) => setSelectedUserType(e.target.value)}
+              >
+                <option value="">All Users</option>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
             </form>
           </div>
         </div>
