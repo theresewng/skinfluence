@@ -564,7 +564,7 @@ button:hover {
 
 /* Account Admin Page */
 .account-card {
-  padding: 1.5rem;
+  padding: 1.25rem;
   margin-bottom: 1rem;
   display: flex;
   flex-wrap: wrap;
@@ -577,42 +577,53 @@ button:hover {
   border-radius: 8px;
 }
 
-.account-summary {
+.account-info {
+  min-width: 4rem;
+  padding: 0 1rem 0 0;
   flex: 1;
 }
-.account-summary * {
+.account-info * {
   margin: 0;
 }
-.account-summary p {
+.account-info label {
   font-size: 0.875rem;
 }
-.account-summary h3 {
+.account-info .username {
   font-size: 1rem;
-  color: #28282b;
+}
+.account-info .tag {
+  padding: 0.3rem 1rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--black);
+}
+.account-info .tag.admin {
+  background-color: var(--blue);
+}
+.account-info .tag.user {
+  background-color: var(--yellow);
 }
 
 .account-actions button {
-  background-color: #fefefe;
-  border: 1px solid #28282b;
+  background-color: var(--white);
+  border: 1px solid var(--dark-grey);
   border-radius: 2rem;
   padding: 0.5rem 1.75rem;
   margin-left: 0.5rem;
 
-  font-family: "Neue Montreal", sans-serif;
   font-size: 0.875rem;
   font-weight: normal;
   text-decoration: none;
   color: #28282b;
   cursor: pointer;
 }
-.details-button:hover,
-.details-button:focus {
-  padding: 6px 14px;
-  background-color: #e5e5e5;
+.activity-button:hover,
+.activity-button:focus {
+  background-color: var(--pale-grey);
   transition: background-color 0.2s ease;
 }
 .delete-button:hover,
 .delete-button:focus {
-  background-color: #f7c0cf;
+  background-color: var(--pink);
   transition: background-color 0.2s ease;
 }

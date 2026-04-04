@@ -109,7 +109,7 @@ function AdminDashboard() {
             <p>No members found.</p>
           ) : (
             filteredMembers.map((user) => (
-              <div key={user.id} className="account-card">
+              <div key={user?.id} className="account-card">
                 <img
                   src={profile}
                   width="55px"
@@ -118,14 +118,18 @@ function AdminDashboard() {
                 />
                 <div className="account-info">
                   <label>Username</label>
-                  <p>{user.username}</p>
+                  <h3 className="username">{user?.username}</h3>
                 </div>
                 <div className="account-info">
                   <label>Role</label>
-                  <p>{user.role || "No role assigned"}</p>
+                  <div className="tag-container">
+                    <p className={`tag ${user?.role?.toLowerCase()}`}>
+                      {user?.role || "No role assigned"}
+                    </p>
+                  </div>
                 </div>
                 <div className="account-actions">
-                  <button className="details-button">View Details</button>
+                  <button className="activity-button">View Activity</button>
                   <button
                     className="delete-button"
                     onClick={() => handleDelete(user.id)}
