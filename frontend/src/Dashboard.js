@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
 import { FaHeart } from "react-icons/fa";
+import heartSVG from "../src/assets/img/heart.svg";
 
 function Dashboard() {
   const [products, setProducts] = useState([]);
@@ -358,7 +359,11 @@ function Dashboard() {
         <div className="right-panel">
           <div className="products-wrapper">
             <div className="product-grid">
-              {filteredProducts.slice(0, visibleCount).map((product) => {
+              {(searchTerm
+                ? filteredProducts
+                : filteredProducts.slice(0, visibleCount)
+              ).map((product) => {
+                // {filteredProducts.slice(0, visibleCount).map((product) => {
                 const nameParts = product.productName.split(",");
                 const amount =
                   nameParts.length > 1 ? nameParts.pop().trim() : "";
@@ -405,9 +410,10 @@ function Dashboard() {
                             </button>
                           ) : (
                             <button
+                              className="heart-button"
                               onClick={() => handleSaveProduct(product._id)}
                             >
-                              Save to Favourites
+                              <img src={heartSVG} alt="Save Ingredient" />
                             </button>
                           )
                         ) : (
@@ -431,7 +437,7 @@ function Dashboard() {
             </div>
 
             {/* BUTTON OUTSIDE GRID */}
-            {products.length >= visibleCount && (
+            {!searchTerm && products.length >= visibleCount && (
               <div style={{ textAlign: "center", margin: "20px 0" }}>
                 <button
                   onClick={handleSeeMore}

@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
+import heartSVG from "../src/assets/img/heart.svg";
+import filledHeart from "../src/assets/img/filledHeart.svg";
 
 function IngredientDashboard() {
   const [ingredients, setIngredients] = useState([]);
@@ -134,7 +136,10 @@ function IngredientDashboard() {
         <div className="right-panel">
           <div className="products-wrapper">
             <div className="product-grid">
-              {filteredIngredients.slice(0, visibleCount).map((ingredient) => (
+              {(searchTerm
+                ? filteredIngredients
+                : filteredIngredients.slice(0, visibleCount)
+              ).map((ingredient) => (
                 <div key={ingredient._id} className="product-card">
                   <div className="product-details">
                     <h3 className="h3-ivy">{ingredient.name}</h3>
@@ -149,7 +154,6 @@ function IngredientDashboard() {
                         <button>See Details</button>
                       </Link>
 
-                      {/* Only show save/remove buttons if user is logged in */}
                       {user ? (
                         savedIngredients.includes(ingredient._id) ? (
                           <button
@@ -161,16 +165,17 @@ function IngredientDashboard() {
                           </button>
                         ) : (
                           <button
+                            className="heart-button"
                             onClick={() =>
                               toggleFavouriteIngredient(ingredient._id)
                             }
                           >
-                            Save to Favourites
+                            <img src={heartSVG} alt="Save Ingredient" />
                           </button>
                         )
                       ) : (
                         <p style={{ fontStyle: "italic", color: "#888" }}>
-                          Login to save products
+                          Login to save ingredients
                         </p>
                       )}
                     </div>
@@ -179,7 +184,7 @@ function IngredientDashboard() {
               ))}
             </div>
 
-            {ingredients.length >= visibleCount && (
+            {!searchTerm && filteredIngredients.length >= visibleCount && (
               <div style={{ textAlign: "center", margin: "20px 0" }}>
                 <button
                   onClick={handleSeeMore}
