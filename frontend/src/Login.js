@@ -71,7 +71,7 @@ function Login() {
       </div>
 
       {/* Preview products now spans the full width under both columns */}
-      <PreviewProducts />
+      {/* <PreviewProducts /> */}
     </div>
   );
 }
