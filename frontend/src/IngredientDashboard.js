@@ -148,10 +148,6 @@ function IngredientDashboard() {
                       <strong>What is it:</strong>
                     </h3>
                     <p>{ingredient.what_is_it}</p>
-                    <div className="button-group">
-                      <Link to={`/ingredients/${ingredient._id}`}>
-                        <button>See Details</button>
-                      </Link>
 
                     <div className="button-group">
                       <Link to={`/ingredients/${ingredient._id}`}>
@@ -159,24 +155,25 @@ function IngredientDashboard() {
                       </Link>
 
                       {user ? (
-                        savedIngredients.includes(ingredient._id) ? (
-                          <button
-                            onClick={() =>
-                              toggleFavouriteIngredient(ingredient._id)
+                        <button
+                          className={`heart-button ${
+                            savedIngredients.includes(ingredient._id)
+                              ? "saved"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            toggleFavouriteIngredient(ingredient._id)
+                          }
+                        >
+                          <img
+                            src={
+                              savedIngredients.includes(ingredient._id)
+                                ? filledHeart
+                                : heartSVG
                             }
-                          >
-                            Remove from Favourites
-                          </button>
-                        ) : (
-                          <button
-                            className="heart-button"
-                            onClick={() =>
-                              toggleFavouriteIngredient(ingredient._id)
-                            }
-                          >
-                            <img src={heartSVG} alt="Save Ingredient" />
-                          </button>
-                        )
+                            alt="Favourite"
+                          />
+                        </button>
                       ) : (
                         <p style={{ fontStyle: "italic", color: "#888" }}>
                           Login to save ingredients
@@ -187,17 +184,6 @@ function IngredientDashboard() {
                 </div>
               ))}
             </div>
-
-            {!searchTerm && filteredIngredients.length >= visibleCount && (
-              <div style={{ textAlign: "center", margin: "20px 0" }}>
-                <button
-                  onClick={handleSeeMore}
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
-                >
-                  See More
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>
