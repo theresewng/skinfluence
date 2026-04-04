@@ -105,14 +105,15 @@ function IngredientDashboard() {
                       <strong>What is it:</strong>
                     </h3>
                     <p>{ingredient.what_is_it}</p>
+                    <div className="button-group">
+                      <Link to={`/ingredients/${ingredient._id}`}>
+                        <button>See Details</button>
+                      </Link>
 
-                    <Link to={`/ingredients/${ingredient._id}`}>
-                      <button>See Details</button>
-                    </Link>
-
-                    <button onClick={() => saveIngredient(ingredient._id)}>
-                      Save to Favourites
-                    </button>
+                      <button onClick={() => saveIngredient(ingredient._id)}>
+                        Save to Favourites
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
