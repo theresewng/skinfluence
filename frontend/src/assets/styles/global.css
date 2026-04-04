@@ -45,7 +45,7 @@ body {
   color: var(--body-color);
   margin: 0;
   padding: 0;
-  background-color: #e8f5e9;
+  /* background-color: #e8f5e9; */
   line-height: 1.6;
 }
 

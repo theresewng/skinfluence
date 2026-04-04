@@ -232,9 +232,54 @@ function Dashboard() {
   };
 
   return (
-    <div className="page-container">
-      <header className="main-header">
-        <div>{user && <h2>Welcome back, {user.username}!</h2>}</div>
+    <div className="page-container bkgd-green">
+      <header
+        className="main-header"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "1rem",
+        }}
+      >
+        {/* {user ? (
+          <h2>Welcome back, {user.username}!</h2>
+        ) : (
+          <>
+            <span>Please log in to leave a comment.</span>
+            <button
+              className="login-btn"
+              onClick={() => Link("/login")}
+              style={{
+                marginLeft: "1rem",
+                padding: "0.5rem 1rem",
+                cursor: "pointer",
+              }}
+            >
+              Login
+            </button>
+          </>
+        )} */}
+
+        {user ? (
+          <h2>Welcome back, {user.username}!</h2>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <h2>Please log in to leave a comment.</h2>
+            <Link to="/login">
+              <button
+                className="login-btn"
+                style={{
+                  marginLeft: "1rem",
+                  padding: "0.5rem 1rem",
+                  cursor: "pointer",
+                }}
+              >
+                Login
+              </button>
+            </Link>
+          </div>
+        )}
       </header>
 
       <div className="content-wrapper">
@@ -350,18 +395,25 @@ function Dashboard() {
                           <button>See Details</button>
                         </Link>
 
-                        {savedProductIDs.includes(product._id) ? (
-                          <button
-                            onClick={() => handleRemoveProduct(product._id)}
-                          >
-                            Remove from Favourites
-                          </button>
+                        {/* Only show save/remove buttons if user is logged in */}
+                        {user ? (
+                          savedProductIDs.includes(product._id) ? (
+                            <button
+                              onClick={() => handleRemoveProduct(product._id)}
+                            >
+                              Remove from Favourites
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleSaveProduct(product._id)}
+                            >
+                              Save to Favourites
+                            </button>
+                          )
                         ) : (
-                          <button
-                            onClick={() => handleSaveProduct(product._id)}
-                          >
-                            Save to Favourites
-                          </button>
+                          <p style={{ fontStyle: "italic", color: "#888" }}>
+                            Login to save products
+                          </p>
                         )}
                       </div>
 
