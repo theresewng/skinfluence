@@ -248,6 +248,88 @@ function Dashboard() {
         <div className="left-panel">
           <div className="filters">
             <h3 className="h3-ivy">Filter</h3>
+
+            {/* ✅ ADMIN ONLY SECTION */}
+            {user?.role === "admin" && (
+              <>
+                <form onSubmit={handleSubmit}>
+                  <h4>Add New Product</h4>
+
+                  <label>Product Name</label>
+                  <input
+                    name="productName"
+                    value={formData.productName}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <label>Brand</label>
+                  <input
+                    name="brand"
+                    value={formData.brand}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <label>Usage Type</label>
+                  <input
+                    name="usageType"
+                    value={formData.usageType}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <label>Category</label>
+                  <input
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <label>Ingredients</label>
+                  <input
+                    name="ingredients"
+                    value={formData.ingredients}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <button type="submit">Add Product</button>
+                </form>
+
+                <hr />
+              </>
+            )}
+
+            {/* ✅ ALWAYS VISIBLE */}
+            <h4>Filter Products</h4>
+
+            <label>Search</label>
+            <input
+              type="text"
+              placeholder="Search by name, brand, category..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+            <label>Filter by Brand</label>
+            <select
+              value={selectedBrand}
+              onChange={(e) => setSelectedBrand(e.target.value)}
+            >
+              <option value="">All Brands</option>
+              {uniqueBrands.map((brand) => (
+                <option key={brand} value={brand}>
+                  {brand}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        {/* <div className="left-panel">
+          <div className="filters">
+            <h3 className="h3-ivy">Filter</h3>
             <form onSubmit={handleSubmit}>
               <h4>Add New Product</h4>
 
@@ -293,7 +375,7 @@ function Dashboard() {
 
               <button type="submit">Add Product</button>
 
-              {/* <hr /> */}
+              <hr />
 
               <h4>Filter Products</h4>
 
@@ -319,7 +401,7 @@ function Dashboard() {
               </select>
             </form>
           </div>
-        </div>
+        </div> */}
 
         <div className="right-panel">
           <div className="products-wrapper">
