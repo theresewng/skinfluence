@@ -6,7 +6,7 @@ import profile from "./assets/img/profile-placeholder.png";
 function AdminDashboard() {
   const [members, setMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedUserType, setSelectedUserType] = useState("");
+  const [selectedUserRole, setSelectedUserRole] = useState("");
 
   const navigate = useNavigate();
   const { token, user } = useContext(AuthContext);
@@ -39,13 +39,15 @@ function AdminDashboard() {
     }
   };
 
-  // Filter users based on search term and selected user type
+  // Filter users based on search term and selected user role
   const filteredMembers = members.filter((user) => {
     const term = searchTerm.toLowerCase();
     const username = user.username?.toLowerCase() || "";
     const matchesSearch = username.includes(term);
-    const matchesUserType = selectedUserType ? user.role === selectedUserType : true;
-    return matchesSearch && matchesUserType;
+    const matchesUserRole = selectedUserRole
+      ? user.role === selectedUserRole
+      : true;
+    return matchesSearch && matchesUserRole;
   });
 
   // Handle delete user
@@ -96,17 +98,17 @@ function AdminDashboard() {
           <div className="filters">
             <h3 className="h3-ivy">Search Members</h3>
             <form>
-              <label>Username</label>
+              <label>By Username</label>
               <input
                 name="username"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 required
               />
-              <label>Filter by Brand</label>
+              <label>By User Role</label>
               <select
-                value={selectedUserType}
-                onChange={(e) => setSelectedUserType(e.target.value)}
+                value={selectedUserRole}
+                onChange={(e) => setSelectedUserRole(e.target.value)}
               >
                 <option value="">All Users</option>
                 <option value="user">User</option>
@@ -117,8 +119,8 @@ function AdminDashboard() {
         </div>
 
         <div className="right-panel">
-          {members.length === 0 ? (
-            <p>No members found.</p>
+          {filteredMembers.length === 0 ? (
+            <p>No members found. Please try a different search or filter.</p>
           ) : (
             filteredMembers.map((user) => (
               <div key={user?.id} className="account-card">
