@@ -26,57 +26,25 @@ function AppRoutes() {
       <NavBar />
 
       <Routes>
-        <Route
-          path="/"
-          element={<Navigate to={token ? "/dashboard" : "/login"} />}
-        />
+        {/* Redirect root */}
+        <Route path="/" element={<Navigate to="/dashboard" />} />
 
         {/* Public routes */}
         <Route
           path="/login"
           element={token ? <Navigate to="/dashboard" /> : <Login />}
         />
-
         <Route path="/register" element={<Register />} />
 
-        {/* Protected routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+        {/* Public Dashboard (product listing viewable by all) */}
+        <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route
-          path="/products/:id"
-          element={
-            <ProtectedRoute>
-              <ProductDetails />
-            </ProtectedRoute>
-          }
-        />
+        {/* Product & Ingredient details are public */}
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/ingredients" element={<IngredientDashboard />} />
+        <Route path="/ingredients/:id" element={<IngredientDetails />} />
 
-        <Route
-          path="/ingredients"
-          element={
-            <ProtectedRoute>
-              <IngredientDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/ingredients/:id"
-          element={
-            <ProtectedRoute>
-              <IngredientDetails />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Saved Items page */}
+        {/* Protected routes (actions requiring login) */}
         <Route
           path="/saved"
           element={
@@ -86,11 +54,9 @@ function AppRoutes() {
           }
         />
 
-        {/* Admin (Manage Accounts) page */}
         <Route
           path="/admin"
           element={
-            // Evaluate admin role before navigating to admin dashboard
             user?.role === "admin" ? (
               <ProtectedRoute>
                 <AdminDashboard />

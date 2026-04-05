@@ -9,32 +9,20 @@ function Comments({ productId }) {
 
   const currentUserId = user?._id || user?.id;
 
-  // fetch comments
+  // fetch comments (public, no token needed)
   useEffect(() => {
-    if (!token || !productId) return;
-    console.log("TOKEN:", token);
+    if (!productId) return;
 
-    fetch(`http://localhost:5000/api/comments/product/${productId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    fetch(`http://localhost:5000/api/comments/product/${productId}`)
       .then((res) => res.json())
       .then((data) => setComments(data))
-      .catch((err) => console.error("Error fetching comments:", err));
-  }, [productId, token]);
-
-  // add comment
+      .catch((err) => console.error(err));
+  }, [productId]);
+  
+  // add comment (requires token)
   const handleAddComment = async () => {
-    if (!productId) {
-      console.error("productId is missing!");
-      return;
-    }
-
-    if (!newComment.trim()) {
-      alert("Comment cannot be empty");
-      return;
-    }
+    if (!token) return alert("You must be logged in to comment");
+    if (!newComment.trim()) return alert("Comment cannot be empty");
 
     try {
       const response = await fetch(
@@ -52,7 +40,6 @@ function Comments({ productId }) {
       if (!response.ok) throw new Error("Failed to post comment");
 
       const savedComment = await response.json();
-
       setComments((prev) => [savedComment, ...prev]);
       setNewComment("");
     } catch (err) {
@@ -61,8 +48,9 @@ function Comments({ productId }) {
     }
   };
 
-  // delete comment
+  // delete comment (requires token, user must own comment or be admin)
   const handleDelete = async (commentId) => {
+    if (!token) return alert("You must be logged in to delete comments");
     if (!window.confirm("Delete this comment?")) return;
 
     try {
@@ -79,7 +67,6 @@ function Comments({ productId }) {
 
       if (!res.ok) throw new Error("Failed to delete");
 
-      // remove from UI instantly
       setComments((prev) =>
         prev.filter((comment) => comment._id !== commentId),
       );
@@ -91,28 +78,30 @@ function Comments({ productId }) {
 
   return (
     <div className="comments-section">
-      {user ? (
+      {/* comment form only for logged-in users */}
+      {user && (
         <div className="comment-form">
           <textarea
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Write a comment..."
           />
-          <button onClick={handleAddComment} disabled={!productId}>
-            Post Comment
-          </button>
+          <button onClick={handleAddComment}>Post Comment</button>
         </div>
-      ) : (
-        <p>Please log in to leave a comment.</p>
       )}
 
+      {/* visitor message */}
+      {!user && (
+        <p style={{ fontStyle: "italic" }}>Login to leave a comment.</p>
+      )}
+
+      {/* comment list */}
       <div className="comment-list">
         {comments.length > 0 ? (
           comments.map((comment) => (
             <div key={comment._id} className="comment-card">
               <h4>{comment.username}</h4>
               <p>{comment.text}</p>
-
               <small>
                 {comment.createdAt
                   ? new Date(comment.createdAt).toLocaleString(undefined, {
@@ -122,15 +111,17 @@ function Comments({ productId }) {
                   : "Just now"}
               </small>
 
-              {(currentUserId === comment.userId?.toString() ||
-                user?.role === "admin") && (
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(comment._id)}
-                >
-                  Delete Comment
-                </button>
-              )}
+              {/* delete button only for owner or admin */}
+              {user &&
+                (currentUserId === comment.userId?.toString() ||
+                  user?.role === "admin") && (
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(comment._id)}
+                  >
+                    Delete Comment
+                  </button>
+                )}
             </div>
           ))
         ) : (

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
 import { FaHeart } from "react-icons/fa";
+import heartSVG from "../src/assets/img/heart.svg";
 
 function Dashboard() {
   const [products, setProducts] = useState([]);
@@ -92,6 +93,13 @@ function Dashboard() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    const { productName, brand, usageType, category, ingredients } = formData;
+
+    if (!productName || !brand || !usageType || !category || !ingredients) {
+      alert("Please fill out all fields before submitting.");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:5000/api/products", {
         method: "POST",
@@ -232,13 +240,140 @@ function Dashboard() {
   };
 
   return (
-    <div className="page-container">
-      <header className="main-header">
-        <div>{user && <h2>Welcome back, {user.username}!</h2>}</div>
+    <div className="page-container bkgd-green">
+      <header
+        className="main-header"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "1rem",
+        }}
+      >
+        {/* {user ? (
+          <h2>Welcome back, {user.username}!</h2>
+        ) : (
+          <>
+            <span>Please log in to leave a comment.</span>
+            <button
+              className="login-btn"
+              onClick={() => Link("/login")}
+              style={{
+                marginLeft: "1rem",
+                padding: "0.5rem 1rem",
+                cursor: "pointer",
+              }}
+            >
+              Login
+            </button>
+          </>
+        )} */}
+
+        {user ? (
+          <h2>Welcome back, {user.username}!</h2>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <h2>Please log in to leave a comment.</h2>
+            <Link to="/login">
+              <button
+                className="login-btn"
+                style={{
+                  marginLeft: "1rem",
+                  padding: "0.5rem 1rem",
+                  cursor: "pointer",
+                }}
+              >
+                Login
+              </button>
+            </Link>
+          </div>
+        )}
       </header>
 
       <div className="content-wrapper">
         <div className="left-panel">
+          <div className="filters">
+            <h3 className="h3-ivy">Filter</h3>
+
+            {/* ✅ ADMIN ONLY SECTION */}
+            {user?.role === "admin" && (
+              <>
+                <form onSubmit={handleSubmit}>
+                  <h4>Add New Product</h4>
+
+                  <label>Product Name</label>
+                  <input
+                    name="productName"
+                    value={formData.productName}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <label>Brand</label>
+                  <input
+                    name="brand"
+                    value={formData.brand}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <label>Usage Type</label>
+                  <input
+                    name="usageType"
+                    value={formData.usageType}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <label>Category</label>
+                  <input
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <label>Ingredients</label>
+                  <input
+                    name="ingredients"
+                    value={formData.ingredients}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <button type="submit">Add Product</button>
+                </form>
+
+                <hr />
+              </>
+            )}
+
+            {/* ✅ ALWAYS VISIBLE */}
+            <h4>Filter Products</h4>
+
+            <label>Search</label>
+            <input
+              type="text"
+              placeholder="Search by name, brand, category..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+            <label>Filter by Brand</label>
+            <select
+              value={selectedBrand}
+              onChange={(e) => setSelectedBrand(e.target.value)}
+            >
+              <option value="">All Brands</option>
+              {uniqueBrands.map((brand) => (
+                <option key={brand} value={brand}>
+                  {brand}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        {/* <div className="left-panel">
           <div className="filters">
             <h3 className="h3-ivy">Filter</h3>
             <form onSubmit={handleSubmit}>
@@ -257,6 +392,7 @@ function Dashboard() {
                 name="brand"
                 value={formData.brand}
                 onChange={handleChange}
+                required
               />
 
               <label>Usage Type</label>
@@ -264,6 +400,7 @@ function Dashboard() {
                 name="usageType"
                 value={formData.usageType}
                 onChange={handleChange}
+                required
               />
 
               <label>Category</label>
@@ -271,6 +408,7 @@ function Dashboard() {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
+                required
               />
 
               <label>Ingredients</label>
@@ -278,6 +416,7 @@ function Dashboard() {
                 name="ingredients"
                 value={formData.ingredients}
                 onChange={handleChange}
+                required
               />
 
               <button type="submit">Add Product</button>
@@ -308,12 +447,16 @@ function Dashboard() {
               </select>
             </form>
           </div>
-        </div>
+        </div> */}
 
         <div className="right-panel">
           <div className="products-wrapper">
             <div className="product-grid">
-              {filteredProducts.slice(0, visibleCount).map((product) => {
+              {(searchTerm
+                ? filteredProducts
+                : filteredProducts.slice(0, visibleCount)
+              ).map((product) => {
+                // {filteredProducts.slice(0, visibleCount).map((product) => {
                 const nameParts = product.productName.split(",");
                 const amount =
                   nameParts.length > 1 ? nameParts.pop().trim() : "";
@@ -350,18 +493,26 @@ function Dashboard() {
                           <button>See Details</button>
                         </Link>
 
-                        {savedProductIDs.includes(product._id) ? (
-                          <button
-                            onClick={() => handleRemoveProduct(product._id)}
-                          >
-                            Remove from Favourites
-                          </button>
+                        {/* Only show save/remove buttons if user is logged in */}
+                        {user ? (
+                          savedProductIDs.includes(product._id) ? (
+                            <button
+                              onClick={() => handleRemoveProduct(product._id)}
+                            >
+                              Remove from Favourites
+                            </button>
+                          ) : (
+                            <button
+                              className="heart-button"
+                              onClick={() => handleSaveProduct(product._id)}
+                            >
+                              <img src={heartSVG} alt="Save Ingredient" />
+                            </button>
+                          )
                         ) : (
-                          <button
-                            onClick={() => handleSaveProduct(product._id)}
-                          >
-                            Save to Favourites
-                          </button>
+                          <p style={{ fontStyle: "italic", color: "#888" }}>
+                            Login to save products
+                          </p>
                         )}
                       </div>
 
@@ -379,7 +530,7 @@ function Dashboard() {
             </div>
 
             {/* BUTTON OUTSIDE GRID */}
-            {products.length >= visibleCount && (
+            {!searchTerm && products.length >= visibleCount && (
               <div style={{ textAlign: "center", margin: "20px 0" }}>
                 <button
                   onClick={handleSeeMore}

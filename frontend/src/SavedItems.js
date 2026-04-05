@@ -90,23 +90,36 @@ function SavedItems() {
   };
   const handleRemoveIngredient = async (id) => {
     try {
+      const authToken = token?.trim();
+      if (!authToken) {
+        alert("You are not logged in!");
+        return;
+      }
+
       const response = await fetch(
-        `http://localhost:5000/api/ingredients/${id}`,
+        "http://localhost:5000/api/auth/remove-ingredient",
         {
-          method: "DELETE",
+          method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ FIX
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
           },
+          body: JSON.stringify({ ingredientId: id }),
         },
       );
-      if (!response.ok) throw new Error("Failed to delete ingredient");
-      setIngredient(ingredient.filter((ingredient) => ingredient._id !== id));
+
+      if (!response.ok) {
+        const errMsg = await response.text();
+        throw new Error(errMsg);
+      }
+
+      // Remove locally from UI
+      setSavedIngredientIDs((prev) => prev.filter((pid) => pid !== id));
     } catch (err) {
       console.error(err);
       alert(err.message);
     }
   };
-
   return (
     <div className="page-container bkgd-yellow">
       <header
@@ -184,10 +197,8 @@ function SavedItems() {
                         <button
                           onClick={() => handleRemoveProducts(product._id)}
                         >
-                          
                           Remove from Favourites
                         </button>
-                        
                       </div>
                     </div>
                   );

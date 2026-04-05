@@ -31,7 +31,7 @@ function Login() {
   }
 
   return (
-    <div>
+    <div className="page-container bkgd-green">
       <div className="login-page">
         {/* Left image */}
         <div className="login-image">
@@ -71,7 +71,7 @@ function Login() {
       </div>
 
       {/* Preview products now spans the full width under both columns */}
-      <PreviewProducts />
+      {/* <PreviewProducts /> */}
     </div>
   );
 }
