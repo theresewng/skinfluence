@@ -662,6 +662,7 @@ button:hover {
 .fav-ingredients-section article,
 .comments-section article {
   padding: 1.25rem 1rem;
+  margin-bottom: 0.8rem;
 
   display: flex;
   flex-direction: column;
