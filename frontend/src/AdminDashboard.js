@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import profile from "./assets/img/profile-placeholder.png";
 
@@ -157,7 +157,11 @@ function AdminDashboard() {
                 <div className="account-actions">
                   {user.role !== "admin" && (
                     <>
-                      <button className="activity-button">View Activity</button>
+                      <Link to={`/activity/${user.id}`}>
+                        <button className="activity-button">
+                          View Activity
+                        </button>
+                      </Link>
                       <button
                         className="delete-button"
                         onClick={() => handleDelete(user.id, user.role)}

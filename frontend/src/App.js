@@ -107,10 +107,10 @@ function AppRoutes() {
           element={
             // Evaluate admin role before navigating to account activity
             user?.role === "admin" ? (
-              // <ProtectedRoute>
-              <AccountActivity />
+              <ProtectedRoute>
+                <AccountActivity />
+              </ProtectedRoute>
             ) : (
-              // </ProtectedRoute>
               <Navigate to={token ? "/dashboard" : "/login"} />
             )
           }

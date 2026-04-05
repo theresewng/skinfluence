@@ -38,17 +38,6 @@ function AccountActivity() {
     }
   };
 
-  // Filter users based on search term and selected user role
-  const filteredMembers = members.filter((user) => {
-    const term = searchTerm.toLowerCase();
-    const username = user.username?.toLowerCase() || "";
-    const matchesSearch = username.includes(term);
-    const matchesUserRole = selectedUserRole
-      ? user.role === selectedUserRole
-      : true;
-    return matchesSearch && matchesUserRole;
-  });
-
   // Handle delete user
   const handleDelete = async (userId, userRole) => {
     // Prevent deleting other admins
@@ -87,83 +76,52 @@ function AccountActivity() {
 
   return (
     <div className="page-container bkgd-purple">
-      <header
-        className="main-header"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <h2>Accounts</h2>
+      <div className="space-between">
+        <button>← Back to Admin Dashboard</button>
+        <button className="delete-button">Delete This Account</button>
+      </div>
+
+      <header className="main-header">
+        <p>Viewing account activity for…</p>
+        <h2>Username</h2>
       </header>
 
-      <div className="content-wrapper">
-        <div className="left-panel">
-          <div className="filters">
-            <h3 className="h3-ivy">Search Members</h3>
-            <form>
-              <label>By Username</label>
-              <input
-                name="username"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                required
-              />
-              <label>By User Role</label>
-              <select
-                value={selectedUserRole}
-                onChange={(e) => setSelectedUserRole(e.target.value)}
-              >
-                <option value="">All Users</option>
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-              </select>
-            </form>
-          </div>
-        </div>
+      <div className="three-col-grid content-wrapper">
+        {/* Favourite Products */}
+        <section className="fav-products-section">
+          <h3>Favourite Products</h3>
+          <article>
+            <p>No. 7</p>
+            <h4>
+              Hydra Luminous Aqua Release Skin Perfector Tinted Moisturiser
+            </h4>
+            <button>Go to Product</button>
+          </article>
+        </section>
 
-        <div className="right-panel">
-          {filteredMembers.length === 0 ? (
-            <p>No members found. Please try a different search or filter.</p>
-          ) : (
-            filteredMembers.map((user) => (
-              <article key={user?.id} className="account-card">
-                <div className="account-info">
-                  {/* Display username */}
-                  <div className="username-section">
-                    <label>Username</label>
-                    <h3 className="username">{user?.username}</h3>
-                  </div>
+        {/* Favourite Ingredients */}
+        <section className="fav-ingredients-section">
+          <h3>Favourite Ingredients</h3>
+          <article className="activity-card">
+            <h4>Alanine</h4>
+            <button>Go to Ingredient</button>
+          </article>
+        </section>
 
-                  {/* Display role */}
-                  <div className="role-section">
-                    <label>Role</label>
-                    <div className="tag-container">
-                      <p className={`tag ${user?.role?.toLowerCase()}`}>
-                        {user?.role || "No role assigned"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                {/* Display buttons, if not admin */}
-                <div className="account-actions">
-                  {user.role !== "admin" && (
-                    <>
-                      <button className="activity-button">View Activity</button>
-                      <button
-                        className="delete-button"
-                        onClick={() => handleDelete(user.id, user.role)}
-                      >
-                        Delete Account
-                      </button>
-                    </>
-                  )}
-                </div>
-              </article>
-            ))
-          )}
-        </div>
+        {/* Comments */}
+        <section className="comments-section">
+          <h3>Comments</h3>
+          <article className="activity-card">
+            <h4>
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            </h4>
+            <p>
+              for Hydra Luminous Aqua Release Skin Perfector Tinted Moisturiser
+            </p>
+            <button>Go to Comment</button>
+          </article>
+        </section>
       </div>
     </div>
   );
