@@ -97,7 +97,8 @@ function ProductDetails() {
               {openSection === "comments" && (
                 <div className="accordion-body">
                   {ingredient?._id ? (
-                    <Comments productId={ingredient._id} />
+                    // Pass ingredientId instead of productId so comments are saved with ingredientId
+                    <Comments ingredientId={ingredient._id} />
                   ) : (
                     <p>No comments available.</p>
                   )}

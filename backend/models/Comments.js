@@ -5,7 +5,10 @@ const CommentSchema = new mongoose.Schema(
     productId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
-      required: true,
+    },
+    ingredientId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Ingredient",
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
