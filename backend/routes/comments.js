@@ -67,3 +67,18 @@ router.delete("/:commentId", verifyToken, async (req, res) => {
 });
 
 module.exports = router;
+
+// GET comments by user ID (for admin to view user activity)
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const comments = await Comment.find({
+      userId: req.params.userId,
+    }).sort({ createdAt: -1 });
+
+    res.json(comments);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;

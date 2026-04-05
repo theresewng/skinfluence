@@ -14,6 +14,7 @@ import Register from "./Register";
 import ProductDetails from "./ProductDetails";
 import SavedItems from "./SavedItems";
 import AdminDashboard from "./AdminDashboard";
+import AccountActivity from "./AccountActivity";
 import IngredientDashboard from "./IngredientDashboard";
 import IngredientDetails from "./IngredientDetails";
 
@@ -59,6 +60,21 @@ function AppRoutes() {
             user?.role === "admin" ? (
               <ProtectedRoute>
                 <AdminDashboard />
+              </ProtectedRoute>
+            ) : (
+              <Navigate to={token ? "/dashboard" : "/login"} />
+            )
+          }
+        />
+
+        {/* Account Activity page */}
+        <Route
+          path="/activity/:id"
+          element={
+            // Evaluate admin role before navigating to account activity
+            user?.role === "admin" ? (
+              <ProtectedRoute>
+                <AccountActivity />
               </ProtectedRoute>
             ) : (
               <Navigate to={token ? "/dashboard" : "/login"} />

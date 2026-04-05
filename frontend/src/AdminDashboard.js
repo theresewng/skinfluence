@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import profile from "./assets/img/profile-placeholder.png";
 
 function AdminDashboard() {
   const [members, setMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedUserRole, setSelectedUserRole] = useState("");
 
   const navigate = useNavigate();
   const { token, user } = useContext(AuthContext);
@@ -38,15 +39,25 @@ function AdminDashboard() {
     }
   };
 
-  // Filter users based on search term
+  // Filter users based on search term and selected user role
   const filteredMembers = members.filter((user) => {
     const term = searchTerm.toLowerCase();
     const username = user.username?.toLowerCase() || "";
-    return username.includes(term);
+    const matchesSearch = username.includes(term);
+    const matchesUserRole = selectedUserRole
+      ? user.role === selectedUserRole
+      : true;
+    return matchesSearch && matchesUserRole;
   });
 
   // Handle delete user
-  const handleDelete = async (userId) => {
+  const handleDelete = async (userId, userRole) => {
+    // Prevent deleting other admins
+    if (userRole === "admin") {
+      alert("You cannot delete admin accounts.");
+      return;
+    }
+
     // Confirm before deleting
     if (!window.confirm("Are you sure you want to delete this account?")) {
       return;
@@ -93,23 +104,32 @@ function AdminDashboard() {
           <div className="filters">
             <h3 className="h3-ivy">Search Members</h3>
             <form>
-              <label>Username</label>
+              <label>By Username</label>
               <input
                 name="username"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 required
               />
+              <label>By User Role</label>
+              <select
+                value={selectedUserRole}
+                onChange={(e) => setSelectedUserRole(e.target.value)}
+              >
+                <option value="">All Users</option>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
             </form>
           </div>
         </div>
 
         <div className="right-panel">
-          {members.length === 0 ? (
-            <p>No members found.</p>
+          {filteredMembers.length === 0 ? (
+            <p>No members found. Please try a different search or filter.</p>
           ) : (
             filteredMembers.map((user) => (
-              <div key={user.id} className="account-card">
+              <article key={user?.id} className="account-card">
                 <img
                   src={profile}
                   width="55px"
@@ -117,23 +137,41 @@ function AdminDashboard() {
                   alt="" // mark as decorative
                 />
                 <div className="account-info">
-                  <label>Username</label>
-                  <p>{user.username}</p>
+                  {/* Display username */}
+                  <div className="username-section">
+                    <label>Username</label>
+                    <h3 className="username">{user?.username}</h3>
+                  </div>
+
+                  {/* Display role */}
+                  <div className="role-section">
+                    <label>Role</label>
+                    <div className="tag-container">
+                      <p className={`tag ${user?.role?.toLowerCase()}`}>
+                        {user?.role || "No role assigned"}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="account-info">
-                  <label>Role</label>
-                  <p>{user.role || "No role assigned"}</p>
-                </div>
+                {/* Display buttons, if not admin */}
                 <div className="account-actions">
-                  <button className="details-button">View Details</button>
-                  <button
-                    className="delete-button"
-                    onClick={() => handleDelete(user.id)}
-                  >
-                    Delete Account
-                  </button>
+                  {user.role !== "admin" && (
+                    <>
+                      <Link to={`/activity/${user.id}`}>
+                        <button className="activity-button">
+                          View Activity
+                        </button>
+                      </Link>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDelete(user.id, user.role)}
+                      >
+                        Delete Account
+                      </button>
+                    </>
+                  )}
                 </div>
-              </div>
+              </article>
             ))
           )}
         </div>

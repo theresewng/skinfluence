@@ -109,6 +109,26 @@ router.delete("/users/:id", async (req, res) => {
   }
 });
 
+// GET user by ID (for admin to view user activity)
+router.get("/users/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({
+      id: user._id,
+      username: user.username,
+      role: user.role,
+      savedProductIDs: user.savedProductIDs,
+      savedIngredientIDs: user.savedIngredientIDs,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET user data (protected - includes savedProductIDs)
 router.get("/user", verifyToken, async (req, res) => {
   try {
