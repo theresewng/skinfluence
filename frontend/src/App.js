@@ -12,7 +12,7 @@ import Login from "./Login";
 import ProtectedRoute from "./ProtectedRoute";
 import Register from "./Register";
 import ProductDetails from "./ProductDetails";
-import SavedItems from "./SavedItems";
+import MyProfile from "./Profile";
 import AdminDashboard from "./AdminDashboard";
 import AccountActivity from "./AccountActivity";
 import IngredientDashboard from "./IngredientDashboard";
@@ -46,10 +46,10 @@ function AppRoutes() {
 
         {/* Protected routes (actions requiring login) */}
         <Route
-          path="/saved"
+          path="/profile"
           element={
             <ProtectedRoute>
-              <SavedItems />
+              <MyProfile />
             </ProtectedRoute>
           }
         />

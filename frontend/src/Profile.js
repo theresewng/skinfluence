@@ -6,7 +6,7 @@ import { AuthContext } from "./context/AuthContext";
 import heartSVG from "../src/assets/img/heart.svg";
 import filledHeart from "../src/assets/img/filledHeart.svg";
 
-function SavedItems() {
+function MyProfile() {
   const [products, setProducts] = useState([]);
   const [savedProductIDs, setSavedProductIDs] = useState([]);
   const [ingredient, setIngredient] = useState([]);
@@ -301,4 +301,4 @@ function SavedItems() {
   );
 }
 
-export default SavedItems;
+export default MyProfile;
