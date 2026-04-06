@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
 
+import heartSVG from "../src/assets/img/heart.svg";
+import filledHeart from "../src/assets/img/filledHeart.svg";
+
 function SavedItems() {
   const [products, setProducts] = useState([]);
   const [savedProductIDs, setSavedProductIDs] = useState([]);
@@ -115,6 +118,7 @@ function SavedItems() {
 
       // Remove locally from UI
       setSavedIngredientIDs((prev) => prev.filter((pid) => pid !== id));
+      alert("Removed from favourites!");
     } catch (err) {
       console.error(err);
       alert(err.message);
@@ -194,11 +198,36 @@ function SavedItems() {
                             <button>See Details</button>
                           </Link>
                         </div>
-                        <button
+
+                        {user ? (
+                          <button
+                            className={`heart-button ${
+                              savedProductIDs.includes(product._id)
+                                ? "saved"
+                                : ""
+                            }`}
+                            onClick={() => handleRemoveProducts(product._id)}
+                          >
+                            <img
+                              src={
+                                savedProductIDs.includes(product._id)
+                                  ? filledHeart
+                                  : heartSVG
+                              }
+                              alt="Favourite"
+                            />
+                          </button>
+                        ) : (
+                          <p style={{ fontStyle: "italic", color: "#888" }}>
+                            Login to save products
+                          </p>
+                        )}
+
+                        {/* <button
                           onClick={() => handleRemoveProducts(product._id)}
                         >
                           Remove from Favourites
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   );
@@ -229,11 +258,35 @@ function SavedItems() {
                         <button>See Details</button>
                       </Link>
 
-                      <button
+                      {user ? (
+                        <button
+                          className={`heart-button ${
+                            savedIngredientIDs.includes(ingredient._id)
+                              ? "saved"
+                              : ""
+                          }`}
+                          onClick={() => handleRemoveIngredient(ingredient._id)}
+                        >
+                          <img
+                            src={
+                              savedIngredientIDs.includes(ingredient._id)
+                                ? filledHeart
+                                : heartSVG
+                            }
+                            alt="Favourite"
+                          />
+                        </button>
+                      ) : (
+                        <p style={{ fontStyle: "italic", color: "#888" }}>
+                          Login to save ingredients
+                        </p>
+                      )}
+
+                      {/* <button
                         onClick={() => handleRemoveIngredient(ingredient._id)}
                       >
                         Remove from Favourites
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 ))}
