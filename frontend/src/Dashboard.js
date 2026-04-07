@@ -2,8 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
-import heartSVG from "../src/assets/img/heart.svg";
+import blankHeart from "../src/assets/img/blankHeart.svg";
 import filledHeart from "../src/assets/img/filledHeart.svg";
+import hoverHeart from "../src/assets/img/hoverHeart.svg";
 
 function Dashboard() {
   const [products, setProducts] = useState([]);
@@ -21,6 +22,7 @@ function Dashboard() {
   const [savedProducts, setSavedProducts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [savedProductIDs, setSavedProductIDs] = useState([]);
+  const [hoveredProductId, setHoveredProductId] = useState(null); // For hover state of heart icon
   const [allBrands, setAllBrands] = useState([]);
   const { token, user } = useContext(AuthContext);
 
@@ -369,12 +371,17 @@ function Dashboard() {
                                 ? handleRemoveProduct(product._id)
                                 : handleSaveProduct(product._id)
                             }
+                            // Add hover state for heart icon
+                            onMouseEnter={() => setHoveredProductId(product._id)}
+                            onMouseLeave={() => setHoveredProductId(null)}
                           >
                             <img
                               src={
-                                savedProductIDs.includes(product._id)
+                                hoveredProductId === product._id
+                                  ? hoverHeart
+                                  : savedProductIDs.includes(product._id)
                                   ? filledHeart
-                                  : heartSVG
+                                  : blankHeart
                               }
                               alt="Favourite"
                             />

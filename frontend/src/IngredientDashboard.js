@@ -2,8 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
-import heartSVG from "../src/assets/img/heart.svg";
+import blankHeart from "../src/assets/img/blankHeart.svg";
 import filledHeart from "../src/assets/img/filledHeart.svg";
+import hoverHeart from "../src/assets/img/hoverHeart.svg";
 
 function IngredientDashboard() {
   const [ingredients, setIngredients] = useState([]);
@@ -19,6 +20,7 @@ function IngredientDashboard() {
   const [savedIngredients, setSavedIngredients] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [allCategories, setAllCategories] = useState([]);
+  const [hoveredIngredientId, setHoveredIngredientId] = useState(null); // For hover state of heart icon
 
   const { token, user } = useContext(AuthContext);
 
@@ -270,12 +272,19 @@ function IngredientDashboard() {
                           onClick={() =>
                             toggleFavouriteIngredient(ingredient._id)
                           }
+                          // Add hover state for heart icon
+                          onMouseEnter={() =>
+                            setHoveredIngredientId(ingredient._id)
+                          }
+                          onMouseLeave={() => setHoveredIngredientId(null)}
                         >
                           <img
                             src={
-                              savedIngredients.includes(ingredient._id)
-                                ? filledHeart
-                                : heartSVG
+                              hoveredIngredientId === ingredient._id
+                                ? hoverHeart
+                                : savedIngredients.includes(ingredient._id)
+                                  ? filledHeart
+                                  : blankHeart
                             }
                             alt="Favourite"
                           />
