@@ -278,24 +278,6 @@ function Dashboard() {
           marginBottom: "1rem",
         }}
       >
-        {/* {user ? (
-          <h2>Welcome back, {user.username}!</h2>
-        ) : (
-          <>
-            <span>Please log in to leave a comment.</span>
-            <button
-              className="login-btn"
-              onClick={() => Link("/login")}
-              style={{
-                marginLeft: "1rem",
-                padding: "0.5rem 1rem",
-                cursor: "pointer",
-              }}
-            >
-              Login
-            </button>
-          </>
-        )} */}
 
         {user ? (
           <h2>Welcome back, {user.username}!</h2>
@@ -401,81 +383,6 @@ function Dashboard() {
             </select>
           </div>
         </div>
-        {/* <div className="left-panel">
-          <div className="filters">
-            <h3 className="h3-ivy">Filter</h3>
-            <form onSubmit={handleSubmit}>
-              <h4>Add New Product</h4>
-
-              <label>Product Name</label>
-              <input
-                name="productName"
-                value={formData.productName}
-                onChange={handleChange}
-                required
-              />
-
-              <label>Brand</label>
-              <input
-                name="brand"
-                value={formData.brand}
-                onChange={handleChange}
-                required
-              />
-
-              <label>Usage Type</label>
-              <input
-                name="usageType"
-                value={formData.usageType}
-                onChange={handleChange}
-                required
-              />
-
-              <label>Category</label>
-              <input
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                required
-              />
-
-              <label>Ingredients</label>
-              <input
-                name="ingredients"
-                value={formData.ingredients}
-                onChange={handleChange}
-                required
-              />
-
-              <button type="submit">Add Product</button>
-
-              <hr />
-
-              <h4>Filter Products</h4>
-
-              <label>Search</label>
-              <input
-                type="text"
-                placeholder="Search by name, brand, category..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-
-              <label>Filter by Brand</label>
-              <select
-                value={selectedBrand}
-                onChange={(e) => setSelectedBrand(e.target.value)}
-              >
-                <option value="">All Brands</option>
-                {uniqueBrands.map((brand) => (
-                  <option key={brand} value={brand}>
-                    {brand}
-                  </option>
-                ))}
-              </select>
-            </form>
-          </div>
-        </div> */}
 
         <div className="right-panel">
           <div className="products-wrapper">
@@ -552,16 +459,6 @@ function Dashboard() {
                 <button onClick={handleSeeMore}>See More</button>
               </div>
             )}
-            {/* {!searchTerm && products.length >= visibleCount && (
-              <div style={{ textAlign: "center", margin: "20px 0" }}>
-                <button
-                  onClick={handleSeeMore}
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
-                >
-                  See More
-                </button>
-              </div>
-            )} */}
           </div>
         </div>
       </div>
