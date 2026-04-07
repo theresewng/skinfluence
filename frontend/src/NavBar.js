@@ -38,7 +38,7 @@ function NavBar() {
 
         {/* Conditional User Profile */}
         {user && user.role === "user" && (
-          <Link className="nav-button" to="/saved">
+          <Link className="nav-button" to="/profile">
             My Profile
           </Link>
         )}
