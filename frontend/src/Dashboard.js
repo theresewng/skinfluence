@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
 import { FaHeart } from "react-icons/fa";
+// import heartSVG from "../src/assets/img/heart.svg";
 import heartSVG from "../src/assets/img/heart.svg";
+import filledHeart from "../src/assets/img/filledHeart.svg";
 
 function Dashboard() {
   const [products, setProducts] = useState([]);
@@ -233,6 +235,7 @@ function Dashboard() {
 
       // update local state
       setSavedProductIDs((prev) => prev.filter((pid) => pid !== id));
+      alert("Removed from favourites");
     } catch (err) {
       console.error(err);
       alert(err.message);
@@ -493,22 +496,28 @@ function Dashboard() {
                           <button>See Details</button>
                         </Link>
 
-                        {/* Only show save/remove buttons if user is logged in */}
                         {user ? (
-                          savedProductIDs.includes(product._id) ? (
-                            <button
-                              onClick={() => handleRemoveProduct(product._id)}
-                            >
-                              Remove from Favourites
-                            </button>
-                          ) : (
-                            <button
-                              className="heart-button"
-                              onClick={() => handleSaveProduct(product._id)}
-                            >
-                              <img src={heartSVG} alt="Save Ingredient" />
-                            </button>
-                          )
+                          <button
+                            className={`heart-button ${
+                              savedProductIDs.includes(product._id)
+                                ? "saved"
+                                : ""
+                            }`}
+                            onClick={() =>
+                              savedProductIDs.includes(product._id)
+                                ? handleRemoveProduct(product._id)
+                                : handleSaveProduct(product._id)
+                            }
+                          >
+                            <img
+                              src={
+                                savedProductIDs.includes(product._id)
+                                  ? filledHeart
+                                  : heartSVG
+                              }
+                              alt="Favourite"
+                            />
+                          </button>
                         ) : (
                           <p style={{ fontStyle: "italic", color: "#888" }}>
                             Login to save products

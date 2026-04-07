@@ -205,6 +205,8 @@ button:hover {
   margin-top: auto;
   display: flex;
   gap: 8px;
+  justify-content: center;
+  align-items: center; /* optional */
 }
 .heart-button {
   position: absolute;
@@ -691,4 +693,3 @@ button:hover {
   font-size: 0.875rem;
   color: var(--dark-grey);
 }
-
