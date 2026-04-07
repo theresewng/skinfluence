@@ -532,8 +532,8 @@ button:hover {
 }
 
 .nav-button {
-  background-color: #fefefe;
-  border: 1px solid #28282b;
+  background-color: var(--white);
+  border: 1px solid var(--black);
   border-radius: 2rem;
   padding: 0.5rem 2rem;
   margin-bottom: 0.125rem;
@@ -542,13 +542,28 @@ button:hover {
   font-size: 0.875rem;
   font-weight: normal;
   text-decoration: none;
-  color: #28282b;
+  color: var(--black);
   cursor: pointer;
 }
-
-.nav-button:hover {
-  background-color: #e5e5e5;
+.nav-button:hover,
+.nav-button:focus {
   transition: background-color 0.2s ease;
+}
+.nav-button.blue:hover,
+.nav-button.blue:focus {
+  background-color: var(--blue);
+}
+.nav-button.green:hover,
+.nav-button.green:focus {
+  background-color: var(--green);
+}
+.nav-button.yellow:hover,
+.nav-button.yellow:focus {
+  background-color: var(--yellow);
+}
+.nav-button.purple:hover,
+.nav-button.purple:focus {
+  background-color: var(--purple);
 }
 
 /* Transparency */

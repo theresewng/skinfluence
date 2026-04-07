@@ -27,25 +27,25 @@ function NavBar() {
 
       <div className="nav-links">
         {/* Skincare Products */}
-        <Link className="nav-button" to="/">
+        <Link className="nav-button green" to="/">
           Products
         </Link>
 
         {/* Skincare Ingredients */}
-        <Link className="nav-button" to="/ingredients">
+        <Link className="nav-button blue" to="/ingredients">
           Ingredients
         </Link>
 
         {/* Conditional User Profile */}
         {user && user.role === "user" && (
-          <Link className="nav-button" to="/profile">
+          <Link className="nav-button yellow" to="/profile">
             My Profile
           </Link>
         )}
 
         {/* Conditional Admin Dashboard */}
         {user && user.role === "admin" && (
-          <Link className="nav-button" to="/admin">
+          <Link className="nav-button purple" to="/admin">
             Admin
           </Link>
         )}
