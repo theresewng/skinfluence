@@ -26,6 +26,13 @@ function NavBar() {
       </div>
 
       <div className="nav-links">
+        {/* Conditional User Profile */}
+        {user && user.role === "user" && (
+          <Link className="nav-button yellow" to="/profile">
+            My Profile
+          </Link>
+        )}
+
         {/* Skincare Products */}
         <Link className="nav-button green" to="/">
           Products
@@ -35,13 +42,6 @@ function NavBar() {
         <Link className="nav-button blue" to="/ingredients">
           Ingredients
         </Link>
-
-        {/* Conditional User Profile */}
-        {user && user.role === "user" && (
-          <Link className="nav-button yellow" to="/profile">
-            My Profile
-          </Link>
-        )}
 
         {/* Conditional Admin Dashboard */}
         {user && user.role === "admin" && (
