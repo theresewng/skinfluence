@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./App.css";
 import Comments from "./CommentsComponent";
@@ -7,6 +7,22 @@ function ProductDetails() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [openSection, setOpenSection] = useState(null);
+
+  const [ingredients, setIngredients] = useState({}); // key: ingredient name, value: ingredient object
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/ingredients")
+      .then((res) => res.json())
+      .then((data) => {
+        // create a map for fast lookup by name (lowercase)
+        const map = {};
+        data.forEach((ing) => {
+          map[ing.name.toLowerCase()] = ing;
+        });
+        setIngredients(map);
+      })
+      .catch((err) => console.error("Error fetching ingredients:", err));
+  }, []);
 
   useEffect(() => {
     fetch(`http://localhost:5000/api/products/${id}`)
@@ -24,6 +40,10 @@ function ProductDetails() {
   const nameParts = product.productName.split(",");
   const amount = nameParts.length > 1 ? nameParts.pop().trim() : "";
   const cleanName = nameParts.join(",").trim();
+
+  const ingredientList = product.ingredients
+    ? product.ingredients.split(",").map((i) => i.trim())
+    : [];
 
   function toggleSection(section) {
     setOpenSection(openSection === section ? null : section);
@@ -67,10 +87,30 @@ function ProductDetails() {
                     {openSection === "ingredients" ? "−" : "+"}
                   </span>
                 </button>
-
                 {openSection === "ingredients" && (
                   <div className="accordion-body">
-                    {product.ingredients || "No ingredients listed."}
+                    {ingredientList.length === 0 && (
+                      <p>No ingredients listed.</p>
+                    )}
+                    {ingredientList.map((ing, idx) => {
+                      const ingKey = ing.toLowerCase();
+                      const exists = ingredients[ingKey];
+                      return (
+                        <span key={idx}>
+                          {exists ? (
+                            <Link
+                              to={`/ingredients/${exists._id}`}
+                              className="ingredient-link"
+                            >
+                              {ing}
+                            </Link>
+                          ) : (
+                            ing
+                          )}
+                          {idx < ingredientList.length - 1 ? ", " : ""}
+                        </span>
+                      );
+                    })}
                   </div>
                 )}
               </div>
