@@ -8,70 +8,129 @@ import filledHeart from "../src/assets/img/filledHeart.svg";
 function IngredientDashboard() {
   const [ingredients, setIngredients] = useState([]);
   const [visibleCount, setVisibleCount] = useState(30);
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "",
+    short_description: "",
+    what_is_it: "",
+  });
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [savedIngredients, setSavedIngredients] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [allCategories, setAllCategories] = useState([]);
 
   const { token, user } = useContext(AuthContext);
 
-  // Fetch user saved ingredients on login
+  // Fetch all unique categories for filter dropdown
+  useEffect(() => {
+    fetch("http://localhost:5000/api/ingredients/categories/all")
+      .then((res) => res.json())
+      .then((data) => setAllCategories(data))
+      .catch((err) => console.error(err));
+  }, []);
+
+  // Fetch user saved ingredients
   useEffect(() => {
     if (token) {
       fetch("http://localhost:5000/api/auth/user", {
         headers: { Authorization: `Bearer ${token.trim()}` },
       })
         .then((res) => res.json())
-        .then((data) => {
-          setSavedIngredients(data.savedIngredientIDs || []);
-        })
+        .then((data) => setSavedIngredients(data.savedIngredientIDs || []))
         .catch((err) => console.error("Error fetching user data:", err));
     }
   }, [token]);
 
-  // Fetch ingredients from backend
+  // Initial fetch
   useEffect(() => {
     fetchIngredients(0, 30);
   }, []);
 
-  const fetchIngredients = async (skip, limit) => {
+  // Fetch ingredients from backend
+  const fetchIngredients = async (skip, limit, search = "", category = "") => {
     try {
-      const res = await fetch(`http://localhost:5000/api/ingredients`);
+      const res = await fetch(
+        `http://localhost:5000/api/ingredients?skip=${skip}&limit=${limit}&search=${encodeURIComponent(
+          search,
+        )}&category=${encodeURIComponent(category)}`,
+      );
       const data = await res.json();
+      setHasMore(data.length === limit);
 
       setIngredients((prev) => {
+        if (skip === 0) return data;
+
         const existingIds = new Set(prev.map((i) => i._id));
-        const newIngredients = data.filter((i) => !existingIds.has(i._id));
-        return [...prev, ...newIngredients];
+        const newItems = data.filter((i) => !existingIds.has(i._id));
+
+        return [...prev, ...newItems];
       });
     } catch (err) {
       console.error("Error fetching ingredients:", err);
     }
   };
 
-  const handleSeeMore = () => {
-    fetchIngredients(ingredients.length, 30);
-    setVisibleCount((prev) => prev + 30);
+  // Refetch on search/category change
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchIngredients(0, 30, searchTerm, selectedCategory);
+      setVisibleCount(30);
+    }, 300);
+    return () => clearTimeout(delay);
+  }, [searchTerm, selectedCategory]);
+
+  // Admin form handlers
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Filter ingredients based on search term
-  const filteredIngredients = ingredients.filter((ingredient) => {
-    const term = searchTerm.toLowerCase();
-    const name = ingredient.name?.toLowerCase() || "";
-    const description = ingredient.short_description?.toLowerCase() || "";
-    return name.includes(term) || description.includes(term);
-  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { name, category, short_description, what_is_it } = formData;
 
-  // Save or remove favourite
-  const toggleFavouriteIngredient = async (ingredientId) => {
-    if (!token) {
-      alert("You are not logged in!");
+    if (!name || !category || !short_description || !what_is_it) {
+      alert("Please fill out all fields before submitting.");
       return;
     }
 
-    const isSaved = savedIngredients.includes(ingredientId);
+    try {
+      const response = await fetch("http://localhost:5000/api/ingredients", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.trim()}`,
+        },
+        body: JSON.stringify(formData),
+      });
 
+      if (!response.ok) throw new Error("Failed to add ingredient");
+
+      const newIngredient = await response.json();
+      setIngredients([...ingredients, newIngredient]);
+
+      setFormData({
+        name: "",
+        category: "",
+        short_description: "",
+        what_is_it: "",
+      });
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
+  const handleSeeMore = () => {
+    fetchIngredients(ingredients.length, 30, searchTerm, selectedCategory);
+    setVisibleCount((prev) => prev + 30);
+  };
+
+  const toggleFavouriteIngredient = async (ingredientId) => {
+    if (!token) return alert("You are not logged in!");
+    const isSaved = savedIngredients.includes(ingredientId);
     try {
       const endpoint = isSaved ? "remove-ingredient" : "save-ingredient";
-
       const res = await fetch(`http://localhost:5000/api/auth/${endpoint}`, {
         method: "POST",
         headers: {
@@ -80,10 +139,8 @@ function IngredientDashboard() {
         },
         body: JSON.stringify({ ingredientId }),
       });
-
       if (!res.ok) throw new Error(await res.text());
 
-      // Update only user's saved ingredients in local state
       setSavedIngredients((prev) =>
         isSaved
           ? prev.filter((id) => id !== ingredientId)
@@ -94,6 +151,18 @@ function IngredientDashboard() {
       alert(err.message);
     }
   };
+
+  // Filter ingredients for display
+  const filteredIngredients = ingredients.filter((ingredient) => {
+    const term = searchTerm.toLowerCase();
+    const name = ingredient.name?.toLowerCase() || "";
+    const desc = ingredient.short_description?.toLowerCase() || "";
+    const matchesSearch = name.includes(term) || desc.includes(term);
+    const matchesCategory = selectedCategory
+      ? ingredient.category === selectedCategory
+      : true;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="page-container bkgd-blue">
@@ -116,13 +185,53 @@ function IngredientDashboard() {
               </button>
             </Link>
           </div>
-        )}{" "}
+        )}
       </header>
 
       <div className="content-wrapper">
         <div className="left-panel">
           <div className="filters">
             <h3 className="h3-ivy">Filter</h3>
+
+            {/* Admin only */}
+            {user?.role === "admin" && (
+              <form onSubmit={handleSubmit}>
+                <h4>Add New Ingredient</h4>
+                <label>Name</label>
+                <input
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+                <label>Category</label>
+                <input
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  required
+                />
+                <label>Short Description</label>
+                <input
+                  name="short_description"
+                  value={formData.short_description}
+                  onChange={handleChange}
+                  required
+                />
+                <label>What is it?</label>
+                <input
+                  name="what_is_it"
+                  value={formData.what_is_it}
+                  onChange={handleChange}
+                  required
+                />
+                <button type="submit">Add Ingredient</button>
+                <hr />
+              </form>
+            )}
+
+            {/* Always visible filters */}
+            <h4>Filter Ingredients</h4>
             <label>Search</label>
             <input
               type="text"
@@ -143,17 +252,14 @@ function IngredientDashboard() {
                 <div key={ingredient._id} className="product-card">
                   <div className="product-details">
                     <h3 className="h3-ivy">{ingredient.name}</h3>
-
-                    <h3 className="h3-neue">
-                      <strong>What is it:</strong>
-                    </h3>
-                    <p>{ingredient.what_is_it}</p>
-
+                    {/* <p>{ingredient.short_description}</p> */}
+                    <p>
+                      <strong>What is it:</strong> {ingredient.what_is_it}
+                    </p>
                     <div className="button-group">
                       <Link to={`/ingredients/${ingredient._id}`}>
                         <button>See Details</button>
                       </Link>
-
                       {user ? (
                         <button
                           className={`heart-button ${
@@ -184,6 +290,12 @@ function IngredientDashboard() {
                 </div>
               ))}
             </div>
+
+            {hasMore && (
+              <div style={{ textAlign: "center", margin: "20px 0" }}>
+                <button onClick={handleSeeMore}>See More</button>
+              </div>
+            )}
           </div>
         </div>
       </div>

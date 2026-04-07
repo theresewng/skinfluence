@@ -61,7 +61,6 @@ router.post("/login", async (req, res) => {
     console.log("TOKEN GENERATED:", token);
 
     // 4. send token and user data (including savedProductIDs) back to frontend
-
     res.json({
       token,
       user: {
@@ -79,7 +78,6 @@ router.post("/login", async (req, res) => {
 });
 
 // GET all users (for admin page) - TEMPORARILY REMOVED verifyToken FOR TESTING
-// router.get("/users", verifyToken, async (req, res) => {
 router.get("/users", async (req, res) => {
   try {
     const users = await User.find({}, "_id username role"); // Select _id, username, and role
@@ -174,7 +172,7 @@ router.post("/remove-product", verifyToken, async (req, res) => {
   try {
     const { productId } = req.body;
 
-    const user = await User.findById(req.userId); // ✅ use req.userId
+    const user = await User.findById(req.userId); 
     if (!user) return res.status(404).json({ error: "User not found" });
 
     // remove product ID from savedProductIDs array
@@ -189,7 +187,6 @@ router.post("/remove-product", verifyToken, async (req, res) => {
   }
 });
 
-// Save ingredient to favourites
 // Save ingredient to user's favourites
 router.post("/save-ingredient", verifyToken, async (req, res) => {
   try {

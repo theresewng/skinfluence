@@ -399,7 +399,6 @@ button:hover {
 
 .left-panel {
   flex: 0 0 300px;
-  display: flex;
   justify-content: center;
 }
 

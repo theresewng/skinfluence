@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import "./App.css";
-import PreviewProducts from "./PreviewProducts";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -69,9 +68,6 @@ function Login() {
           </p>
         </div>
       </div>
-
-      {/* Preview products now spans the full width under both columns */}
-      {/* <PreviewProducts /> */}
     </div>
   );
 }

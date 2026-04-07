@@ -3,19 +3,42 @@ const router = express.Router();
 const Product = require("../models/Product");
 const verifyToken = require("../middleware/authMiddleware");
 
-// GET ROUTE (Public - Anyone can see plants)s
+// GET ROUTE (Public - Anyone can see plants)
+// GET all unique brands
+router.get("/brands/all", async (req, res) => {
+  try {
+    const brands = await Product.distinct("brand");
+    res.json(brands);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit) : null;
-    const skip = parseInt(req.query.skip) || 0;
+    const { limit, skip = 0, search = "", brand = "" } = req.query;
 
-    let query = Product.find().skip(skip);
+    const parsedLimit = limit ? parseInt(limit) : null;
+    const parsedSkip = parseInt(skip);
 
-    if (limit) {
-      query = query.limit(limit);
+    const query = {
+      ...(search && {
+        $or: [
+          { productName: { $regex: search, $options: "i" } },
+          { brand: { $regex: search, $options: "i" } },
+          { category: { $regex: search, $options: "i" } },
+        ],
+      }),
+      ...(brand && { brand: { $regex: `^${brand}$`, $options: "i" } }), // use regex for case-insensitive match
+    };
+
+    let dbQuery = Product.find(query).skip(parsedSkip);
+
+    if (parsedLimit) {
+      dbQuery = dbQuery.limit(parsedLimit);
     }
 
-    const products = await query;
+    const products = await dbQuery;
 
     res.json(products);
   } catch (err) {
