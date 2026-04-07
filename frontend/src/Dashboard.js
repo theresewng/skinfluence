@@ -104,9 +104,6 @@ function Dashboard() {
     }
   };
 
-  // Extract unique brands for the dropdown
-  const uniqueBrands = [...new Set(products.map((product) => product.brand))];
-
   function handleChange(e) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
@@ -153,68 +150,6 @@ function Dashboard() {
       alert(err.message);
     }
   }
-
-  const saveProduct = async (id) => {
-    if (!token) return alert("You are not logged in!");
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/save-product",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token.trim()}`,
-          },
-          body: JSON.stringify({ productId: id }),
-        },
-      );
-
-      if (!response.ok) throw new Error(await response.text());
-
-      // Update local state immediately
-      setSavedProducts((prev) => [...prev, id]);
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-  };
-
-  const removeFromFavourites = async (productId) => {
-    const authToken = token?.trim();
-    if (!authToken) {
-      alert("You are not logged in!");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/remove-product",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({ productId }), // just the product ID
-        },
-      );
-
-      if (!response.ok) {
-        const errMsg = await response.text();
-        throw new Error(errMsg);
-      }
-
-      // remove the product locally from state so UI updates immediately
-      setProducts((prevProducts) =>
-        prevProducts.filter((p) => p._id !== productId),
-      );
-
-      alert("Removed from favourites!");
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-  };
 
   const handleSaveProduct = async (id) => {
     if (!token) return alert("You are not logged in!");
@@ -275,7 +210,6 @@ function Dashboard() {
           marginBottom: "1rem",
         }}
       >
-
         {user ? (
           <h2>Welcome back, {user.username}!</h2>
         ) : (
@@ -385,7 +319,6 @@ function Dashboard() {
           <div className="products-wrapper">
             <div className="product-grid">
               {filteredProducts.map((product) => {
-                // {filteredProducts.slice(0, visibleCount).map((product) => {
                 const nameParts = product.productName.split(",");
                 const amount =
                   nameParts.length > 1 ? nameParts.pop().trim() : "";
@@ -450,7 +383,6 @@ function Dashboard() {
               })}
             </div>
 
-            {/* BUTTON OUTSIDE GRID */}
             {hasMore && (
               <div style={{ textAlign: "center", margin: "20px 0" }}>
                 <button onClick={handleSeeMore}>See More</button>
