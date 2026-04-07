@@ -19,12 +19,9 @@ function Dashboard() {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [savedProducts, setSavedProducts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-
-  const { token, user } = useContext(AuthContext);
-
   const [savedProductIDs, setSavedProductIDs] = useState([]);
-
   const [allBrands, setAllBrands] = useState([]);
+  const { token, user } = useContext(AuthContext);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/products/brands/all")
