@@ -27,7 +27,7 @@ function AppRoutes() {
 
       <Routes>
         {/* Redirect root */}
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route path="/" element={<Navigate to="/products" />} />
 
         {/* Public routes */}
         <Route
@@ -37,7 +37,7 @@ function AppRoutes() {
         <Route path="/register" element={<Register />} />
 
         {/* Public Dashboard (product listing viewable by all) */}
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/products" element={<Dashboard />} />
 
         {/* Product & Ingredient details are public */}
         <Route path="/products/:id" element={<ProductDetails />} />
@@ -62,7 +62,7 @@ function AppRoutes() {
                 <AdminDashboard />
               </ProtectedRoute>
             ) : (
-              <Navigate to={token ? "/dashboard" : "/login"} />
+              <Navigate to={token ? "/products" : "/login"} />
             )
           }
         />
@@ -77,7 +77,7 @@ function AppRoutes() {
                 <AccountActivity />
               </ProtectedRoute>
             ) : (
-              <Navigate to={token ? "/dashboard" : "/login"} />
+              <Navigate to={token ? "/products" : "/login"} />
             )
           }
         />
