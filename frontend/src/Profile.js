@@ -1,16 +1,18 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import "./App.css";
 
 import blankHeart from "./assets/img/blankHeart.svg";
 import filledHeart from "./assets/img/filledHeart.svg";
+import hoverHeart from "./assets/img/hoverHeart.svg";
 
 function MyProfile() {
   const [products, setProducts] = useState([]);
   const [savedProductIDs, setSavedProductIDs] = useState([]);
   const [ingredients, setIngredients] = useState([]);
   const [savedIngredientIDs, setSavedIngredientIDs] = useState([]);
+  const [hoveredHeartId, setHoveredHeartId] = useState(null);
   const [comments, setComments] = useState([]);
 
   const { token, user } = useContext(AuthContext);
@@ -160,10 +162,14 @@ function MyProfile() {
                     savedProductIDs.includes(product._id) ? "saved" : ""
                   }`}
                   onClick={() => handleRemoveProducts(product._id)}
+                  onMouseEnter={() => setHoveredHeartId(`product-${product._id}`)}
+                  onMouseLeave={() => setHoveredHeartId(null)}
                 >
                   <img
                     src={
-                      savedProductIDs.includes(product._id)
+                      hoveredHeartId === `product-${product._id}`
+                        ? hoverHeart
+                        : savedProductIDs.includes(product._id)
                         ? filledHeart
                         : blankHeart
                     }
@@ -193,10 +199,14 @@ function MyProfile() {
                     savedIngredientIDs.includes(ingredient._id) ? "saved" : ""
                   }`}
                   onClick={() => handleRemoveIngredients(ingredient._id)}
+                  onMouseEnter={() => setHoveredHeartId(`ingredient-${ingredient._id}`)}
+                  onMouseLeave={() => setHoveredHeartId(null)}
                 >
                   <img
                     src={
-                      savedIngredientIDs.includes(ingredient._id)
+                      hoveredHeartId === `ingredient-${ingredient._id}`
+                        ? hoverHeart
+                        : savedIngredientIDs.includes(ingredient._id)
                         ? filledHeart
                         : blankHeart
                     }
