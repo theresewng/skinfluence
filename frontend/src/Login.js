@@ -20,7 +20,7 @@ function Login() {
       const data = await res.json();
       if (res.ok) {
         login(data.token);
-        navigate("/dashboard");
+        navigate("/products");
       } else {
         alert(data.message || "Login failed");
       }

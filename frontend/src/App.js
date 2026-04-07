@@ -32,7 +32,7 @@ function AppRoutes() {
         {/* Public routes */}
         <Route
           path="/login"
-          element={token ? <Navigate to="/dashboard" /> : <Login />}
+          element={token ? <Navigate to="/products" /> : <Login />}
         />
         <Route path="/register" element={<Register />} />
 
