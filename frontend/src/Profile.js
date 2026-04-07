@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import "./App.css";
 
-import heartSVG from "./assets/img/heart.svg";
+import blankHeart from "./assets/img/blankHeart.svg";
 import filledHeart from "./assets/img/filledHeart.svg";
 
 function MyProfile() {
@@ -165,7 +165,7 @@ function MyProfile() {
                     src={
                       savedProductIDs.includes(product._id)
                         ? filledHeart
-                        : heartSVG
+                        : blankHeart
                     }
                     alt="Favourite"
                   />
@@ -198,7 +198,7 @@ function MyProfile() {
                     src={
                       savedIngredientIDs.includes(ingredient._id)
                         ? filledHeart
-                        : heartSVG
+                        : blankHeart
                     }
                     alt="Favourite"
                   />

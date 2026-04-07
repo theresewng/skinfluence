@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
-import heartSVG from "../src/assets/img/heart.svg";
+import blankHeart from "../src/assets/img/blankHeart.svg";
 import filledHeart from "../src/assets/img/filledHeart.svg";
 
 function IngredientDashboard() {
@@ -275,7 +275,7 @@ function IngredientDashboard() {
                             src={
                               savedIngredients.includes(ingredient._id)
                                 ? filledHeart
-                                : heartSVG
+                                : blankHeart
                             }
                             alt="Favourite"
                           />
