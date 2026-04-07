@@ -82,8 +82,12 @@ function ProductDetails() {
                 className="accordion-header"
                 onClick={() => toggleSection("comments")}
               >
-                Comments
+                <span>Comments</span>
+                <span className="accordion-icon">
+                  {openSection === "comments" ? "−" : "+"}
+                </span>
               </button>
+
               {openSection === "comments" && (
                 <div className="accordion-body">
                   {product._id ? (
