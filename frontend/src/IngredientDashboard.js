@@ -20,11 +20,10 @@ function IngredientDashboard() {
   const [savedIngredients, setSavedIngredients] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [allCategories, setAllCategories] = useState([]);
-  const [hoveredIngredientId, setHoveredIngredientId] = useState(null); // For hover state of heart icon
+  const [hoveredIngredientId, setHoveredIngredientId] = useState(null);
 
   const { token, user } = useContext(AuthContext);
 
-  // Fetch all unique categories for filter dropdown
   useEffect(() => {
     fetch("http://localhost:5000/api/ingredients/categories/all")
       .then((res) => res.json())
@@ -32,7 +31,6 @@ function IngredientDashboard() {
       .catch((err) => console.error(err));
   }, []);
 
-  // Fetch user saved ingredients
   useEffect(() => {
     if (token) {
       fetch("http://localhost:5000/api/auth/user", {
@@ -44,12 +42,10 @@ function IngredientDashboard() {
     }
   }, [token]);
 
-  // Initial fetch
   useEffect(() => {
     fetchIngredients(0, 30);
   }, []);
 
-  // Fetch ingredients from backend
   const fetchIngredients = async (skip, limit, search = "", category = "") => {
     try {
       const res = await fetch(
@@ -62,10 +58,8 @@ function IngredientDashboard() {
 
       setIngredients((prev) => {
         if (skip === 0) return data;
-
         const existingIds = new Set(prev.map((i) => i._id));
         const newItems = data.filter((i) => !existingIds.has(i._id));
-
         return [...prev, ...newItems];
       });
     } catch (err) {
@@ -73,7 +67,6 @@ function IngredientDashboard() {
     }
   };
 
-  // Refetch on search/category change
   useEffect(() => {
     const delay = setTimeout(() => {
       fetchIngredients(0, 30, searchTerm, selectedCategory);
@@ -82,7 +75,6 @@ function IngredientDashboard() {
     return () => clearTimeout(delay);
   }, [searchTerm, selectedCategory]);
 
-  // Admin form handlers
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -90,7 +82,6 @@ function IngredientDashboard() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, category, short_description, what_is_it } = formData;
-
     if (!name || !category || !short_description || !what_is_it) {
       alert("Please fill out all fields before submitting.");
       return;
@@ -110,7 +101,6 @@ function IngredientDashboard() {
 
       const newIngredient = await response.json();
       setIngredients([...ingredients, newIngredient]);
-
       setFormData({
         name: "",
         category: "",
@@ -154,7 +144,6 @@ function IngredientDashboard() {
     }
   };
 
-  // Filter ingredients for display
   const filteredIngredients = ingredients.filter((ingredient) => {
     const term = searchTerm.toLowerCase();
     const name = ingredient.name?.toLowerCase() || "";
@@ -166,13 +155,17 @@ function IngredientDashboard() {
     return matchesSearch && matchesCategory;
   });
 
+  const displayedIngredients = searchTerm
+    ? filteredIngredients
+    : filteredIngredients.slice(0, visibleCount);
+
   return (
     <div className="page-container bkgd-blue">
       <header
         className="main-header"
         style={{
           display: "flex",
-          justifyContent: "space-between", // pushes items to edges
+          justifyContent: "space-between",
           alignItems: "center",
           marginBottom: "1rem",
         }}
@@ -184,14 +177,10 @@ function IngredientDashboard() {
             <h2 style={{ margin: 0 }}>
               Login to save products and leave comments!
             </h2>
-
             <Link to="/login">
               <button
                 className="login-btn"
-                style={{
-                  padding: "0.5rem 1rem",
-                  cursor: "pointer",
-                }}
+                style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
               >
                 Login
               </button>
@@ -201,15 +190,13 @@ function IngredientDashboard() {
       </header>
 
       <div className="content-wrapper">
+        {/* LEFT PANEL */}
         <div className="left-panel">
-          {/* Add a New Ingredient — Only visible to admins */}
-
           {user?.role === "admin" && (
             <div className="filters">
-              <h3 className="h3-ivy">Filter</h3>
+              <h3 className="h3-ivy">Admin Actions</h3>
               <form onSubmit={handleSubmit}>
                 <h4>Add New Ingredient</h4>
-
                 <label>Name</label>
                 <input
                   name="name"
@@ -243,7 +230,6 @@ function IngredientDashboard() {
             </div>
           )}
 
-          {/* Filtering — Visible to all users */}
           <div className="filters">
             <h4>Filter Ingredients</h4>
             <label>Search</label>
@@ -256,82 +242,86 @@ function IngredientDashboard() {
           </div>
         </div>
 
-        <div className="product-grid">
-          {(searchTerm
-            ? filteredIngredients
-            : filteredIngredients.slice(0, visibleCount)
-          ).length === 0 ? (
-            <p
+        {/* RIGHT PANEL */}
+        <div className="right-panel">
+          <div className="products-wrapper">
+            <div className="product-grid">
+              {displayedIngredients.length === 0 ? (
+                <p
+                  style={{
+                    fontStyle: "italic",
+                    color: "#888",
+                    width: "100%",
+                    textAlign: "center",
+                  }}
+                >
+                  No ingredients found.
+                </p>
+              ) : (
+                displayedIngredients.map((ingredient) => (
+                  <div key={ingredient._id} className="product-card">
+                    <div className="product-details">
+                      <h3 className="h3-ivy">{ingredient.name}</h3>
+                      <p>
+                        <strong>What is it:</strong> {ingredient.what_is_it}
+                      </p>
+                      <div className="button-group">
+                        <Link to={`/ingredients/${ingredient._id}`}>
+                          <button>See Details</button>
+                        </Link>
+                        {!user && (
+                          <p style={{ fontStyle: "italic", color: "#888" }}>
+                            Login to save
+                          </p>
+                        )}
+                        {user?.role === "user" && (
+                          <button
+                            className={`heart-button ${savedIngredients.includes(ingredient._id) ? "saved" : ""}`}
+                            onClick={() =>
+                              toggleFavouriteIngredient(ingredient._id)
+                            }
+                            onMouseEnter={() =>
+                              setHoveredIngredientId(ingredient._id)
+                            }
+                            onMouseLeave={() => setHoveredIngredientId(null)}
+                          >
+                            <img
+                              src={
+                                hoveredIngredientId === ingredient._id
+                                  ? hoverHeart
+                                  : savedIngredients.includes(ingredient._id)
+                                    ? filledHeart
+                                    : blankHeart
+                              }
+                              alt="Favourite"
+                            />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* SEE MORE BUTTON - Centered relative to right-panel */}
+          {!searchTerm && hasMore && (
+            <div
               style={{
-                fontStyle: "italic",
-                color: "#888",
+                display: "flex",
+                justifyContent: "center",
                 width: "100%",
-                textAlign: "center",
-                whiteSpace: "nowrap",
+                padding: "40px 0", // Added padding for better spacing
               }}
             >
-              No ingredients found. Try adjusting your search or filters.
-            </p>
-          ) : (
-            (searchTerm
-              ? filteredIngredients
-              : filteredIngredients.slice(0, visibleCount)
-            ).map((ingredient) => (
-              <div key={ingredient._id} className="product-card">
-                <div className="product-details">
-                  <h3 className="h3-ivy">{ingredient.name}</h3>
-
-                  <p>
-                    <strong>What is it:</strong> {ingredient.what_is_it}
-                  </p>
-
-                  <div className="button-group">
-                    <Link to={`/ingredients/${ingredient._id}`}>
-                      <button>See Details</button>
-                    </Link>
-
-                    {/* If no user */}
-                    {!user && (
-                      <p style={{ fontStyle: "italic", color: "#888" }}>
-                        Login to save ingredients
-                      </p>
-                    )}
-
-                    {/* If logged in */}
-                    {user?.role === "user" && (
-                      <button
-                        className={`heart-button ${
-                          savedIngredients.includes(ingredient._id)
-                            ? "saved"
-                            : ""
-                        }`}
-                        onClick={() =>
-                          toggleFavouriteIngredient(
-                            ingredient._id,
-                            savedIngredients.includes(ingredient._id),
-                          )
-                        }
-                        onMouseEnter={() =>
-                          setHoveredIngredientId(ingredient._id)
-                        }
-                        onMouseLeave={() => setHoveredIngredientId(null)}
-                      >
-                        <img
-                          src={
-                            hoveredIngredientId === ingredient._id
-                              ? hoverHeart
-                              : savedIngredients.includes(ingredient._id)
-                                ? filledHeart
-                                : blankHeart
-                          }
-                          alt="Favourite"
-                        />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))
+              <button
+                onClick={handleSeeMore}
+                style={{ padding: "10px 25px", cursor: "pointer" }}
+              >
+                See More
+              </button>
+            </div>
           )}
         </div>
       </div>
