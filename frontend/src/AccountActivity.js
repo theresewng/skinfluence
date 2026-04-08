@@ -150,7 +150,7 @@ function AccountActivity() {
   // Main content showing selected user details and activity
   return (
     <div className="page-container bkgd-purple">
-      <div className="space-between">
+      <div className="space-between-activity">
         <Link to="/admin">
           <button>← Back to Admin Dashboard</button>
         </Link>
