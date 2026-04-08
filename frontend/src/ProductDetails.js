@@ -1,13 +1,18 @@
-import { useParams, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate, Link, useParams } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
 import "./App.css";
+import { AuthContext } from "./context/AuthContext";
+
 import Comments from "./CommentsComponent";
 
 function ProductDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [openSection, setOpenSection] = useState(null);
   const [ingredients, setIngredients] = useState({}); // key: ingredient name, value: ingredient object
+
+  const { token, user } = useContext(AuthContext);
 
   // Fetch all ingredients
   useEffect(() => {
@@ -120,8 +125,50 @@ function ProductDetails() {
     });
   }
 
+  // Handle delete product (admins only)
+  const handleDelete = async () => {
+    // Confirm before deleting
+    if (!window.confirm("Are you sure you want to delete this product?")) {
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/products/${product._id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token.trim()}` }, // Include token for authentication
+        },
+      );
+      if (!res.ok) {
+        const data = await res.json();
+        console.error("Failed to delete product:", data);
+        alert("Failed to delete product: " + (data.message || "Unknown error"));
+        return;
+      }
+      alert("Product deleted successfully");
+
+      setProduct(null);
+      navigate("/products"); // Go back to product dashboard
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred while deleting the product.");
+    }
+  };
+
   return (
     <div className="page-container bkgd-green">
+      <div className="space-between">
+        <Link to="/products">
+          <button>← Back to Product Search</button>
+        </Link>
+
+        {user?.role === "admin" && (
+          <button className="delete-button" onClick={handleDelete}>
+            Delete This Product
+          </button>
+        )}
+      </div>
       <div className="product-section">
         <div className="info-content-wrapper">
           <div className="left-panel">

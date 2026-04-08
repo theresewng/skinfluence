@@ -648,10 +648,16 @@ button:hover {
 
 /* Account Activity Page */
 .space-between {
+  padding: 1rem 2rem 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+}
+.space-between-activity {
+  padding: 1rem 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .three-col-grid {
