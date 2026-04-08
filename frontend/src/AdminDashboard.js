@@ -94,9 +94,10 @@ function AdminDashboard() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          marginBottom: "1rem",
         }}
       >
-        <h2>Accounts</h2>
+        <h2 style={{ margin: 0 }}>Accounts</h2>
       </header>
 
       <div className="content-wrapper">

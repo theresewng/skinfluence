@@ -32,6 +32,11 @@
   background-color: var(--white-translucent);
   border: 1px solid var(--dark-grey);
   border-radius: var(--radius);
+
+  display: "flex";
+  justify-content: "space-between";
+  align-items: "center";
+  margin-bottom: "1rem";
 }
 
 /* Default Button */

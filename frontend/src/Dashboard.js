@@ -256,20 +256,30 @@ function Dashboard() {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: "center", 
           marginBottom: "1rem",
         }}
       >
         {user ? (
-          <h2>Welcome back, {user.username}!</h2>
-        ) : (
           <div style={{ display: "flex", alignItems: "center" }}>
-            <h2>Please log in to leave a comment.</h2>
+            <h2 style={{ margin: 0 }}>Welcome back, {user.username}!</h2>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "1rem",
+            }}
+          >
+            <h2 style={{ margin: 0 }}>
+              Login to save products and leave comments!
+            </h2>
+
             <Link to="/login">
               <button
                 className="login-btn"
                 style={{
-                  marginLeft: "1rem",
                   padding: "0.5rem 1rem",
                   cursor: "pointer",
                 }}
@@ -406,7 +416,14 @@ function Dashboard() {
           <div className="products-wrapper">
             <div className="product-grid">
               {filteredProducts.slice(0, visibleCount).length === 0 ? (
-                <p style={{ fontStyle: "italic", color: "#888" }}>
+                <p
+                  style={{
+                    fontStyle: "italic",
+                    color: "#888",
+                    minWidth: "100 vw",
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   No products found. Try adjusting your search or filters.
                 </p>
               ) : (
@@ -449,13 +466,6 @@ function Dashboard() {
                           <Link to={`/products/${product._id}`}>
                             <button>See Details</button>
                           </Link>
-
-                          {/* If no user is logged in */}
-                          {!user && (
-                            <p style={{ fontStyle: "italic", color: "#888" }}>
-                              Login to save products
-                            </p>
-                          )}
 
                           {/* If user is logged in as a regular user */}
                           {user?.role === "user" && (

@@ -168,17 +168,27 @@ function IngredientDashboard() {
 
   return (
     <div className="page-container bkgd-blue">
-      <header className="main-header">
+      <header
+        className="main-header"
+        style={{
+          display: "flex",
+          justifyContent: "space-between", // pushes items to edges
+          alignItems: "center",
+          marginBottom: "1rem",
+        }}
+      >
         {user ? (
-          <h2>Welcome back, {user.username}!</h2>
+          <h2 style={{ margin: 0 }}>Welcome back, {user.username}!</h2>
         ) : (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <h2>You are not logged in</h2>
+          <>
+            <h2 style={{ margin: 0 }}>
+              Login to save products and leave comments!
+            </h2>
+
             <Link to="/login">
               <button
                 className="login-btn"
                 style={{
-                  marginLeft: "1rem",
                   padding: "0.5rem 1rem",
                   cursor: "pointer",
                 }}
@@ -186,7 +196,7 @@ function IngredientDashboard() {
                 Login
               </button>
             </Link>
-          </div>
+          </>
         )}
       </header>
 
@@ -246,73 +256,83 @@ function IngredientDashboard() {
           </div>
         </div>
 
-        <div className="right-panel">
-          <div className="products-wrapper">
-            <div className="product-grid">
-              {(searchTerm
-                ? filteredIngredients
-                : filteredIngredients.slice(0, visibleCount)
-              ).map((ingredient) => (
-                <div key={ingredient._id} className="product-card">
-                  <div className="product-details">
-                    <h3 className="h3-ivy">{ingredient.name}</h3>
-                    {/* <p>{ingredient.short_description}</p> */}
-                    <p>
-                      <strong>What is it:</strong> {ingredient.what_is_it}
-                    </p>
-                    <div className="button-group">
-                      <Link to={`/ingredients/${ingredient._id}`}>
-                        <button>See Details</button>
-                      </Link>
+        <div className="product-grid">
+          {(searchTerm
+            ? filteredIngredients
+            : filteredIngredients.slice(0, visibleCount)
+          ).length === 0 ? (
+            <p
+              style={{
+                fontStyle: "italic",
+                color: "#888",
+                width: "100%",
+                textAlign: "center",
+                whiteSpace: "nowrap",
+              }}
+            >
+              No ingredients found. Try adjusting your search or filters.
+            </p>
+          ) : (
+            (searchTerm
+              ? filteredIngredients
+              : filteredIngredients.slice(0, visibleCount)
+            ).map((ingredient) => (
+              <div key={ingredient._id} className="product-card">
+                <div className="product-details">
+                  <h3 className="h3-ivy">{ingredient.name}</h3>
 
-                      {/* If no user is logged in */}
-                      {!user && (
-                        <p style={{ fontStyle: "italic", color: "#888" }}>
-                          Login to save ingredients
-                        </p>
-                      )}
+                  <p>
+                    <strong>What is it:</strong> {ingredient.what_is_it}
+                  </p>
 
-                      {/* If user is logged in as a regular user */}
-                      {user?.role === "user" && (
-                        <button
-                          className={`heart-button ${
-                            savedIngredients.includes(ingredient._id)
-                              ? "saved"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            toggleFavouriteIngredient(ingredient._id)
+                  <div className="button-group">
+                    <Link to={`/ingredients/${ingredient._id}`}>
+                      <button>See Details</button>
+                    </Link>
+
+                    {/* If no user */}
+                    {!user && (
+                      <p style={{ fontStyle: "italic", color: "#888" }}>
+                        Login to save ingredients
+                      </p>
+                    )}
+
+                    {/* If logged in */}
+                    {user?.role === "user" && (
+                      <button
+                        className={`heart-button ${
+                          savedIngredients.includes(ingredient._id)
+                            ? "saved"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          toggleFavouriteIngredient(
+                            ingredient._id,
+                            savedIngredients.includes(ingredient._id),
+                          )
+                        }
+                        onMouseEnter={() =>
+                          setHoveredIngredientId(ingredient._id)
+                        }
+                        onMouseLeave={() => setHoveredIngredientId(null)}
+                      >
+                        <img
+                          src={
+                            hoveredIngredientId === ingredient._id
+                              ? hoverHeart
+                              : savedIngredients.includes(ingredient._id)
+                                ? filledHeart
+                                : blankHeart
                           }
-                          // Add hover state for heart icon
-                          onMouseEnter={() =>
-                            setHoveredIngredientId(ingredient._id)
-                          }
-                          onMouseLeave={() => setHoveredIngredientId(null)}
-                        >
-                          <img
-                            src={
-                              hoveredIngredientId === ingredient._id
-                                ? hoverHeart
-                                : savedIngredients.includes(ingredient._id)
-                                  ? filledHeart
-                                  : blankHeart
-                            }
-                            alt="Favourite"
-                          />
-                        </button>
-                      )}
-                    </div>
+                          alt="Favourite"
+                        />
+                      </button>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {hasMore && (
-              <div style={{ textAlign: "center", margin: "20px 0" }}>
-                <button onClick={handleSeeMore}>See More</button>
               </div>
-            )}
-          </div>
+            ))
+          )}
         </div>
       </div>
     </div>
