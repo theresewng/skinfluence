@@ -1,12 +1,17 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate, Link, useParams } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
 import "./App.css";
+import { AuthContext } from "./context/AuthContext";
+
 import Comments from "./CommentsComponent";
 
 function ProductDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [ingredient, setIngredient] = useState(null);
   const [openSection, setOpenSection] = useState(null);
+
+  const { token, user } = useContext(AuthContext);
 
   const whoIsItFor = ingredient?.who_is_it_good_for || [];
 
@@ -28,8 +33,54 @@ function ProductDetails() {
     setOpenSection(openSection === section ? null : section);
   }
 
+  // Handle delete product (admins only)
+  const handleDelete = async () => {
+    // Confirm before deleting
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this ingredient?",
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/ingredients/${ingredient._id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token.trim()}` }, // Include token for authentication
+        },
+      );
+      if (!res.ok) {
+        const data = await res.json();
+        console.error("Failed to delete ingredient:", data);
+        alert(
+          "Failed to delete ingredient: " + (data.message || "Unknown error"),
+        );
+        return;
+      }
+      alert("Ingredient deleted successfully");
+
+      setIngredient(null);
+      navigate("/ingredients"); // Go back to ingredient dashboard
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred while deleting the ingredient.");
+    }
+  };
+
   return (
     <div className="page-container bkgd-blue">
+      <div className="space-between">
+        <Link to="/ingredients">
+          <button>← Back to Ingredient Search</button>
+        </Link>
+
+        <button className="delete-button" onClick={handleDelete}>
+          Delete This Ingredient
+        </button>
+      </div>
       <div className="product-section">
         <div className="info-content-wrapper">
           {/* {ingredient?._id && <Comments productId={ingredient._id} />}{" "} */}

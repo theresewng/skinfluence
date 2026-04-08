@@ -130,7 +130,7 @@ function ProductDetails() {
     // Confirm before deleting
     if (
       !window.confirm(
-        "Are you sure you want to delete this product from the database?",
+        "Are you sure you want to delete this product?",
       )
     ) {
       return;
@@ -141,7 +141,7 @@ function ProductDetails() {
         `http://localhost:5000/api/products/${product._id}`,
         {
           method: "DELETE",
-          headers: { Authorization: `Bearer ${token.trim()}` },
+          headers: { Authorization: `Bearer ${token.trim()}` }, // Include token for authentication
         },
       );
       if (!res.ok) {
