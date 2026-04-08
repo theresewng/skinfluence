@@ -128,11 +128,7 @@ function ProductDetails() {
   // Handle delete product (admins only)
   const handleDelete = async () => {
     // Confirm before deleting
-    if (
-      !window.confirm(
-        "Are you sure you want to delete this product?",
-      )
-    ) {
+    if (!window.confirm("Are you sure you want to delete this product?")) {
       return;
     }
 
@@ -167,9 +163,11 @@ function ProductDetails() {
           <button>← Back to Product Search</button>
         </Link>
 
-        <button className="delete-button" onClick={handleDelete}>
-          Delete This Product
-        </button>
+        {user?.role === "admin" && (
+          <button className="delete-button" onClick={handleDelete}>
+            Delete This Product
+          </button>
+        )}
       </div>
       <div className="product-section">
         <div className="info-content-wrapper">
