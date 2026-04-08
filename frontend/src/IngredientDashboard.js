@@ -264,7 +264,16 @@ function IngredientDashboard() {
                       <Link to={`/ingredients/${ingredient._id}`}>
                         <button>See Details</button>
                       </Link>
-                      {user ? (
+
+                      {/* If no user is logged in */}
+                      {!user && (
+                        <p style={{ fontStyle: "italic", color: "#888" }}>
+                          Login to save ingredients
+                        </p>
+                      )}
+
+                      {/* If user is logged in as a regular user */}
+                      {user?.role === "user" && (
                         <button
                           className={`heart-button ${
                             savedIngredients.includes(ingredient._id)
@@ -291,10 +300,6 @@ function IngredientDashboard() {
                             alt="Favourite"
                           />
                         </button>
-                      ) : (
-                        <p style={{ fontStyle: "italic", color: "#888" }}>
-                          Login to save ingredients
-                        </p>
                       )}
                     </div>
                   </div>

@@ -450,7 +450,15 @@ function Dashboard() {
                             <button>See Details</button>
                           </Link>
 
-                          {user ? (
+                          {/* If no user is logged in */}
+                          {!user && (
+                            <p style={{ fontStyle: "italic", color: "#888" }}>
+                              Login to save products
+                            </p>
+                          )}
+
+                          {/* If user is logged in as a regular user */}
+                          {user?.role === "user" && (
                             <button
                               className={`heart-button ${
                                 savedProductIDs.includes(product._id)
@@ -478,10 +486,6 @@ function Dashboard() {
                                 alt="Favourite"
                               />
                             </button>
-                          ) : (
-                            <p style={{ fontStyle: "italic", color: "#888" }}>
-                              Login to save products
-                            </p>
                           )}
                         </div>
                       </div>
