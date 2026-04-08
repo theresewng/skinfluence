@@ -14,9 +14,36 @@ router.get("/brands/all", async (req, res) => {
   }
 });
 
+// GET all unique categories
+router.get("/categories/all", async (req, res) => {
+  try {
+    const categories = await Product.distinct("category");
+    res.json(categories);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET all unique usage types
+router.get("/usage-types/all", async (req, res) => {
+  try {
+    const usageTypes = await Product.distinct("usageType");
+    res.json(usageTypes);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
-    const { limit, skip = 0, search = "", brand = "" } = req.query;
+    const {
+      limit,
+      skip = 0,
+      search = "",
+      brand = "",
+      category = "",
+      usageType = "",
+    } = req.query;
 
     const parsedLimit = limit ? parseInt(limit) : null;
     const parsedSkip = parseInt(skip);
@@ -27,9 +54,14 @@ router.get("/", async (req, res) => {
           { productName: { $regex: search, $options: "i" } },
           { brand: { $regex: search, $options: "i" } },
           { category: { $regex: search, $options: "i" } },
+          { usageType: { $regex: search, $options: "i" } },
         ],
       }),
-      ...(brand && { brand: { $regex: `^${brand}$`, $options: "i" } }), // use regex for case-insensitive match
+      ...(brand && { brand: { $regex: `^${brand}$`, $options: "i" } }),
+      ...(category && { category: { $regex: `^${category}$`, $options: "i" } }),
+      ...(usageType && {
+        usageType: { $regex: `^${usageType}$`, $options: "i" },
+      }),
     };
 
     let dbQuery = Product.find(query).skip(parsedSkip);

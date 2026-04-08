@@ -84,6 +84,8 @@ button:hover {
   flex-direction: column;
   overflow: hidden;
   padding: 1.5rem;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
 
   background-color: var(--white-translucent);
   box-shadow: 0 2px 8px var(--black-shadow);

@@ -9,6 +9,7 @@ import hoverHeart from "../src/assets/img/hoverHeart.svg";
 function Dashboard() {
   const [products, setProducts] = useState([]);
   const [visibleCount, setVisibleCount] = useState(30);
+  const [hasMore, setHasMore] = useState(true);
   const [formData, setFormData] = useState({
     productName: "",
     brand: "",
@@ -17,13 +18,21 @@ function Dashboard() {
     ingredients: "",
     imageUrl: "",
   });
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState("");
+
+  // For saved products
   const [savedProducts, setSavedProducts] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
   const [savedProductIDs, setSavedProductIDs] = useState([]);
   const [hoveredProductId, setHoveredProductId] = useState(null); // For hover state of heart icon
+
+  // For filters
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedUsageType, setSelectedUsageType] = useState("");
   const [allBrands, setAllBrands] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
+  const [allUsageTypes, setAllUsageTypes] = useState([]);
+
   const { token, user } = useContext(AuthContext);
 
   useEffect(() => {
@@ -31,7 +40,15 @@ function Dashboard() {
       .then((res) => res.json())
       .then((data) => setAllBrands(data))
       .catch((err) => console.error(err));
-  }, []);
+    fetch("http://localhost:5000/api/products/categories/all")
+      .then((res) => res.json())
+      .then((data) => setAllCategories(data))
+      .catch((err) => console.error(err));
+    fetch("http://localhost:5000/api/products/usage-types/all")
+      .then((res) => res.json())
+      .then((data) => setAllUsageTypes(data))
+      .catch((err) => console.error(err));
+  }, [searchTerm, selectedBrand, selectedCategory, selectedUsageType]);
 
   useEffect(() => {
     if (token) {
@@ -60,12 +77,19 @@ function Dashboard() {
 
   useEffect(() => {
     const delay = setTimeout(() => {
-      fetchProducts(0, 30, searchTerm, selectedBrand);
+      fetchProducts(
+        0,
+        30,
+        searchTerm,
+        selectedBrand,
+        selectedCategory,
+        selectedUsageType,
+      );
       setVisibleCount(30);
     }, 300);
 
     return () => clearTimeout(delay);
-  }, [searchTerm, selectedBrand]);
+  }, [searchTerm, selectedBrand, selectedCategory, selectedUsageType]);
 
   <input
     type="text"
@@ -74,20 +98,35 @@ function Dashboard() {
   />;
 
   const filteredProducts = products.filter((product) => {
+    // Convert everything to lowercase to make the search case-insensitive
     const term = searchTerm.toLowerCase();
     const name = product.productName?.toLowerCase() || "";
     const brand = product.brand?.toLowerCase() || "";
     const category = product.category?.toLowerCase() || "";
+    const usageType = product.usageType?.toLowerCase() || "";
+
+    // Check if product matches search term
     const matchesSearch =
-      name.includes(term) || brand.includes(term) || category.includes(term);
-    const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
-    return matchesSearch && matchesBrand;
+      name.includes(term) ||
+      brand.includes(term) ||
+      category.includes(term) ||
+      usageType.includes(term);
+
+    // Backend already filters by brand, category, usageType
+    return matchesSearch;
   });
 
-  const fetchProducts = async (skip, limit, search = "", brand = "") => {
+  const fetchProducts = async (
+    skip,
+    limit,
+    search = "",
+    brand = "",
+    category = "",
+    usageType = "",
+  ) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/products?skip=${skip}&limit=${limit}&search=${encodeURIComponent(search)}&brand=${encodeURIComponent(brand)}`,
+        `http://localhost:5000/api/products?skip=${skip}&limit=${limit}&search=${encodeURIComponent(search)}&brand=${encodeURIComponent(brand)}&category=${encodeURIComponent(category)}&usageType=${encodeURIComponent(usageType)}`,
       );
 
       const data = await res.json();
@@ -112,7 +151,14 @@ function Dashboard() {
   }
 
   const handleSeeMore = () => {
-    fetchProducts(products.length, 30, searchTerm, selectedBrand);
+    fetchProducts(
+      products.length,
+      30,
+      searchTerm,
+      selectedBrand,
+      selectedCategory,
+      selectedUsageType,
+    );
     setVisibleCount((prev) => prev + 30);
   };
 
@@ -237,15 +283,13 @@ function Dashboard() {
 
       <div className="content-wrapper">
         <div className="left-panel">
-          <div className="filters">
-            <h3 className="h3-ivy">Filter</h3>
+          {/* Add a New Product — Only visible to admins */}
 
-            {/* ✅ ADMIN ONLY SECTION */}
-            {user?.role === "admin" && (
-              <>
+          {user?.role === "admin" && (
+            <>
+              <div className="filters">
+                <h3 className="h3">Add a New Product</h3>
                 <form onSubmit={handleSubmit}>
-                  <h4>Add New Product</h4>
-
                   <label>Product Name</label>
                   <input
                     name="productName"
@@ -288,114 +332,163 @@ function Dashboard() {
 
                   <button type="submit">Add Product</button>
                 </form>
+              </div>
+            </>
+          )}
 
-                <hr />
-              </>
-            )}
+          {/* Filtering — Visible to all users */}
+          <div className="filters">
+            <h3 className="h3">Filter Products</h3>
+            <form>
+              <label>Search</label>
+              <input
+                type="text"
+                placeholder="Search by name, brand, category…"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
 
-            {/* ✅ ALWAYS VISIBLE */}
-            <h4>Filter Products</h4>
+              <label>Filter by Brand</label>
+              <select
+                value={selectedBrand}
+                onChange={(e) => setSelectedBrand(e.target.value)}
+              >
+                <option value="">All Brands</option>
+                {allBrands.map((brand) => (
+                  <option key={brand} value={brand}>
+                    {brand}
+                  </option>
+                ))}
+              </select>
 
-            <label>Search</label>
-            <input
-              type="text"
-              placeholder="Search by name, brand, category..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+              <label>Filter by Category</label>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="">All Categories</option>
+                {allCategories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
 
-            <label>Filter by Brand</label>
-            <select
-              value={selectedBrand}
-              onChange={(e) => setSelectedBrand(e.target.value)}
-            >
-              <option value="">All Brands</option>
-              {allBrands.map((brand) => (
-                <option key={brand} value={brand}>
-                  {brand}
-                </option>
-              ))}
-            </select>
+              <label>Filter by Usage Type</label>
+              <select
+                value={selectedUsageType}
+                onChange={(e) => setSelectedUsageType(e.target.value)}
+              >
+                <option value="">All Usage Types</option>
+                {allUsageTypes.map((usageType) => (
+                  <option key={usageType} value={usageType}>
+                    {usageType}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedBrand("");
+                  setSelectedCategory("");
+                  setSelectedUsageType("");
+                }}
+              >
+                Clear Filters
+              </button>
+            </form>
           </div>
         </div>
 
         <div className="right-panel">
           <div className="products-wrapper">
             <div className="product-grid">
-              {filteredProducts.map((product) => {
-                const nameParts = product.productName.split(",");
-                const amount =
-                  nameParts.length > 1 ? nameParts.pop().trim() : "";
-                const cleanName = nameParts.join(",").trim();
+              {filteredProducts.slice(0, visibleCount).length === 0 ? (
+                <p style={{ fontStyle: "italic", color: "#888" }}>
+                  No products found. Try adjusting your search or filters.
+                </p>
+              ) : (
+                filteredProducts.slice(0, visibleCount).map((product) => {
+                  const nameParts = product.productName.split(",");
+                  const amount =
+                    nameParts.length > 1 ? nameParts.pop().trim() : "";
+                  const cleanName = nameParts.join(",").trim();
 
-                return (
-                  <div key={product._id} className="product-card">
-                    <div className="image-container">
-                      {product.imageUrl ? (
-                        <img src={product.imageUrl} alt={product.productName} />
-                      ) : (
-                        <div className="placeholder">No Image</div>
-                      )}
-                    </div>
-                    <div className="product-details">
-                      <h3 className="h3-ivy">{product.brand}</h3>
-                      <h3>{cleanName}</h3>
-                      <h3 className="h3-neue-light">{amount}</h3>
-                      <div className="tag-container">
-                        {product.usageType && (
-                          <span className="tag tag-usage">
-                            {product.usageType}
-                          </span>
-                        )}
-                        {product.category && (
-                          <span className="tag tag-category">
-                            {product.category}
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="button-group">
-                        <Link to={`/products/${product._id}`}>
-                          <button>See Details</button>
-                        </Link>
-
-                        {user ? (
-                          <button
-                            className={`heart-button ${
-                              savedProductIDs.includes(product._id)
-                                ? "saved"
-                                : ""
-                            }`}
-                            onClick={() =>
-                              savedProductIDs.includes(product._id)
-                                ? handleRemoveProduct(product._id)
-                                : handleSaveProduct(product._id)
-                            }
-                            // Add hover state for heart icon
-                            onMouseEnter={() => setHoveredProductId(product._id)}
-                            onMouseLeave={() => setHoveredProductId(null)}
-                          >
-                            <img
-                              src={
-                                hoveredProductId === product._id
-                                  ? hoverHeart
-                                  : savedProductIDs.includes(product._id)
-                                  ? filledHeart
-                                  : blankHeart
-                              }
-                              alt="Favourite"
-                            />
-                          </button>
+                  return (
+                    <div key={product._id} className="product-card">
+                      <div className="image-container">
+                        {product.imageUrl ? (
+                          <img
+                            src={product.imageUrl}
+                            alt={product.productName}
+                          />
                         ) : (
-                          <p style={{ fontStyle: "italic", color: "#888" }}>
-                            Login to save products
-                          </p>
+                          <div className="placeholder">No Image</div>
                         )}
                       </div>
+                      <div className="product-details">
+                        <h3 className="h3-ivy">{product.brand}</h3>
+                        <h3>{cleanName}</h3>
+                        <h3 className="h3-neue-light">{amount}</h3>
+                        <div className="tag-container">
+                          {product.usageType && (
+                            <span className="tag tag-usage">
+                              {product.usageType}
+                            </span>
+                          )}
+                          {product.category && (
+                            <span className="tag tag-category">
+                              {product.category}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="button-group">
+                          <Link to={`/products/${product._id}`}>
+                            <button>See Details</button>
+                          </Link>
+
+                          {user ? (
+                            <button
+                              className={`heart-button ${
+                                savedProductIDs.includes(product._id)
+                                  ? "saved"
+                                  : ""
+                              }`}
+                              onClick={() =>
+                                savedProductIDs.includes(product._id)
+                                  ? handleRemoveProduct(product._id)
+                                  : handleSaveProduct(product._id)
+                              }
+                              onMouseEnter={() =>
+                                setHoveredProductId(product._id)
+                              }
+                              onMouseLeave={() => setHoveredProductId(null)}
+                            >
+                              <img
+                                src={
+                                  hoveredProductId === product._id
+                                    ? hoverHeart
+                                    : savedProductIDs.includes(product._id)
+                                      ? filledHeart
+                                      : blankHeart
+                                }
+                                alt="Favourite"
+                              />
+                            </button>
+                          ) : (
+                            <p style={{ fontStyle: "italic", color: "#888" }}>
+                              Login to save products
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
 
             {hasMore && (
