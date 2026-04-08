@@ -255,23 +255,15 @@ function Dashboard() {
         className="main-header"
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center", 
+          justifyContent: "space-between", // pushes items to edges
+          alignItems: "center",
           marginBottom: "1rem",
         }}
       >
         {user ? (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <h2 style={{ margin: 0 }}>Welcome back, {user.username}!</h2>
-          </div>
+          <h2 style={{ margin: 0 }}>Welcome back, {user.username}!</h2>
         ) : (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
+          <>
             <h2 style={{ margin: 0 }}>
               Login to save products and leave comments!
             </h2>
@@ -287,7 +279,7 @@ function Dashboard() {
                 Login
               </button>
             </Link>
-          </div>
+          </>
         )}
       </header>
 
