@@ -192,13 +192,14 @@ function IngredientDashboard() {
 
       <div className="content-wrapper">
         <div className="left-panel">
-          <div className="filters">
-            <h3 className="h3-ivy">Filter</h3>
+          {/* Add a New Ingredient — Only visible to admins */}
 
-            {/* Admin only */}
-            {user?.role === "admin" && (
+          {user?.role === "admin" && (
+            <div className="filters">
+              <h3 className="h3-ivy">Filter</h3>
               <form onSubmit={handleSubmit}>
                 <h4>Add New Ingredient</h4>
+
                 <label>Name</label>
                 <input
                   name="name"
@@ -228,11 +229,12 @@ function IngredientDashboard() {
                   required
                 />
                 <button type="submit">Add Ingredient</button>
-                <hr />
               </form>
-            )}
+            </div>
+          )}
 
-            {/* Always visible filters */}
+          {/* Filtering — Visible to all users */}
+          <div className="filters">
             <h4>Filter Ingredients</h4>
             <label>Search</label>
             <input
