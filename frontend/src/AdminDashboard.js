@@ -4,14 +4,19 @@ import { AuthContext } from "./context/AuthContext";
 import profile from "./assets/img/profile-placeholder.png";
 
 function AdminDashboard() {
+    // State to store all members fetched from backend
   const [members, setMembers] = useState([]);
+
+    // State for searching users by username
   const [searchTerm, setSearchTerm] = useState("");
+
+    // State for filtering users by role (admin/user)
   const [selectedUserRole, setSelectedUserRole] = useState("");
 
   const navigate = useNavigate();
   const { token, user } = useContext(AuthContext);
 
-  // If they aren't an admin, redirect them out
+  // Protect route: redirect non-admin users to login page
   useEffect(() => {
     if (user?.role !== "admin") {
       navigate("/login");
@@ -23,7 +28,7 @@ function AdminDashboard() {
     fetchUsers();
   }, [searchTerm]); // Re-fetch when search term changes
 
-  // Fetch users from backend
+  // Function to fetch all users from backend API
   const fetchUsers = async () => {
     try {
       const res = await fetch(`http://localhost:5000/api/auth/users`);
@@ -39,10 +44,12 @@ function AdminDashboard() {
     }
   };
 
-  // Filter users based on search term and selected user role
+  // Filter users based on search input + selected role filter
   const filteredMembers = members.filter((user) => {
     const term = searchTerm.toLowerCase();
     const username = user.username?.toLowerCase() || "";
+
+    // Check if username matches search input
     const matchesSearch = username.includes(term);
     const matchesUserRole = selectedUserRole
       ? user.role === selectedUserRole
@@ -50,9 +57,9 @@ function AdminDashboard() {
     return matchesSearch && matchesUserRole;
   });
 
-  // Handle delete user
+  // Handle deleting a user account
   const handleDelete = async (userId, userRole) => {
-    // Prevent deleting other admins
+    // Prevent deletion of admin accounts
     if (userRole === "admin") {
       alert("You cannot delete admin accounts.");
       return;
@@ -68,7 +75,7 @@ function AdminDashboard() {
         `http://localhost:5000/api/auth/users/${userId}`,
         {
           method: "DELETE",
-          // Add headers/token here for authentication
+          // NOTE: authentication headers (token) should be added here
         },
       );
       if (!res.ok) {
@@ -105,6 +112,7 @@ function AdminDashboard() {
           <div className="filters">
             <h3 className="h3-ivy">Search Members</h3>
             <form>
+            {/* Search by username input */}
               <label>By Username</label>
               <input
                 name="username"
@@ -112,6 +120,8 @@ function AdminDashboard() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 required
               />
+
+              {/* Filter by role dropdown */}
               <label>By User Role</label>
               <select
                 value={selectedUserRole}

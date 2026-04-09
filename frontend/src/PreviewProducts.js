@@ -2,9 +2,13 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 function PreviewProducts() {
+  // Stores all products fetched from backend
   const [allProducts, setAllProducts] = useState([]);
+
+  // Search input state for filtering products by name
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Fetch products once when component mounts
   useEffect(() => {
     fetch("http://localhost:5000/api/products")
       .then((res) => res.json())
@@ -16,12 +20,14 @@ function PreviewProducts() {
       .catch((err) => console.error("Error fetching public products:", err));
   }, []);
 
+  // Filter products based on search input (case-insensitive match on productName)
   const filteredProducts = allProducts.filter((product) =>
     (product.productName || "")
       .toLowerCase()
       .includes(searchTerm.toLowerCase()),
   );
 
+  // Limit displayed products to max 10
   const productsToShow = searchTerm
     ? filteredProducts.slice(0, 10)
     : filteredProducts.slice(0, 10);
@@ -50,6 +56,7 @@ function PreviewProducts() {
       <div className="product-grid">
         {productsToShow.length > 0 ? (
           productsToShow.map((product) => {
+           // Split product name into main name + amount (if formatted like "Name, Size")
             const nameParts = product.productName.split(",");
             const amount = nameParts.length > 1 ? nameParts.pop().trim() : "";
             const cleanName = nameParts.join(",").trim();
@@ -85,6 +92,7 @@ function PreviewProducts() {
             );
           })
         ) : (
+          // Empty state when no products match search
           <div className="noResults">
             <p>No plants match your search.</p>
           </div>

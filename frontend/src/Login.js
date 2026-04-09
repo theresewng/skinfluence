@@ -4,11 +4,22 @@ import { AuthContext } from "./context/AuthContext";
 import "./App.css";
 
 function Login() {
+  // Stores user input for username field
   const [username, setUsername] = useState("");
+
+  // Stores user input for password field
   const [password, setPassword] = useState("");
+
+  // Auth context provides login function to store JWT / auth state
   const { login } = useContext(AuthContext);
+
+  // Used to redirect user after successful login
   const navigate = useNavigate();
 
+    /**
+   * Handles login form submission
+   * Sends credentials to backend and stores token if successful
+   */
   async function handleLogin(e) {
     e.preventDefault();
     try {
@@ -43,14 +54,19 @@ function Login() {
         {/* Right login form */}
         <div className="login-container">
           <h2>Welcome Back</h2>
-
+          
+          {/* Login form */}
           <form onSubmit={handleLogin} className="login-form">
+
+            {/* Username input */}
             <input
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="login-input"
             />
+
+            {/* Password input */}
             <input
               type="password"
               placeholder="Password"
@@ -58,11 +74,14 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="login-input"
             />
+
+            {/* Submit button */}
             <button type="submit" className="login-button">
               Login
             </button>
           </form>
 
+          {/* Link to registration page */}
           <p className="login-footer">
             Don't have an account? <Link to="/register">Register here</Link>
           </p>

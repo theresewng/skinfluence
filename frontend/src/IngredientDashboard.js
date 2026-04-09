@@ -6,9 +6,15 @@ import blankHeart from "../src/assets/img/blankHeart.svg";
 import filledHeart from "../src/assets/img/filledHeart.svg";
 import hoverHeart from "../src/assets/img/hoverHeart.svg";
 
+// Main Ingredient Dashboard component (handles listing, filtering, saving, and admin creation)
 function IngredientDashboard() {
+    // Stores all ingredients loaded from backend (supports pagination)
   const [ingredients, setIngredients] = useState([]);
+
+    // Controls how many ingredients are shown before "See More" is needed
   const [visibleCount, setVisibleCount] = useState(30);
+
+    // Form state for admin to create a new ingredient
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -42,10 +48,13 @@ function IngredientDashboard() {
     }
   }, [token]);
 
+  // Initial ingredient load (first page)
   useEffect(() => {
     fetchIngredients(0, 30);
   }, []);
 
+
+  // Fetch ingredients from backend with pagination + optional filters
   const fetchIngredients = async (skip, limit, search = "", category = "") => {
     try {
       const res = await fetch(
@@ -54,8 +63,10 @@ function IngredientDashboard() {
         )}&category=${encodeURIComponent(category)}`,
       );
       const data = await res.json();
+      // If returned items are less than limit, no more data exists
       setHasMore(data.length === limit);
 
+      // If first page, replace data; otherwise append without duplicates
       setIngredients((prev) => {
         if (skip === 0) return data;
         const existingIds = new Set(prev.map((i) => i._id));
@@ -67,6 +78,7 @@ function IngredientDashboard() {
     }
   };
 
+  // Debounced search + category filter (prevents excessive API calls)
   useEffect(() => {
     const delay = setTimeout(() => {
       fetchIngredients(0, 30, searchTerm, selectedCategory);
@@ -79,6 +91,7 @@ function IngredientDashboard() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Submit new ingredient (admin only)
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, category, short_description, what_is_it } = formData;
@@ -118,6 +131,7 @@ function IngredientDashboard() {
     setVisibleCount((prev) => prev + 30);
   };
 
+  // Toggle save/unsave ingredient for user
   const toggleFavouriteIngredient = async (ingredientId) => {
     if (!token) return alert("You are not logged in!");
     const isSaved = savedIngredients.includes(ingredientId);
@@ -144,6 +158,7 @@ function IngredientDashboard() {
     }
   };
 
+  // Filters ingredients based on search + category
   const filteredIngredients = ingredients.filter((ingredient) => {
     const term = searchTerm.toLowerCase();
     const name = ingredient.name?.toLowerCase() || "";
@@ -155,6 +170,7 @@ function IngredientDashboard() {
     return matchesSearch && matchesCategory;
   });
 
+  // Controls pagination vs search behavior
   const displayedIngredients = searchTerm
     ? filteredIngredients
     : filteredIngredients.slice(0, visibleCount);
