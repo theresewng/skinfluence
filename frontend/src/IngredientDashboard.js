@@ -269,11 +269,11 @@ function IngredientDashboard() {
                         <Link to={`/ingredients/${ingredient._id}`}>
                           <button>See Details</button>
                         </Link>
-                        {!user && (
+                        {/* {!user && (
                           <p style={{ fontStyle: "italic", color: "#888" }}>
                             Login to save
                           </p>
-                        )}
+                        )} */}
                         {user?.role === "user" && (
                           <button
                             className={`heart-button ${savedIngredients.includes(ingredient._id) ? "saved" : ""}`}
