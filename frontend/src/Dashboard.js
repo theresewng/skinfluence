@@ -390,6 +390,7 @@ function Dashboard() {
               </select>
 
               <button
+                className="clear-btn"
                 type="button"
                 onClick={() => {
                   setSearchTerm("");
@@ -492,9 +493,7 @@ function Dashboard() {
                         </div>
                       </div>
                     </div>
-                    
                   );
-                  
                 })
               )}
             </div>

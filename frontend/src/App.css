@@ -60,6 +60,10 @@ button:hover {
   transition: background-color 0.2s ease;
 }
 
+.clear-btn {
+  margin-top: 20px;
+}
+
 /* 2-column layout */
 .content-wrapper {
   display: flex;
