@@ -7,9 +7,16 @@ import filledHeart from "../src/assets/img/filledHeart.svg";
 import hoverHeart from "../src/assets/img/hoverHeart.svg";
 
 function Dashboard() {
+  // Stores all products from backend
   const [products, setProducts] = useState([]);
+  
+  // Controls pagination / number of visible products
   const [visibleCount, setVisibleCount] = useState(30);
+
+  // Tracks if more products are available for "See More"
   const [hasMore, setHasMore] = useState(true);
+
+  // Form state for admin adding new products
   const [formData, setFormData] = useState({
     productName: "",
     brand: "",
@@ -29,6 +36,8 @@ function Dashboard() {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedUsageType, setSelectedUsageType] = useState("");
+
+  // Dropdown filter options from backend
   const [allBrands, setAllBrands] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
   const [allUsageTypes, setAllUsageTypes] = useState([]);
@@ -69,12 +78,14 @@ function Dashboard() {
     fetchProducts(0, 30);
   }, []);
 
+  // Sync saved products from context user (backup state sync)
   useEffect(() => {
     if (user && user.savedProductIDs) {
       setSavedProducts(user.savedProductIDs);
     }
   }, [user]);
 
+  // Debounced filtering (wait 300ms before refetching)
   useEffect(() => {
     const delay = setTimeout(() => {
       fetchProducts(
@@ -146,6 +157,7 @@ function Dashboard() {
     }
   };
 
+  //FORM HANDLERS (ADMIN ADD PRODUCT)
   function handleChange(e) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }

@@ -6,15 +6,27 @@ import { AuthContext } from "./context/AuthContext";
 import Comments from "./CommentsComponent";
 
 function ProductDetails() {
+  // Get ingredient ID from URL params (/ingredients/:id)
   const { id } = useParams();
+
+  // Used to navigate programmatically (e.g., after delete)
   const navigate = useNavigate();
+
+  // Stores fetched ingredient data
   const [ingredient, setIngredient] = useState(null);
+  
+  // Tracks which accordion section is currently open
   const [openSection, setOpenSection] = useState(null);
 
+  // Auth context (token + user role)
   const { token, user } = useContext(AuthContext);
-
+  
+  // Extract "who is it good for" list safely (fallback to empty array)
   const whoIsItFor = ingredient?.who_is_it_good_for || [];
 
+    /**
+   * Fetch ingredient details when page loads or ID changes
+   */
   useEffect(() => {
     fetch(`http://localhost:5000/api/ingredients/${id}`)
       .then((res) => {
@@ -25,16 +37,20 @@ function ProductDetails() {
       .catch((err) => console.error(err));
   }, [id]);
 
+  // Loading state while data is being fetched
   if (!ingredient) return <p>Loading...</p>;
 
-  // split name and amount just like in Dashboard
-
+ /**
+   * Toggles accordion sections (open/close behavior)
+   */
   function toggleSection(section) {
     setOpenSection(openSection === section ? null : section);
   }
 
-  // Handle delete product (admins only)
-  const handleDelete = async () => {
+ /**
+   * Deletes ingredient (admin only action)
+   */
+    const handleDelete = async () => {
     // Confirm before deleting
     if (!window.confirm("Are you sure you want to delete this ingredient?")) {
       return;
@@ -81,7 +97,6 @@ function ProductDetails() {
       </div>
       <div className="product-section">
         <div className="info-content-wrapper">
-          {/* {ingredient?._id && <Comments productId={ingredient._id} />}{" "} */}
           <div>
             <h3 className="h3-ivy">{ingredient.name}</h3>
 
@@ -104,6 +119,7 @@ function ProductDetails() {
                 )}
               </div>
 
+              {/* What does it do section */}
               <div className="accordion-item">
                 <button
                   className="accordion-header"
@@ -122,6 +138,7 @@ function ProductDetails() {
                 )}
               </div>
 
+              {/* Who should use it section */}
               <div className="accordion-item">
                 <button
                   className="accordion-header"
@@ -150,6 +167,7 @@ function ProductDetails() {
                 )}
               </div>
 
+              {/* Comments section */}
               <div className="accordion-item">
                 <button
                   className="accordion-header"
